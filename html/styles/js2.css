@@ -1,0 +1,38 @@
+
+.format {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+}
+
+.scroller {
+    height: 500px;
+}
+
+html,body {
+    height: 100%;
+}
+
+#wrap {
+    min-height: 100%;
+    height: auto;
+    margin: 0 auto -200px;
+}
+
+#push {
+ height: 200px;
+}
+.footer {
+    border-top: 1px solid #e5e5e5;
+    color: #777;
+    padding: 19px 0;
+    background-color: #f5f5f5;
+}
+
+.inline-block{
+    display: inline-block;
+    width: 400px;
+    height: 500px;
+    border: 1px solid #750000;
+    margin: 10px;
+}

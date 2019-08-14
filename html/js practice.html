@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Information</title>
+    <link href="styles/js2.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<form action="/server.java" method="post">
+<div>
+    <div class="label">Name</div>
+    <input id="attributeName" name="username" onchange="inputName()"/>
+    <div class="error" id="nameError">Name is not correct!</div>
+</div>
+<div>
+    <div class="label">Age</div>
+    <input id="attributeAge" name="age" onchange="inputAge()"/>
+    <div class="error" id="ageError">your age is not to enrol.</div>
+</div>
+<div>
+    <div class="label">email</div>
+    <input type="password"  id="attributeEmail" name="email" required/>
+</div>
+    <button type="reset">Reset</button>
+    <button type="submit">Submit</button>
+</form>
+
+<script src="js/js2.js"></script>
+</body>
+</html>
