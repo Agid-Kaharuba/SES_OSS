@@ -1,11 +1,11 @@
-$().ready(function() {
+$().ready(function () {
     $("#signupForm").validate({
         rules: {
-            firstname: "required",
-            lastname: "required",
-            username: {
-                required: true,
-                minlength: 2
+            firstname: {
+                required: true
+            },
+            lastname: {
+                required: true
             },
             password: {
                 required: true,
@@ -14,16 +14,12 @@ $().ready(function() {
             confirm_password: {
                 required: true,
                 minlength: 5,
-                equalTo: "#password"
             },
             email: {
                 required: true,
                 email: true
             },
-            topic: {
-                required: "#newsletter:checked",
-                minlength: 2
-            },
+            topic: "required",
             agree: "required"
         },
         messages: {
