@@ -1,13 +1,13 @@
-var mysql = require("mysql");
-var path = require('path');
-var db = require('../database.js');
+const mysql = require("mysql");
+const path = require('path');
+const db = require('../database.js');
 
-var cb0 = function (req, res) 
+exports.cb0 = function (req, res) 
 {
 	res.sendFile(path.join(__dirname, '../html', 'bookstrapnew.html'));
 };
 
-var checkUserDoesntAlreadyExist = function (req, res, next) 
+exports.checkUserDoesntAlreadyExist = function (req, res, next) 
 {
 	var userName = "Test"
 	let sql = "SELECT * FROM User WHERE US_Username = '" + userName + "'"; //I should be sql-injection proofed in the future.
@@ -31,4 +31,6 @@ var checkUserDoesntAlreadyExist = function (req, res, next)
 // 	res.sendFile(path.join(__dirname, '../html', 'bookstrapnew.html'));
 };
 
-module.exports = { checkUserDoesntAlreadyExist, cb0 };
+exports.validateUserLogin = function(name, password) {
+
+}

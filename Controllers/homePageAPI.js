@@ -1,7 +1,8 @@
-var express = require('express');
-var homePage = require('../Models/homePage')
+const express = require('express');
+const homePage = require('../Models/homePage')
 
-var router = express.Router();
+const router = express.Router();
+
 router.get('/', homePage.cb0);
 
 module.exports = { router };
