@@ -1,11 +1,13 @@
 //#region Requirements
-var http = require('http');
-var express = require("express");
+const http = require('http');
+const express = require("express");
 
-var homePageAPI = require('./Controllers/homePageAPI');
-var userAPI = require('./Controllers/userAPI');
+const homePageAPI = require('./Controllers/homePageAPI');
+const userAPI = require('./Controllers/userAPI');
+const listingAPI = require('./Controllers/listingAPI');
+const adminAPI = require('./Controllers/adminAPI');
 
-var app = express();
+const app = express();
 app.use('/images', express.static('images'));
 app.use('/styles', express.static('html/styles'));
 app.use(express.static('js'));
@@ -13,7 +15,9 @@ app.use(express.static('js'));
 //HOW TO USE - APP.USE
 //app.use('directory the webpage is at when it should be used', 'what should be used')
 app.use('/', homePageAPI.router);
-app.use('/', userAPI.router);
+app.use('/user', userAPI.router);
+app.use('/listing', listingAPI.router);
+app.use('/admin', adminAPI.router);
 
 //#endregion
 

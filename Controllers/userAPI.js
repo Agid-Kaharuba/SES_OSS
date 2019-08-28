@@ -4,9 +4,11 @@ const view = require('../views/userView')
 
 const router = express.Router();
 
-router.post('/user/register', [user.checkUserDoesntAlreadyExist]);
+// Every method is prepended with "/user" see app.js
 
-router.post('/user/login', (req, res) => {
+router.post('/register', [user.checkUserDoesntAlreadyExist]);
+
+router.post('/login', (req, res) => {
     
     if (user.validateUserLogin(res.username, res.password)) {
         return view.loginSucess();
@@ -15,19 +17,19 @@ router.post('/user/login', (req, res) => {
     }
 })
 
-router.get('/user/view-account', (req, res) => {
+router.get('/view-account', (req, res) => {
     return view.viewAccount();
 })
 
-router.put('/user/modify', (req, res) => {
+router.put('/modify', (req, res) => {
 
 })
 
-router.get('/user/purchase/:listingID', (req, res) => {
+router.get('/purchase/:listingID', (req, res) => {
 
 })
 
-router.post('/user/confirm_purchase/:listingID', (req, res) => {
+router.post('/confirm_purchase/:listingID', (req, res) => {
 
 })
 
