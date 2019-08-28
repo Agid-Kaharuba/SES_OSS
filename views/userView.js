@@ -1,5 +1,5 @@
 
-exports.loginSucess = function() {
+exports.loginSuccess = function() {
 
 }
 

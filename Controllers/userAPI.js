@@ -1,17 +1,19 @@
 const express = require('express');
 const user = require('../Models/user')
-const view = require('../views/userView')
+const view = require('../Views/userView')
 
 const router = express.Router();
 
 // Every method is prepended with "/user" see app.js
 
-router.post('/register', [user.checkUserDoesntAlreadyExist]);
+router.post('/register*', [user.checkUserDoesntAlreadyExist]);
+
+
 
 router.post('/login', (req, res) => {
     
     if (user.validateUserLogin(res.username, res.password)) {
-        return view.loginSucess();
+        return view.loginSuccess();
     } else {
         return view.loginFail();
     }
