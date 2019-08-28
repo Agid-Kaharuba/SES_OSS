@@ -14,6 +14,7 @@ $().ready(function () {
             confirm_password: {
                 required: true,
                 minlength: 5,
+                equalTo: "#password"
             },
             email: {
                 required: true,
