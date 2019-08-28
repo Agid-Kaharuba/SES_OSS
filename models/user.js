@@ -1,10 +1,10 @@
 const mysql = require("mysql");
 const path = require('path');
-const db = require('../utils/database.js');
+const db = require('../utils/database');
 
 exports.cb0 = function (req, res) 
 {
-	res.sendFile(path.join(__dirname, '../html', 'bookstrapnew.html'));
+	res.sendFile(path.join(__dirname, '../public/homePage', 'homePage.html'));
 };
 
 exports.checkUserDoesntAlreadyExist = function (req, res, next) 
@@ -28,7 +28,7 @@ exports.checkUserDoesntAlreadyExist = function (req, res, next)
 			console.log("Not found :(");
 		}
 	});
-// 	res.sendFile(path.join(__dirname, '../html', 'bookstrapnew.html'));
+// 	res.sendFile(path.join(__dirname, '../public/homePage', 'homePage.html'));
 };
 
 exports.validateUserLogin = function(name, password) {
