@@ -45,7 +45,7 @@
         </ul>
         <div class="inline-block">
             <form action="">
-                <div class="px-3 py-1 bg-light rounded rounded-pill shadow-sm">
+                <div class="px-3 py-1 bg-light rounded rounded-pill shadow-sm" style="margin:0 20px">
                     <div class="input-group" style="width: 280px">
                         <input type="search" placeholder="What're you searching for?" aria-describedby="button-addon1" class="form-control border-0 bg-light">
                         <div class="input-group-append">
@@ -55,10 +55,11 @@
                 </div>
             </form>
         </div>
-        <button type="button" class="btn btn-primary" style="margin:0 10px" data-toggle="modal" data-target="#exampleModalCenter">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
             Carts
         </button>
-        <button class="btn btn-info" data-target="#exampleModalScrollable" data-toggle="modal" href="#">Sign Up</button>
+        <button class="btn btn-info" style="margin:0 10px" data-target="#Signin" data-toggle="modal" href="#">Sign In</button>
+        <button class="btn btn-info" data-target="#exampleModalScrollable" data-toggle="modal" href="#">Register</button>
     </div>
 </nav>
 
@@ -214,7 +215,7 @@
                         <form class="needs-validation" id="signupForm" method="get" action="actor.html" novalidate>
                             <div class="form-group">
                                 <label for="email">Email address</label>
-                                <input type="email" class="form-control" id="email" placeholder="Enter email" required>
+                                <input type="email" class="form-control" id="email" placeholder="Enter email" name="email" required>
                                 <div class="invalid-feedback">
                                     Please choose a email.
                                 </div>
@@ -253,6 +254,42 @@
             </div>
         </div>
     </div>
+    <div>
+        <div>
+            <div aria-hidden="true" aria-labelledby="signinTitle" class="modal fade" id="Signin"
+                 role="dialog" tabindex="-1">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title text-info" id="signinTitle">Sign In</h5>
+                            <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form class="needs-validation"  method="get" action="actor.html" novalidate>
+                                <div class="form-group">
+                                    <label for="signinemail">Email address</label>
+                                    <input type="email" class="form-control" id="signinemail" placeholder="Enter email" name="emial" required>
+                                    <div class="invalid-feedback">
+                                        Please choose a email.
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="signinpassword">Password</label>
+                                        <input type="password" class="form-control" id="signinpassword" name="password" placeholder="Password" required>
+                                    </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                            <button class="btn btn-primary " type="button" onclick="$('#signinValidate').submit()">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="Text">
         <nav class="navbar navbar-default navbar-fixed">
         </nav>
@@ -327,6 +364,8 @@
         <script src="http://libs.cdnjs.net/jquery/2.2.1/jquery.js"></script>
         <script src="http://libs.cdnjs.net/jquery-validate/1.14.0/jquery.validate.min.js"></script>
         <script src="../js/RejesterValidate.js"></script>
+        <script src="../js/SignInValidate.js"></script>
+
     </div>
 </div>
 </body>
