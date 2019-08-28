@@ -2,10 +2,10 @@
 const http = require('http');
 const express = require("express");
 
-const homePageAPI = require('./Controllers/homePageAPI');
-const userAPI = require('./Controllers/userAPI');
-const listingAPI = require('./Controllers/listingAPI');
-const adminAPI = require('./Controllers/adminAPI');
+const homePageAPI = require('./controllers/homePageAPI');
+const userAPI = require('./controllers/userAPI');
+const listingAPI = require('./controllers/listingAPI');
+const adminAPI = require('./controllers/adminAPI');
 
 const app = express();
 app.use('/images', express.static('images'));

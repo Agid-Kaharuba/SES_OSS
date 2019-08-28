@@ -1,20 +1,25 @@
 
-exports.loginSuccess = function() {
+exports.loginSuccess = function() 
+{
 
 }
 
-exports.loginFail = function() {
+exports.loginFail = function() 
+{
 
 }
 
-exports.registerSucess = function () {
+exports.registerSucess = function () 
+{
 
 }
 
-exports.registerFail = function() {
+exports.registerFail = function() 
+{
 
 }
 
-exports.viewAccount = function() {
+exports.viewAccount = function() 
+{
 
 }

@@ -1,8 +1,10 @@
 
-exports.listingList = function(models) {
+exports.listingList = function(models) 
+{
 
 }
 
-exports.listing = function(model) {
+exports.listing = function(model) 
+{
 
 }
