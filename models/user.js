@@ -1,4 +1,3 @@
-const mysql = require("mysql");
 const path = require('path');
 const db = require('../utils/database');
 
@@ -31,6 +30,6 @@ exports.checkUserDoesntAlreadyExist = function (req, res, next)
 // 	res.sendFile(path.join(__dirname, '../public/homePage', 'homePage.html'));
 };
 
-exports.validateUserLogin = function(name, password) {
-
+exports.validateUserLogin = function(name, password) 
+{
 }
