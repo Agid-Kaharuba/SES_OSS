@@ -6,7 +6,7 @@ exports.connectDatabase = function()
 {
 	if (!db)
 	{
-		var db = mysql.createConnection(
+		db = mysql.createConnection(
 		{
 			host        : process.env.MYSQL_HOST,
 			user        : process.env.MYSQL_USER,
@@ -51,4 +51,14 @@ exports.createSchema = function()
 	});
 
 	return errors;
+}
+
+/**
+ * @param  {string} username - Username of user.
+ * @param  {selectUserCallback} callback - A callback when query is completed - comes with paramaters (err, results, fields)
+ */
+exports.selectUser = function(username, callback) {
+	var db = exports.connectDatabase();
+	var query = "SELECT * FROM User WHERE US_Username = ?";
+	db.query(query, [username], callback);
 }

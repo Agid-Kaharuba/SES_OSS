@@ -14,7 +14,7 @@ router.post('/register*', [user.checkUserDoesntAlreadyExist]);
 
 router.post('/login', (req, res) => 
 {
-    user.validateUserLogin(req.body.username, req.body.password, {
+    user.validateUserLogin(req.body, {
         success: () => {
             auth.attach(res, req.body.username);
             res.send(jsonResponse.success());

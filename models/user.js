@@ -8,35 +8,33 @@ exports.cb0 = function (req, res)
 
 exports.checkUserDoesntAlreadyExist = function (req, res, next) 
 {
-	var userName = "Test"
-	let sql = "SELECT * FROM User WHERE US_Username = '" + userName + "'"; //I should be sql-injection proofed in the future.
-	db.query(sql, (err, result) =>
-	{
-		if (err)
-		{
-			throw err;
-		}
-		console.log(userName + " - looking for existing user in the database.");
-
-		if (result != "")
-		{
-			console.log("Found!");
-		}
-		else
-		{
-			console.log("Not found :(");
-		}
-	});
+	
 // 	res.sendFile(path.join(__dirname, '../public/homePage', 'homePage.html'));
 };
 
-exports.validateUserLogin = function(name, password, callback = {success: () => {}, fail: () => {}}) 
+exports.validateUserLogin = function(user, callback = {success: () => {}, fail: () => {}}) 
 {
-	// Do some validation here
+	db.selectUser(user.username, (err, results, fields) => 
+	{
+		let found = false;
 
-	// Sucess
-	callback.success();
-
-	// Fail
-	//callback.fail();
+		for (var i = 0; i < results.length; i++)
+		{
+			// Later implement hash passwords check
+			if (results[i].US_Password == user.password)
+			{
+				found = true;
+				break;
+			}
+		}
+		
+		if (found)
+		{
+			callback.success();
+		}
+		else
+		{
+			callback.fail();
+		}
+	})
 }
