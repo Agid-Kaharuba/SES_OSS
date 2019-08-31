@@ -8,18 +8,36 @@ const router = express.Router();
 
 // Every method is prepended with "/user" see app.js
 
-router.post('/register*', [user.checkUserDoesntAlreadyExist]);
-
-
+router.post('/register', (req, res) => 
+{
+    user.checkUserExist(req.body, 
+    {
+        notFound: () => user.registerUser(req.body, 
+        {
+            success: () => 
+            {
+                res.send(jsonResponse.success());
+            },
+            fail: () =>
+            {
+                res.send(jsonResponse.fail("Could not register new user"));
+            }
+        }),
+        found: () => res.send(jsonResponse.fail("Could not register an already existing user"))
+    })
+});
 
 router.post('/login', (req, res) => 
 {
-    user.validateUserLogin(req.body, {
-        success: () => {
+    user.validateUserLogin(req.body, 
+    {
+        success: () => 
+        {
             auth.attach(res, req.body.username);
             res.send(jsonResponse.success());
         },
-        fail: () => {
+        fail: () => 
+        {
             res.send(jsonResponse.fail('Invalid username or password'));
         }
     });

@@ -62,3 +62,12 @@ exports.selectUser = function(username, callback) {
 	var query = "SELECT * FROM User WHERE US_Username = ?";
 	db.query(query, [username], callback);
 }
+
+exports.registerUser = function(user, password, callback) {
+	var db = exports.connectDatabase();
+	var query = "INSERT User " +
+				"(US_Username, US_Password, US_Email, US_FirstName, US_LastName, US_PhoneNumber, US_BirthDate) " +
+				"VALUES (?, ?, ?, ?, ?, ? ,?)";
+	var values = [user.username, password, user.email, user.firstName, user.lastName, user.phoneNumber, user.birthDate];
+	db.query(query, values, callback);
+}

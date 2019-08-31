@@ -1,16 +1,51 @@
 const path = require('path');
 const db = require('../utils/database');
+const bcrypt = require('bcrypt')
 
 exports.cb0 = function (req, res) 
 {
 	res.sendFile(path.join(__dirname, '../public/homePage', 'homePage.html'));
 };
 
-exports.checkUserDoesntAlreadyExist = function (req, res, next) 
+exports.checkUserExist = function (user, callback = {found: () => {}, notFound: () => {}}) 
 {
-	
-// 	res.sendFile(path.join(__dirname, '../public/homePage', 'homePage.html'));
-};
+	db.selectUser(user.username, (err, results) => 
+	{
+		if (!err && results.length > 0)
+		{
+			callback.found();
+		}
+		else
+		{
+			callback.notFound();
+		}
+	});
+}
+
+exports.registerUser = function(user, callback = {success: () => {}, fail: () => {}})
+{
+	bcrypt.hash(user.password, 10, (errHash, hash) => 
+	{
+		if (errHash) 
+		{
+			callback.fail();
+			return;
+		}
+		
+		db.registerUser(user, hash, (errDB) => 
+		{
+			if (errDB)
+			{
+				console.error("Error when registering user:", errDB);
+				callback.fail();
+			}
+			else
+			{
+				callback.success();
+			}
+		});
+	});
+}
 
 exports.validateUserLogin = function(user, callback = {success: () => {}, fail: () => {}}) 
 {
@@ -18,23 +53,25 @@ exports.validateUserLogin = function(user, callback = {success: () => {}, fail: 
 	{
 		let found = false;
 
-		for (var i = 0; i < results.length; i++)
+		results.forEach(result => bcrypt.compare(user.password, result.US_Password, (err, compareRes) =>
 		{
-			// Later implement hash passwords check
-			if (results[i].US_Password == user.password)
+			if (!found)
 			{
 				found = true;
-				break;
+
+				if (compareRes)
+				{
+					callback.success();
+				}
+				else
+				{
+					callback.fail();
+				}
+			} 
+			else 
+			{
+				console.error("ERROR found multiple rows for the same username!!!");
 			}
-		}
-		
-		if (found)
-		{
-			callback.success();
-		}
-		else
-		{
-			callback.fail();
-		}
-	})
+		}));
+	});
 }
