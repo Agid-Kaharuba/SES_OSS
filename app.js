@@ -2,11 +2,15 @@
 const http = require('http');
 const express = require("express");
 const cookieParser = require("cookie-parser");
+var dotenv = require('dotenv');
+dotenv.config();
 
 const homePageAPI = require('./controllers/homePageAPI');
 const userAPI = require('./controllers/userAPI');
 const listingAPI = require('./controllers/listingAPI');
 const adminAPI = require('./controllers/adminAPI');
+const devAPI = require('./controllers/devAPI');
+
 
 const app = express();
 app.use('/images', express.static('images'));
@@ -23,6 +27,8 @@ app.use('/', homePageAPI.router);
 app.use('/user', userAPI.router);
 app.use('/listing', listingAPI.router);
 app.use('/admin', adminAPI.router);
+app.use('/dev', devAPI.router);
+
 
 //#endregion
 

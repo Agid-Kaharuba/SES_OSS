@@ -1,10 +1,8 @@
 var mysql = require('mysql');
-var dotenv = require('dotenv');
-dotenv.config();
-
+var fs = require('fs');
 var db;
 
-function connectDatabase()
+exports.connectDatabase = function()
 {
 	if (!db)
 	{
@@ -16,19 +14,41 @@ function connectDatabase()
 			database	: process.env.MYSQL_DB
 		})
 
-	}
-
-	db.connect((err) =>
-	{
-		if (err)
+		db.connect((err) =>
 		{
-			console.log("MySql Failed to Connect - comment out the 'throw err;' if it's messing you up");
-			throw err;
-		}
-		console.log("MySql Connected...")
-	});
-
+			if (err)
+			{
+				console.log("MySql Failed to Connect - comment out the 'throw err;' if it's messing you up");
+				throw err;
+			}
+			console.log("MySql Connected...")
+		});
+	}
+	
 	return db;
 }
 
-module.exports = connectDatabase();
+exports.createSchema = function()
+{
+	var db = exports.connectDatabase();
+	var schema = fs.readFileSync(__dirname + "/createDatabaseSchema.sql");
+	var scripts = schema.toString().split("\n\n");
+	var errors = 0
+	scripts.forEach(function (script, index)
+	{
+		if (script != "")
+		{
+			db.query(script, (err) =>
+			{
+				if (err)
+				{
+					console.log("Unable to run the following script: " + script);
+					console.log(err.sqlMessage);
+					errors ++;
+				}
+			});
+		}
+	});
+
+	return errors;
+}
