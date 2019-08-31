@@ -31,6 +31,13 @@ exports.checkUserDoesntAlreadyExist = function (req, res, next)
 // 	res.sendFile(path.join(__dirname, '../public/homePage', 'homePage.html'));
 };
 
-exports.validateUserLogin = function(name, password) {
+exports.validateUserLogin = function(name, password, callback = {success: () => {}, fail: () => {}}) 
+{
+	// Do some validation here
 
+	// Sucess
+	callback.success();
+
+	// Fail
+	//callback.fail();
 }

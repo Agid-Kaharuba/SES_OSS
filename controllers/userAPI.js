@@ -1,6 +1,8 @@
 const express = require('express');
 const user = require('../models/user')
 const view = require('../views/userView')
+const jsonResponse = require('../utils/JSONResponse');
+const auth = require('../utils/authUtil');
 
 const router = express.Router();
 
@@ -12,23 +14,27 @@ router.post('/register*', [user.checkUserDoesntAlreadyExist]);
 
 router.post('/login', (req, res) => 
 {
-    
-    if (user.validateUserLogin(res.username, res.password)) 
-    {
-        return view.loginSuccess();
-    } else {
-        return view.loginFail();
-    }
+    user.validateUserLogin(req.body.username, req.body.password, {
+        success: () => {
+            auth.attach(res, req.body.username);
+            res.send(jsonResponse.success());
+        },
+        fail: () => {
+            res.send(jsonResponse.fail('Invalid username or password'));
+        }
+    });
 })
 
 router.get('/view-account', (req, res) => 
 {
-    return view.viewAccount();
+     res.send(view.viewAccount());
 })
 
 router.put('/modify', (req, res) => 
 {
-
+    auth.validateOrFail(req, res, (username) => {
+        // Do something here if valid
+    });
 })
 
 router.get('/purchase/:listingID', (req, res) => 

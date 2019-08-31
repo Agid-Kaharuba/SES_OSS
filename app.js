@@ -1,6 +1,7 @@
 //#region Requirements
 const http = require('http');
 const express = require("express");
+const cookieParser = require("cookie-parser");
 
 const homePageAPI = require('./controllers/homePageAPI');
 const userAPI = require('./controllers/userAPI');
@@ -11,6 +12,10 @@ const app = express();
 app.use('/images', express.static('images'));
 app.use('/styles', express.static('html/styles'));
 app.use(express.static('js'));
+// For parsing json.
+app.use(express.json());
+// To be able to read cookies.
+app.use(cookieParser());
 
 //HOW TO USE - APP.USE
 //app.use('directory the webpage is at when it should be used', 'what should be used')
