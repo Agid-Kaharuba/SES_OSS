@@ -30,7 +30,7 @@ exports.connectDatabase = function()
 
 exports.createSchema = function()
 {
-	var db = connectDatabase();
+	var db = exports.connectDatabase();
 	var schema = fs.readFileSync(__dirname + "/createDatabaseSchema.sql");
 	var scripts = schema.toString().split("\n\n");
 	var errors = 0
