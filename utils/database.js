@@ -2,7 +2,7 @@ var mysql = require('mysql');
 var fs = require('fs');
 var db;
 
-function connectDatabase()
+exports.connectDatabase = function()
 {
 	if (!db)
 	{
@@ -28,7 +28,7 @@ function connectDatabase()
 	return db;
 }
 
-function createSchema()
+exports.createSchema = function()
 {
 	var db = connectDatabase();
 	var schema = fs.readFileSync(__dirname + "/createDatabaseSchema.sql");
@@ -52,5 +52,3 @@ function createSchema()
 
 	return errors;
 }
-
-module.exports = { createSchema, connectDatabase };
