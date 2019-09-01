@@ -4,7 +4,8 @@
   "description": "SES 1A Project",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon",
+    "createDB": "node createDB.js"
   },
   "author": "",
   "license": "ISC",

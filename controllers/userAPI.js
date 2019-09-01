@@ -12,7 +12,6 @@ router.post('/register*', [user.checkUserDoesntAlreadyExist]);
 
 router.post('/login', (req, res) => 
 {
-    
     if (user.validateUserLogin(res.username, res.password)) 
     {
         return view.loginSuccess();
@@ -23,6 +22,7 @@ router.post('/login', (req, res) =>
 
 router.get('/view-account', (req, res) => 
 {
+	user.validateUserLogin(res.username, res.password)
     return view.viewAccount();
 })
 
