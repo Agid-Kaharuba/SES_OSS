@@ -21,12 +21,47 @@ let insertUser = function(user, password, callback) {
 	dbConnection.query(query, values, callback);
 }
 
+/**
+ * Just a nicer and more consistent syntax converter.
+ */
+let convertToUser = function(DBUser) 
+{
+	return {
+		username: DBUser.US_Username,
+		password: DBUser.US_Password,
+		email: DBUser.US_Email,
+		firstName: DBUser.US_FirstName,
+		lastName: DBUser.US_LastName,
+		phoneNumber: DBUser.US_PhoneNumber,
+		birthDate: DBUser.US_BirthDate,
+		joinDate: DBUser.US_JoinDate
+	}
+}
+
 exports.cb0 = function (req, res) 
 {
 	res.sendFile(path.join(__dirname, '../public/homePage', 'homePage.html'));
 };
 
-exports.checkUserExist = function (user, callback = {found: () => {}, notFound: () => {}}) 
+/**
+ * Simply get the user from the database by username. 
+ * If multiple user exist which should not happen, it will return the first one.
+ * 
+ * @param  {} username The username of the user.
+ * @param  {} callback A callback which will be called when and if a user is found.
+ */
+exports.getUser = function(username, callback) 
+{
+	selectUser(username, (err, results) => 
+	{
+		if (results.length > 0)
+		{
+			callback(convertToUser(results[0]));
+		}
+	})
+}
+
+exports.checkUserExist = function(user, callback = {found: () => {}, notFound: () => {}}) 
 {
 	selectUser(user.username, (err, results) => 
 	{
