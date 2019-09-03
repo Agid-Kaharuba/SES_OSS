@@ -2,6 +2,25 @@ const path = require('path');
 const db = require('../utils/database');
 const bcrypt = require('bcrypt')
 
+/**
+ * @param  {string} username - Username of user.
+ * @param  {selectUserCallback} callback - A callback when query is completed - comes with paramaters (err, results, fields)
+ */
+let selectUser = function(username, callback) {
+	var dbConnection = db.connectDatabase();
+	var query = "SELECT * FROM User WHERE US_Username = ?";
+	dbConnection.query(query, [username], callback);
+}
+
+let insertUser = function(user, password, callback) {
+	var dbConnection = db.connectDatabase();
+	var query = "INSERT User " +
+				"(US_Username, US_Password, US_Email, US_FirstName, US_LastName, US_PhoneNumber, US_BirthDate) " +
+				"VALUES (?, ?, ?, ?, ?, ? ,?)";
+	var values = [user.username, password, user.email, user.firstName, user.lastName, user.phoneNumber, user.birthDate];
+	dbConnection.query(query, values, callback);
+}
+
 exports.cb0 = function (req, res) 
 {
 	res.sendFile(path.join(__dirname, '../public/homePage', 'homePage.html'));
@@ -9,7 +28,7 @@ exports.cb0 = function (req, res)
 
 exports.checkUserExist = function (user, callback = {found: () => {}, notFound: () => {}}) 
 {
-	db.selectUser(user.username, (err, results) => 
+	selectUser(user.username, (err, results) => 
 	{
 		if (!err && results.length > 0)
 		{
@@ -32,7 +51,7 @@ exports.registerUser = function(user, callback = {success: () => {}, fail: () =>
 			return;
 		}
 		
-		db.registerUser(user, hash, (errDB) => 
+		insertUser(user, hash, (errDB) => 
 		{
 			if (errDB)
 			{
@@ -49,7 +68,7 @@ exports.registerUser = function(user, callback = {success: () => {}, fail: () =>
 
 exports.validateUserLogin = function(user, callback = {success: () => {}, fail: () => {}}) 
 {
-	db.selectUser(user.username, (err, results, fields) => 
+	selectUser(user.username, (err, results, fields) => 
 	{
 		let found = false;
 
