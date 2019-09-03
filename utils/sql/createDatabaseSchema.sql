@@ -123,6 +123,8 @@ CREATE TABLE Listing
   LS_CT				varchar(36) NULL,
   LS_Title 			varchar(256) NULL,
   LS_Description	varchar(2048) NULL,
+  LS_RemainingStock	INT NOT NULL,
+  LS_IsActive		BIT NOT NULL DEFAULT 1,
   LS_PostedDate		datetime NOT NULL DEFAULT NOW(),
   PRIMARY KEY (LS_PK),
   FOREIGN KEY (LS_US_Seller) 	REFERENCES User(US_PK),
