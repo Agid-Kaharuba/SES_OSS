@@ -12,7 +12,6 @@ router.get('/id=:id', (req, res) => // e.g. listing/id=4bb8590e-ce26-11e9-a859-2
 		(err, results) =>
 		{ 
 			if (err) throw err;
-			console.log(results);
 			res.send(view.viewListing(results));
 		});
 })
