@@ -5,6 +5,3 @@ exports.createSchema = function(name, password)
 {
 	return db.createSchema();
 }
-
-
-

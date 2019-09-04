@@ -1,6 +1,17 @@
-var path = require('path');
+const database = require('../utils/database');
 
-exports.cb0 = function (req, res) 
+exports.GetRecentListings = async function (callback) 
 {
-	res.sendFile(path.join(__dirname, '../public/homePage', 'homePage.html'));
-};
+	var db = await database.connectDatabase();
+	var query = `
+SELECT 
+	LS_PK as listingID, 
+	LS_Title as listingTitle
+FROM Listing
+WHERE LS_IsActive = 1 
+ORDER BY LS_PostedDate DESC 
+LIMIT 10;
+;`;
+
+	await db.query(query, callback);
+}
