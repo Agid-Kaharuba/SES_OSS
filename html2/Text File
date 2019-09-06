@@ -1,0 +1,134 @@
+ 
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Shopping Carts</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive m-t">
+                    <table class="table invoice-table">
+                        <thead>
+                        <tr>
+                            <th>List</th>
+                            <th>Quantity</th>
+                            <th>Unit Price</th>
+                            <th>Tax Rate</th>
+                            <th>Total Price</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>
+                                <div><strong>eg.2019 New hat</strong>
+                                </div>
+                            </td>
+                            <td>1</td>
+                            <td>$10.00</td>
+                            <td>$10.00</td>
+                            <td>$20.00</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div><strong>eg.New 2019 Large size loose coat</strong>
+                                </div>
+                                <small>![Special Discount Today]
+                                </small>
+                            </td>
+                            <td>1</td>
+                            <td>$20.00</td>
+                            <td>$20.00</td>
+                            <td>$40.00</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div><strong>eg.2019 fashion teen pants</strong>
+                                </div>
+                            </td>
+                            <td>1</td>
+                            <td>$30.00</td>
+                            <td>$10.00</td>
+                            <td>$40.00</td>
+                        </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /table-responsive -->
+
+              
+                <div class="text-right">
+                    <a href = "confirmation.html" class="btn btn-primary"><i class="fa fa-dollar"></i> Go to Pay</a>
+                </div>
+
+                <div class="well m-t"><strong>Attention：</strong> Please complete the payment within 24 hours or the order will be cancelled automatically.
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div>
+    <div>
+        <div aria-hidden="true" aria-labelledby="exampleModalScrollableTitle" class="modal fade" id="exampleModalScrollable"
+             role="dialog" tabindex="-1">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title text-info" id="exampleModalScrollableTitle">Register</h5>
+                        <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form class="needs-validation" id="signupForm" method="get" action="actor.html" novalidate>
+                            <div class="form-group">
+                                <label for="email">Email address</label>
+                                <input type="email" class="form-control" id="email" placeholder="Enter email" required>
+                                <div class="invalid-feedback">
+                                    Please choose a email.
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="firstname">First Name</label>
+                                <input type="text" class="form-control" id="firstname" name="firstname" placeholder="First Name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="lastname">Last Name</label>
+                                <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Last Name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="confirm_password">Confirm Password</label>
+                                <input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="Password" required>
+                            </div>
+                            <div class="form-group form-check">
+                                <input type="checkbox" class="form-check-input" id="agree">
+                                <label class="form-check-label" for="agree">Please agree to our statement</label>
+                            </div>
+                            <div class="form-group form-check">
+                                <input type="checkbox" class="form-check-input" id="newsletter">
+                                <label class="form-check-label" for="newsletter">I am happy to receive new information</label>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                        <button class="btn btn-primary " type="button" onclick="$('#signupForm').submit()">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
