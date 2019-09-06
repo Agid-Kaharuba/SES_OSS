@@ -17,10 +17,11 @@ app.use('/listing', listingAPI.router);
 app.use('/admin', adminAPI.router);
 app.use('/dev', devAPI.router);
 
-app.use('/images', express.static('images'));
-app.use('/styles', express.static('html/styles'));
+app.use('/images', express.static('public/images'));
+app.use('/styles', express.static('public/styles'));
+app.use('/js', express.static('public/js'));
 app.use(express.static('js'));
-
+app.set('view engine', 'ejs');
 var port = process.env.PORT || 3000
 app.listen(port, () => 
 {

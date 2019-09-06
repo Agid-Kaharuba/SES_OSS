@@ -1,17 +1,20 @@
 const express = require('express');
-const homePage = require('../models/homePage')
-const view = require('../views/homePageView');
 const router = express.Router();
 
 router.get('/', (req, res) =>
 {
 	console.log("Receieved req for homePage listings");
-	homePage.GetRecentListings(
-		(err, results) =>
-		{ 
-			if (err) throw err;
-			res.sendFile(view.viewHomePage(results));
-		});
+	res.render('pages/home')
+});
+
+router.get('/confirmPurchase', (req, res) =>
+{
+	res.render('pages/confirmPurchase')
+});
+
+router.get('/paymentSummary', (req, res) =>
+{
+	res.render('pages/paymentSummary')
 });
 
 module.exports = { router };
