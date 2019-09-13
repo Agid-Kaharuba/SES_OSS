@@ -7,14 +7,12 @@ router.get('/', (req, res) =>
 	res.render('pages/home')
 });
 
-router.get('/confirmPurchase', (req, res) =>
-{
-	res.render('pages/confirmPurchase')
-});
-
-router.get('/paymentSummary', (req, res) =>
-{
-	res.render('pages/paymentSummary')
-});
+console.log("Receieved req for homePage listings");
+homePage.GetRecentListings(
+	(err, results) =>
+	{
+		if (err) throw err;
+		res.sendFile(view.viewHomePage(results));
+	});
 
 module.exports = { router };

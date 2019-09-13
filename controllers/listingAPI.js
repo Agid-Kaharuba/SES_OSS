@@ -42,4 +42,14 @@ router.get('/summary=:purchaseID', (req, res) =>
 		})
 });
 
+router.get('/confirmPurchase', (req, res) =>
+{
+	res.render('pages/confirmPurchase')
+});
+
+router.get('/paymentSummary', (req, res) =>
+{
+	res.render('pages/paymentSummary')
+});
+
 module.exports = { router };
