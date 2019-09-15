@@ -16,10 +16,11 @@ WHERE
     LS_PK = ?
 ;`;
 
-	await db.query(query, [id], callback);
+	var listing = await db.query(query, [id], callback);
+	return listing;
 }
 
-exports.SearchListings = async function (searchTerm, callback) 
+exports.SearchListings = async function (searchTerm) 
 {
 	var db = await database.connectDatabase();
 	var query = `
@@ -33,5 +34,6 @@ WHERE
     INSTR(LS_Title, ?)
 ;`;
 
-	await db.query(query, [searchTerm], callback);
+	var listings = await db.query(query, [searchTerm]);
+	return listings;
 }

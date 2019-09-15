@@ -1,35 +1,157 @@
-const path = require('path');
-const db = require('../utils/database');
+const database = require('../utils/database');
+const bcrypt = require('bcrypt');
 
-exports.cb0 = function (req, res) 
+let convertToUserObject = function(DBUser) 
 {
-	res.sendFile(path.join(__dirname, '../public/homePage', 'homePage.html'));
-};
+	return 	{
+				username: 		DBUser.US_Username 		|| null,
+				password: 		DBUser.US_Password 		|| null,
+				email: 			DBUser.US_Email 		|| null,
+				firstName: 		DBUser.US_FirstName 	|| null,
+				lastName: 		DBUser.US_LastName 		|| null,
+				phoneNumber: 	DBUser.US_PhoneNumber 	|| null,
+				birthDate: 		DBUser.US_BirthDate 	|| null,
+				joinDate: 		DBUser.US_JoinDate 		|| null
+			};
+}
 
-exports.checkUserDoesntAlreadyExist = function (req, res, next) 
+/**
+ * Retrieves the user from the database by username. 
+ * @param {string} username - The username of the user.
+ * @param {userObject} callback - found() and notFound() expected
+ */
+exports.getUser = function(username, callback = {found: (user) => {}, notFound: () => {}}) 
 {
-	var userName = "Test"
-	let sql = "SELECT * FROM User WHERE US_Username = '" + userName + "'"; //I should be sql-injection proofed in the future.
-	db.query(sql, (err, result) =>
+	var db = database.connectDatabase();
+	var query = `
+SELECT
+	US_Username,
+	US_Password,
+	US_Email,
+	US_FirstName,
+	US_LastName,
+	US_PhoneNumber,
+	US_BirthDate,
+	US_JoinDate
+FROM User 
+WHERE US_Username = ?
+LIMIT 1
+;`;
+	var sanitsedInputs = [username];
+	db.query(query, sanitsedInputs, 
+		(err, results) => 
+		{ 
+			if (err) console.log("User.js | getUser | ERROR: " + err.message);
+			if (results.length > 0)
+			{
+				callback.found(convertToUserObject(results[0]));
+			}
+			else
+			{
+				callback.notFound();
+			}
+		});
+
+
+}
+
+/**
+ * Checks that a user exists according to the username provided
+ * @param  {string} username - Username of user.
+ * @param {userObject} callback - found() and notFound() expected
+ */
+exports.checkUserExists = function(user, callback = {found: () => {}, notFound: () => {}})
+{
+	var db = database.connectDatabase();
+	var query = `
+SELECT NULL 
+FROM User 
+WHERE US_Username = ?
+LIMIT 1
+;`;
+	var sanitsedInputs = [user.US_Username];
+	db.query(query, sanitsedInputs, 
+		(err, results) => 
+		{ 
+			if (err) console.log("User.js | checkUserExists | ERROR: " + err.message); 
+			if (results.length > 0)
+			{
+				callback.found();
+			}
+			else
+			{
+				callback.notFound();
+			}
+		}); 
+}
+
+/**
+ * Registers a user in the database
+ * @param {userObject} user - User to be added to database.
+ * @param {userObject} callback - success() and fail({string} reason) expected
+ */
+exports.registerUser = function(user, callback = {success: () => {}, fail: () => {}})
+{
+	bcrypt.hash(user.password, 10, (errHash, encryptedPassword) =>
 	{
-		if (err)
+		if (errHash) 
 		{
-			throw err;
+			callback.fail("Error creating user hash.");
+			return;
 		}
-		console.log(userName + " - looking for existing user in the database.");
+		
+		var db = database.connectDatabase();
+		var query = `
+INSERT INTO User (US_Username, US_Password, US_Email, US_FirstName, US_LastName, US_PhoneNumber, US_BirthDate)
+VALUES (?, ?, ?, ?, ?, ? ,?)
+;`;
+		var sanitsedInputs = [user.username, encryptedPassword, user.email, user.firstName, user.lastName, user.phoneNumber, user.birthDate];
+		db.query(query, sanitsedInputs, (errDb) =>
+		{
+		   if (errDb)
+		   {
+			   console.log("User.js | registerUser | ERROR: " + err.message) 
+			   callback.fail("Error when creating user.");
+			   return;
+		   }
 
-		if (result != "")
-		{
-			console.log("Found!");
-		}
-		else
-		{
-			console.log("Not found :(");
-		}
+		   callback.success();
+		});
+
 	});
-// 	res.sendFile(path.join(__dirname, '../public/homePage', 'homePage.html'));
-};
+}
 
-exports.validateUserLogin = function(name, password) 
+/**
+ * Attempts to log a user in using the given credentials
+ * @param {string} username - Username credential
+ * @param {string} password - Password credential.
+ * @param {userObject} callback - success() and fail({string} reason) expected
+ */
+exports.loginUser = function(username, password, callback = {success: () => {}, fail: () => {}}) 
 {
+	exports.getUser(username, 		
+		{
+			found: 
+				(user) => 
+				{
+					bcrypt.compare(password, user.password, (err, compareResult) =>
+					{
+						if (err)
+						{
+							callback.fail("There was an error comparing the hash.")
+						}
+
+						if (compareResult)
+						{
+							callback.success();
+						}
+						else
+						{
+							callback.fail("Login fail - Username/Password combination does not match.");
+						}
+					});
+				},
+			notFound: 
+				() => callback.fail("Login fail - Username does not exist.")
+		});
 }
