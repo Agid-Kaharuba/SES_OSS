@@ -1,5 +1,5 @@
 const database = require('../utils/database');
-const hash = require('../utils/hash');
+const bcrypt = require('bcrypt');
 
 let convertToUserObject = function(DBUser) 
 {
@@ -18,11 +18,11 @@ let convertToUserObject = function(DBUser)
 /**
  * Retrieves the user from the database by username. 
  * @param {string} username - The username of the user.
- * @returns {Promise<userObject>} - Returns the user if found, otherwise null.
+ * @param {userObject} callback - found() and notFound() expected
  */
-exports.getUser = async function(username) 
+exports.getUser = function(username, callback = {found: (user) => {}, notFound: () => {}}) 
 {
-	var db = await database.connectDatabase();
+	var db = database.connectDatabase();
 	var query = `
 SELECT
 	US_Username,
@@ -38,87 +38,120 @@ WHERE US_Username = ?
 LIMIT 1
 ;`;
 	var sanitsedInputs = [username];
-	var results = await db.query(query, sanitsedInputs, (err) => { if (err) console.log("User.js | getUser | ERROR: " + err.message); });
+	db.query(query, sanitsedInputs, 
+		(err, results) => 
+		{ 
+			if (err) console.log("User.js | getUser | ERROR: " + err.message);
+			if (results.length > 0)
+			{
+				callback.found(convertToUserObject(results[0]));
+			}
+			else
+			{
+				callback.notFound();
+			}
+		});
 
-	if (results.length > 0)
-	{
-		return convertToUserObject(results[0]);
-	}
-	else
-	{
-		return null;
-	}
+
 }
 
 /**
  * Checks that a user exists according to the username provided
  * @param  {string} username - Username of user.
- * @returns {Promise<boolean>} - whether user was found or not.
+ * @param {userObject} callback - found() and notFound() expected
  */
-exports.checkUserExists = async function(username) 
+exports.checkUserExists = function(user, callback = {found: () => {}, notFound: () => {}})
 {
-	var db = await database.connectDatabase();
+	var db = database.connectDatabase();
 	var query = `
 SELECT NULL 
 FROM User 
 WHERE US_Username = ?
 LIMIT 1
 ;`;
-	var sanitsedInputs = [username];
-	var results = await db.query(query, sanitsedInputs, (err) => { if (err) console.log("User.js | checkUserExists | ERROR: " + err.message); });
-	return results.length > 0;
+	var sanitsedInputs = [user.US_Username];
+	db.query(query, sanitsedInputs, 
+		(err, results) => 
+		{ 
+			if (err) console.log("User.js | checkUserExists | ERROR: " + err.message); 
+			if (results.length > 0)
+			{
+				callback.found();
+			}
+			else
+			{
+				callback.notFound();
+			}
+		}); 
 }
 
 /**
  * Registers a user in the database
  * @param {userObject} user - User to be added to database.
- * @returns {Promise<boolean>} - whether user was added successfully.
+ * @param {userObject} callback - success() and fail({string} reason) expected
  */
-exports.registerUser = async function(user)
+exports.registerUser = function(user, callback = {success: () => {}, fail: () => {}})
 {
-		var encryptedPassword = await hash.getHash(user.password);
-		var db = await database.connectDatabase();
+	bcrypt.hash(user.password, 10, (errHash, encryptedPassword) =>
+	{
+		if (errHash) 
+		{
+			callback.fail("Error creating user hash.");
+			return;
+		}
+		
+		var db = database.connectDatabase();
 		var query = `
 INSERT INTO User (US_Username, US_Password, US_Email, US_FirstName, US_LastName, US_PhoneNumber, US_BirthDate)
-	VALUES (?, ?, ?, ?, ?, ? ,?)
+VALUES (?, ?, ?, ?, ?, ? ,?)
 ;`;
 		var sanitsedInputs = [user.username, encryptedPassword, user.email, user.firstName, user.lastName, user.phoneNumber, user.birthDate];
-		await db.query(query, sanitsedInputs, (err) => 
-		{ 
-			if (err)
-			{
-				console.log("User.js | registerUser | ERROR: " + err.message) 
-				return false;
-			};
+		db.query(query, sanitsedInputs, (errDb) =>
+		{
+		   if (errDb)
+		   {
+			   console.log("User.js | registerUser | ERROR: " + err.message) 
+			   callback.fail("Error when creating user.");
+			   return;
+		   }
+
+		   callback.success();
 		});
-		return true;
+
+	});
 }
 
 /**
  * Attempts to log a user in using the given credentials
  * @param {string} username - Username credential
  * @param {string} password - Password credential.
- * @returns {Promise<boolean>} - whether user was added successfully.
+ * @param {userObject} callback - success() and fail({string} reason) expected
  */
-exports.loginUser = async function(username, password) 
+exports.loginUser = function(username, password, callback = {success: () => {}, fail: () => {}}) 
 {
-	var encryptedPassword = await hash.getHash(password);
-	var db = await database.connectDatabase();
-	var query = `
-SELECT NULL 
-FROM User 
-WHERE US_Password = ? AND US_Username = ?
-LIMIT 1
-;`;
-	var sanitsedInputs = [encryptedPassword, username];
-	var results = await db.query(query, sanitsedInputs, (err) => 
-	{ 
-		if (err)
+	exports.getUser(username, 		
 		{
-			console.log("User.js | loginUser | ERROR: " + err.message) 
-			return false;
-		};
-	});
+			found: 
+				(user) => 
+				{
+					bcrypt.compare(password, user.password, (err, compareResult) =>
+					{
+						if (err)
+						{
+							callback.fail("There was an error comparing the hash.")
+						}
 
-	return results.length > 0;
+						if (compareResult)
+						{
+							callback.success();
+						}
+						else
+						{
+							callback.fail("Login fail - Username/Password combination does not match.");
+						}
+					});
+				},
+			notFound: 
+				() => callback.fail("Login fail - Username does not exist.")
+		});
 }

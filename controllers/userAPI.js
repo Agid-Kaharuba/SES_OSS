@@ -7,60 +7,39 @@ const router = express.Router();
 
 // Every method is prepended with "/user" see app.js
 
-//router.post('/register', async (req, res) => 
-router.get('/register', async (req, res) => //MAKE SURE I AM NOT LEFT IN PRODUCTION
+router.post('/register', (req, res) => 
 {
-	try
-	{
-		//var user = req.body;
-		var user = { //MAKE SURE I AM NOT LEFT IN PRODUCTION
-			username: 		'LieAngels',
-			password: 		'TestPassword',
-			email: 			null,
-			firstName: 		null,
-			lastName: 		null,
-			phoneNumber: 	null,
-			birthDate: 		null,
-			joinDate: 		null,
-		};
+	var user = req.body;
 
-		var userExists = await userModel.checkUserExists(user.username);
-		if (!userExists)
+	userModel.checkUserExists(user.username,
 		{
-			var response = await userModel.registerUser(user);
-			if (response == false)
-			{
-				res.send(jsonResponse.fail("Could not register new user"));
-				return;
-			}
-			res.send(jsonResponse.success());
-		}
-		else
-		{
-			res.send(jsonResponse.fail("Could not register an already existing user"));
-			return;
-		}
-	}
-	catch
-	{
-		res.send(jsonResponse.fail("An unexpected error occured."));
-	}
+			found: 
+				() => res.send(jsonResponse.fail("Could not register an already existing user")),
+			notFound: 
+				() => userModel.registerUser(req.body,
+					{
+						success: 
+							() => res.send(jsonResponse.success()),
+						fail: 
+							(reason) => res.send(jsonResponse.fail(reason))
+					})
+		});
 });
 
-router.post('/login', async (req, res) => 
+router.post('/login', (req, res) => 
 {
-	var loginSuccessful = await userModel.loginUser(req.body.username, req.body.password);
-
-	if (loginSuccessful)
-	{
-		//We need to send the user the session ID here too.
-		// auth.attach(res, req.body.username);
-		res.send(jsonResponse.success());
-	}
-	else
-	{
-		res.send(jsonResponse.fail("Invalid username or password"));
-	}
+	userModel.loginUser(req.body.username, req.body.password,    
+		{
+			success: 
+				() => 
+        		{
+           			//We need to send the user the session ID here too.
+					// auth.attach(res, req.body.username);
+					res.send(jsonResponse.success());
+        		},
+			fail: 
+				(reason) => res.send(jsonResponse.fail(reason)),
+    	});
 })
 
 router.get('/view-account', (req, res) => 
