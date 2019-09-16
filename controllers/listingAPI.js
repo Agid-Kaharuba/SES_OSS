@@ -19,12 +19,19 @@ router.get('/id=:id', (req, res) => // e.g. listing/id=4bb8590e-ce26-11e9-a859-2
 router.get('/search=:query', (req, res) => 
 {
 	console.log('Received search query: ' + req.params.query); // Example params usage.
-	listing.SearchListings(req.params.query, 
-		(err, results) =>
-		{ 
-			if (err) throw err;
-			res.send(view.viewListings(results));
-		});
+	// listing.SearchListings(req.params.query, 
+	// 	(err, results) =>
+	// 	{ 
+	// 		if (err) throw err;
+	// 		res.send(view.viewListings(results))s;
+	// 	});
+	let results = [
+		{ sellerUsername: 'Test Name', listingTitle: 'Test Title', listingDescription: 'Test Description123', remainingStock: '3' }
+	];
+	// res.send(view.viewListings(results));
+
+	res.render('listing', { listings: results });
+
 })
 
 module.exports = { router };

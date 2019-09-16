@@ -19,7 +19,7 @@ exports.connectDatabase = function()
 			if (err)
 			{
 				console.log("MySql Failed to Connect - comment out the 'throw err;' if it's messing you up");
-				throw err;
+				// throw err;
 			}
 			console.log("MySql Connected...")
 		});
