@@ -1,6 +1,7 @@
 const express = require('express');
-const user = require('../models/user')
-const view = require('../views/userView')
+
+const userModel = require('../models/user')
+const userView = require('../views/userView')
 const jsonResponse = require('../utils/JSONResponse');
 const auth = require('../utils/authUtil');
 
@@ -10,42 +11,42 @@ const router = express.Router();
 
 router.post('/register', (req, res) => 
 {
-    user.checkUserExist(req.body, 
-    {
-        notFound: () => user.registerUser(req.body, 
-        {
-            success: () => 
-            {
-                res.send(jsonResponse.success());
-            },
-            fail: () =>
-            {
-                res.send(jsonResponse.fail("Could not register new user"));
-            }
-        }),
-        found: () => res.send(jsonResponse.fail("Could not register an already existing user"))
-    })
+	var user = req.body;
+
+	userModel.checkUserExists(user.username,
+		{
+			found: 
+				() => res.send(jsonResponse.fail("Could not register an already existing user")),
+			notFound: 
+				() => userModel.registerUser(req.body,
+					{
+						success: 
+							() => res.send(jsonResponse.success()),
+						fail: 
+							(reason) => res.send(jsonResponse.fail(reason))
+					})
+		});
 });
 
 router.post('/login', (req, res) => 
 {
-    user.validateUserLogin(req.body, 
-    {
-        success: () => 
-        {
-            auth.attach(res, req.body.username);
-            res.send(jsonResponse.success());
-        },
-        fail: () => 
-        {
-            res.send(jsonResponse.fail('Invalid username or password'));
-        }
-    });
+	userModel.loginUser(req.body.username, req.body.password,    
+		{
+			success: 
+				() => 
+        		{
+           			//We need to send the user the session ID here too.
+					auth.attach(res, req.body.username);
+					res.send(jsonResponse.success());
+        		},
+			fail: 
+				(reason) => res.send(jsonResponse.fail(reason)),
+    	});
 })
 
 router.get('/view-account', (req, res) => 
 {
-     res.send(view.viewAccount());
+     res.send(userView.viewAccount());
 })
 
 router.put('/modify', (req, res) => 
