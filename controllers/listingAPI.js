@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const listingModel = require('../models/listing');
 const view = require('../views/listingView');
+const jsonResponse = require('../utils/JSONResponse');
 
 // Every method is prepended with "/listing" see app.js
 
@@ -12,7 +13,6 @@ router.get('/id=:id', (req, res) => // e.g. listing/id=4bb8590e-ce26-11e9-a859-2
 		(result) =>
 		{
 			res.send(view.viewListing(result));
-		});
 });
 
 router.get('/search=:query', (req, res) => 
@@ -23,6 +23,23 @@ router.get('/search=:query', (req, res) =>
 		{
 			res.send(view.viewListings(results));
 		});
-})
+});
+
+router.get('/summary=:purchaseID', (req, res) =>
+{
+	console.log('Received request to see purchase summary.')
+	var userPK = "This needs to be set as the user PK defined by the session."; //and pass it through to the 'GetPurchaseSummary' such that a user cannot see another users purchase summaries
+	listingModel.GetPurchaseSummary(req.params.purchaseID, userPK, 		
+		{
+		found: 
+			(result) => 
+			{
+				console.log(result);
+				res.render(view.viewPurchaseSummary(result));
+			},
+		notFound: 
+			() => res.send(jsonResponse.fail("Payment Summary Not Found")),
+		})
+});
 
 module.exports = { router };

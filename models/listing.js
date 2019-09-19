@@ -1,5 +1,6 @@
 const database = require('../utils/database');
 
+
 exports.GetListing = function (listingPK, callback = (result) => { }) 
 {
 	var db = database.connectDatabase();

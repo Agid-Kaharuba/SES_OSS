@@ -146,6 +146,7 @@ CREATE TABLE Purchase
   PC_AD_Delivery		varchar(36) NOT NULL,
   PC_TrackingNumber		varchar(64) NULL,
   PC_Price 				decimal(10,2) NULL,
+  PC_Quantity			INT NOT NULL,
   PC_Date				datetime NOT NULL DEFAULT NOW(),
   PRIMARY KEY (PC_PK),
   FOREIGN KEY (PC_LS) 			REFERENCES Listing(LS_PK),
