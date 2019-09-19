@@ -80,12 +80,12 @@ LIMIT 1
 
 		if (results.length > 0)
 		{
-			found(results[0]);
+			callback.found(results[0]);
 			return
 		}
 		else
 		{
-			notFound();
+			callback.notFound();
 			return;
 		}
 	});
