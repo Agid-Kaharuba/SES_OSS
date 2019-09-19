@@ -8,6 +8,7 @@ const view = require('../views/listingView');
 router.get('/id=:id', (req, res) => // e.g. listing/id=4bb8590e-ce26-11e9-a859-256794b0b57d
 {
 	console.log('Receieved req for listing id: ' + req.params.id); // Example params usage.
+<<<<<<< Updated upstream
 	listing.GetListing(req.params.id, 
 		(err, results) =>
 		{ 
@@ -15,6 +16,19 @@ router.get('/id=:id', (req, res) => // e.g. listing/id=4bb8590e-ce26-11e9-a859-2
 			res.send(view.viewListing(results));
 		});
 })
+=======
+	listingModel.GetListing(req.params.id, 
+		(results) =>
+		{
+			res.send(view.viewListing(results));
+		});
+		// (err, results) =>
+		// { 
+		// 	if (err) throw err;
+		// 	res.send(view.viewListing(results));
+		// });
+});
+>>>>>>> Stashed changes
 
 router.get('/search=:query', (req, res) => 
 {
