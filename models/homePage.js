@@ -6,7 +6,8 @@ exports.GetRecentListings = async function (callback)
 	var query = `
 SELECT 
 	LS_PK as listingID, 
-	LS_Title as listingTitle
+	LS_Title as listingTitle,
+	LS_Price as listingPrice
 FROM Listing
 WHERE LS_IsActive = 1 
 ORDER BY LS_PostedDate DESC 
