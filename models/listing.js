@@ -1,13 +1,15 @@
 const database = require('../utils/database');
 
-exports.GetListing = function (listingPK, callback) 
+
+exports.GetListing = function (listingPK, callback = (result) => { }) 
 {
 	var db = database.connectDatabase();
 	var query = `
 SELECT
 	US_Username as sellerUsername,
     LS_Title as listingTitle,
-    LS_Description as listingDescription,
+	LS_Description as listingDescription,
+	LS_Price as listingPrice,
     LS_RemainingStock as remainingStock
 FROM Listing
 	INNER JOIN User ON LS_US_Seller = US_PK
@@ -16,17 +18,22 @@ WHERE
     LS_PK = ?
 ;`;
 
-	var listing = db.query(query, [listingPK], callback);
-	return listing;
+	db.query(query, [listingPK], 
+		(err, results) =>
+		{ 
+			if (err) throw err;
+			callback(results);
+		});
 }
 
-exports.SearchListings = function (searchTerm, callback) 
+exports.SearchListings = function (searchTerm, callback = (result) => { }) 
 {
 	var db = database.connectDatabase();
 	var query = `
 SELECT
 	US_Username as sellerUsername,
-    LS_Title as listingTitle
+	LS_Title as listingTitle,
+	LS_PK as listingID
 FROM Listing
 	INNER JOIN User ON LS_US_Seller = US_PK
 WHERE
@@ -34,7 +41,12 @@ WHERE
     INSTR(LS_Title, ?)
 ;`;
 
-	db.query(query, [searchTerm], callback);
+	db.query(query, [searchTerm], 
+		(err, results) =>
+		{ 
+			if (err) throw err;
+			callback(results);
+		});
 }
 
 exports.GetPurchaseSummary = function(purchasePK, userPK, callback = { found: (result) => { }, notFound: () => { } })

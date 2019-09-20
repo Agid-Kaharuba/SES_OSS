@@ -5,6 +5,7 @@
 //	{
 //    sellerUsername: 'Bob',
 //    listingTitle: 'hello'
+//	  listingID: 'a2f6da3c-da70-11e9-a859-256794b0b57d'
 //	}
 // ... Followed by many more 'RowDataPackets' 
 //]
@@ -19,7 +20,10 @@ exports.viewListings = function(listings)
 //[ RowDataPacket 
 //	{
 //    sellerUsername: 'Bob',
-//    listingTitle: 'hello'
+//    listingTitle: 'hello',
+//	  listingDescription: 'some description',
+//	  listingPrice: 99.99,
+// 	  remainingStock: 5,
 //	}
 //]
 // Note; you might have to account for the fact where there are no listings found

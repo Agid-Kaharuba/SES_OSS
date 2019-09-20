@@ -10,20 +10,17 @@ router.get('/id=:id', (req, res) => // e.g. listing/id=4bb8590e-ce26-11e9-a859-2
 {
 	console.log('Receieved req for listing id: ' + req.params.id); // Example params usage.
 	listingModel.GetListing(req.params.id, 
-		(err, results) =>
-		{ 
-			if (err) throw err;
-			res.send(view.viewListing(results));
-		});
+		(result) =>
+		{
+			res.send(view.viewListing(result));
 });
 
 router.get('/search=:query', (req, res) => 
 {
 	console.log('Received search query: ' + req.params.query); // Example params usage.
 	listingModel.SearchListings(req.params.query, 
-		(err, results) =>
-		{ 
-			if (err) throw err;
+		(results) =>
+		{
 			res.send(view.viewListings(results));
 		});
 });
