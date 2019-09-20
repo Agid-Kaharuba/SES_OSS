@@ -1,7 +1,12 @@
 const path = require('path');
 const db = require('../utils/database');
 
-exports.createSchema = function(name, password) 
+exports.createSchema = function() 
 {
-	return db.createSchema();
+	db.createSchema();
+}
+
+exports.populateDatabase = function() 
+{
+	db.populateDatabase();
 }
