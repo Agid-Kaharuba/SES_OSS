@@ -13,6 +13,7 @@ router.get('/id=:id', (req, res) => // e.g. listing/id=4bb8590e-ce26-11e9-a859-2
 		(result) =>
 		{
 			res.send(view.viewListing(result));
+		});
 });
 
 router.get('/search=:query', (req, res) => 
