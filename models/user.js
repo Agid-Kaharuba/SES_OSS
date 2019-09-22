@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 let convertToUserObject = function(DBUser) 
 {
 	return 	{
+				id: 			DBUser.US_PK,
 				username: 		DBUser.US_Username 		|| null,
 				password: 		DBUser.US_Password 		|| null,
 				email: 			DBUser.US_Email 		|| null,
@@ -25,6 +26,7 @@ exports.getUser = function(username, callback = {found: (user) => {}, notFound: 
 	var db = database.connectDatabase();
 	var query = `
 SELECT
+	US_PK,
 	US_Username,
 	US_Password,
 	US_Email,
