@@ -7,7 +7,7 @@ const path = require('path');
 //    listingTitle: 'hello' } ]
 // Note; you might have to account for the fact where there are no listings found
 // In the future, we will also add images to this.
-exports.viewHomePage = function(listings) 
+exports.viewHomePage = function(listings)
 {
-	return path.join(__dirname, '../public/homePage', 'homePage.html');
+    return path.join(__dirname, '../public/homePage', 'homePage.html');
 }

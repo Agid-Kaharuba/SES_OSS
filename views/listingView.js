@@ -1,4 +1,3 @@
-
 //this is for displaying the many listings when a user searches
 //the 'listings' parameter will pass in the following data.
 //[ RowDataPacket 
@@ -10,7 +9,7 @@
 // ... Followed by many more 'RowDataPackets' 
 //]
 // Note; you might have to account for the fact where there are no listings found
-exports.viewListings = function(listings) 
+exports.viewListings = function(listings)
 {
 
 }
