@@ -61,10 +61,10 @@ exports.authorizeUser = function(req, res, next)
             }
             else 
             {
-                res.send(jsonResponse.fail('Invalid login credentials!'));
+                res.send(jsonResponse.fail('Invalid authentication credentials!'));
             }
         },
-        notFound: () => res.send(jsonResponse.fail('Invalid login credentials!'))
+        notFound: () => res.send(jsonResponse.fail('Invalid authentication credentials!'))
     });
 }
 
