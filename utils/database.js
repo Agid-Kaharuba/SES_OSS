@@ -6,7 +6,7 @@ exports.connectDatabase = function()
 {
 	if (!db)
 	{
-		var db = mysql.createConnection(
+		db = mysql.createConnection(
 		{
 			host        : process.env.MYSQL_HOST,
 			user        : process.env.MYSQL_USER,
