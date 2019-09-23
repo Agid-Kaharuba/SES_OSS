@@ -33,18 +33,11 @@ router.post('/login', (req, res) =>
 	userModel.loginUser(req.body.username, req.body.password,    
 		{
 			success: 
-				() => 
-        		{
-					userModel.getUser(req.body.username, 
-					{
-						found: (user) => auth.attach(res, user,
-						{
-							success: () => res.send(jsonResponse.success()),
-							fail: () => res.send(jsonResponse.fail('Failed to create a new session'))
-						}),
-						notFound: () => res.send(jsonResponse.fail('Invalid user!'))
-					})
-        		},
+				(user) => auth.attach(res, user,
+				{
+					success: () => res.send(jsonResponse.success()),
+					fail: () => res.send(jsonResponse.fail('Failed to create a new session'))
+				}),
 			fail: 
 				(reason) => res.send(jsonResponse.fail(reason)),
     	});

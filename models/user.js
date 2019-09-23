@@ -129,7 +129,7 @@ VALUES (?, ?, ?, ?, ?, ? ,?)
  * @param {string} password - Password credential.
  * @param {userObject} callback - success() and fail({string} reason) expected
  */
-exports.loginUser = function(username, password, callback = {success: () => {}, fail: () => {}}) 
+exports.loginUser = function(username, password, callback = {success: (user) => {}, fail: (reason) => {}}) 
 {
 	exports.getUser(username, 		
 		{
@@ -145,15 +145,15 @@ exports.loginUser = function(username, password, callback = {success: () => {}, 
 
 						if (compareResult)
 						{
-							callback.success();
+							callback.success(user);
 						}
 						else
 						{
-							callback.fail("Login fail - Username/Password combination does not match.");
+							callback.fail("Login fail - Username or Password does not match.");
 						}
 					});
 				},
 			notFound: 
-				() => callback.fail("Login fail - Username does not exist.")
+				() => callback.fail("Login fail - Username or Password does not match.")
 		});
 }
