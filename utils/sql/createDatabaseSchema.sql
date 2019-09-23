@@ -76,6 +76,7 @@ CREATE TABLE Address
   AD_State 		varchar(64) NULL,
   AD_Country 	varchar(64) NULL,
   AD_PostCode 	varchar(8) NULL,
+  AD_IsPrimary	BIT NOT NULL DEFAULT 0,
   PRIMARY KEY (AD_PK),
   FOREIGN KEY (AD_US) REFERENCES User(US_PK),
   UNIQUE KEY AD_PK_UNIQUE (AD_PK)

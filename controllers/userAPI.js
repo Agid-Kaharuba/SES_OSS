@@ -1,7 +1,9 @@
 const express = require('express');
+
 const userModel = require('../models/user')
 const userView = require('../views/userView')
 const jsonResponse = require('../utils/JSONResponse');
+const auth = require('../utils/authUtil');
 
 const router = express.Router();
 
@@ -31,20 +33,27 @@ router.post('/login', (req, res) =>
 	userModel.loginUser(req.body.username, req.body.password,    
 		{
 			success: 
-				() => 
-        		{
-           			//We need to send the user the session ID here too.
-					// auth.attach(res, req.body.username);
-					res.send(jsonResponse.success());
-        		},
+				(user) => auth.attach(res, user,
+				{
+					success: () => res.send(jsonResponse.success()),
+					fail: () => res.send(jsonResponse.fail('Failed to create a new session'))
+				}),
 			fail: 
 				(reason) => res.send(jsonResponse.fail(reason)),
     	});
 })
 
-router.get('/view-account', (req, res) => 
+router.get('/view-account', auth.authorizeUser, (req, res) => 
 {
-     res.send(userView.viewAccount());
+	 res.send(userView.viewAccount());
+})
+
+router.post('/logout', (req, res) => 
+{
+	auth.invalidateSession(req, {
+		success: () => res.send('Logout Sucessful'),
+		fail: () => res.send(jsonResponse.fail('Failed to logout'))
+	})
 })
 
 router.put('/modify', (req, res) => 

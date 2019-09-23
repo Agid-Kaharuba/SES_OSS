@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 let convertToUserObject = function(DBUser) 
 {
 	return 	{
+				id: 			DBUser.US_PK,
 				username: 		DBUser.US_Username 		|| null,
 				password: 		DBUser.US_Password 		|| null,
 				email: 			DBUser.US_Email 		|| null,
@@ -25,6 +26,7 @@ exports.getUser = function(username, callback = {found: (user) => {}, notFound: 
 	var db = database.connectDatabase();
 	var query = `
 SELECT
+	US_PK,
 	US_Username,
 	US_Password,
 	US_Email,
@@ -127,7 +129,7 @@ VALUES (?, ?, ?, ?, ?, ? ,?)
  * @param {string} password - Password credential.
  * @param {userObject} callback - success() and fail({string} reason) expected
  */
-exports.loginUser = function(username, password, callback = {success: () => {}, fail: () => {}}) 
+exports.loginUser = function(username, password, callback = {success: (user) => {}, fail: (reason) => {}}) 
 {
 	exports.getUser(username, 		
 		{
@@ -143,15 +145,15 @@ exports.loginUser = function(username, password, callback = {success: () => {}, 
 
 						if (compareResult)
 						{
-							callback.success();
+							callback.success(user);
 						}
 						else
 						{
-							callback.fail("Login fail - Username/Password combination does not match.");
+							callback.fail("Login fail - Username or Password does not match.");
 						}
 					});
 				},
 			notFound: 
-				() => callback.fail("Login fail - Username does not exist.")
+				() => callback.fail("Login fail - Username or Password does not match.")
 		});
 }

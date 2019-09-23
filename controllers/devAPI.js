@@ -6,12 +6,14 @@ const dev = require('../models/dev')
 
 router.get('/createSchema', (req, res) => 
 {
-	res.send("Schema dropped, and created with " + dev.createSchema() + " errors.")
+	dev.createSchema();
+	res.send("Schema dropped, and re-created - if there were any errors, let David know")
 })
 
-router.get('/search/:query', (req, res) => 
+router.get('/populateDatabase', (req, res) => 
 {
-    console.log('Received query: ' + req.params.query); // Example params usage.
+	dev.populateDatabase();
+	res.send("Database populated, if there were any errors, try recreating the schema @ /dev/createSchema");
 })
 
 module.exports = { router };
