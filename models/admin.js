@@ -1,4 +1,6 @@
 const database = require('../utils/database');
+const user = require('./user');
+const auth = require('../utils/authUtil');
 
 exports.checkAdminPrivileges = function(user, callback = (hasPrivileges) => {}) 
 {
@@ -24,5 +26,28 @@ exports.tryAdminAction = function(user, callback = {success: () => {}, fail: () 
             success();
         else
             fail();
+    })
+}
+
+exports.authorizeAdmin = function(req, res, next) 
+{
+    auth.tryAuthorizeUser(req,
+    {
+        success: (rawSession) => 
+        {
+            user.getUserFromID(rawSession.SS_US,
+            {
+                found: (user) =>
+                {
+                    tryAdminAction(user,
+                    {
+                        success: next,
+                        fail: () => res.send(jsonResponse.fail('Access is not allowed for the user'))
+                    })
+                },
+                notFound: () => res.send(jsonResponse.fail('Invalid authentication credentials!'))
+            })
+        },
+        fail: res.send(jsonResponse.fail('Invalid authentication credentials!'))
     })
 }

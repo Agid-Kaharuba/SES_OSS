@@ -16,14 +16,14 @@ let convertToDateTime = function(date)
     return date.toISOString().slice(0, 19).replace('T',' ');
 }
 
-exports.getSessionFromUser = function (user, callback = (err, results, fields) => {}) 
+exports.getSessionFromUser = function(user, callback = (err, results, fields) => {}) 
 {
     const db = database.connectDatabase();
     let query = `SELECT * FROM Session WHERE SS_US = ? LIMIT 1`;
     db.query(query, [user.id], callback);
 }
 
-const getSessionFromCookie = function(obj, callback = {found: (session) => {}, notFound: () => {}})
+exports.getSessionFromCookie = function(obj, callback = {found: (session) => {}, notFound: () => {}})
 {
     if (!obj.cookies.hasOwnProperty(SessionCookieProp))
     {
@@ -50,22 +50,31 @@ const getSessionFromCookie = function(obj, callback = {found: (session) => {}, n
     })
 }
 
-exports.authorizeUser = function(req, res, next)
+exports.tryAuthorizeUser = function(req, callback = {success: (rawSession), fail: () => {}})
 {
     getSessionFromCookie(req, {
-        found: (session) => 
+        found: (rawSession) => 
         {
-            if (Date.now() < session.SS_ExpiryDate)
+            if (Date.now() < rawSession.SS_ExpiryDate)
             {
-                next();
+                success(rawSession)
             }
             else 
             {
-                res.send(jsonResponse.fail('Invalid authentication credentials!'));
+                fail();
             }
         },
-        notFound: () => res.send(jsonResponse.fail('Invalid authentication credentials!'))
+        notFound: fail
     });
+}
+
+exports.authorizeUser = function(req, res, next)
+{
+    tryAuthorizeUser(req, 
+    {
+        success: next,
+        fail: () => res.send(jsonResponse.fail('Invalid authentication credentials!'))
+    })
 }
 
 let attachSessionOnCookie = function(res, payload)
@@ -136,7 +145,7 @@ exports.attach = function(res, user, callback = {success: () => {}, fail: () => 
     });
 }
 
-const deleteSessionForUser = function(user, callback = {success: () => {}, fail: () => {}})
+exports.deleteSessionForUser = function(user, callback = {success: () => {}, fail: () => {}})
 {
     const db = database.connectDatabase();
 
@@ -150,7 +159,7 @@ const deleteSessionForUser = function(user, callback = {success: () => {}, fail:
     })
 }
 
-const deleteSession = function(sessionID, callback = {success: () => {}, fail: () => {}})
+exports.deleteSession = function(sessionID, callback = {success: () => {}, fail: () => {}})
 {
     const db = database.connectDatabase();
 
@@ -167,7 +176,7 @@ const deleteSession = function(sessionID, callback = {success: () => {}, fail: (
 exports.invalidateSession = function(req, callback = {success: () => {}, fail: () => {}})
 {
     getSessionFromCookie(req, {
-        found: (session) => deleteSession(session.SS_PK, callback),
+        found: (rawSession) => deleteSession(rawSession.SS_PK, callback),
         notFound: () => callback.fail()
     })
 }

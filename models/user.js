@@ -17,6 +17,44 @@ let convertToUserObject = function(DBUser)
 }
 
 /**
+ * Retrieves the user from the database by id.
+ * @param {string} id - The id of the user, this is the primary key in the database.
+ * @param {userObject} callback - found(user) and notFound() expected
+ */
+exports.getUserFromID = function(id, callback = {found: (user) => {}, notFound: () => {}})
+{
+	const db = database.connectDatabase();
+	let query = `
+SELECT
+	US_PK,
+	US_Username,
+	US_Email,
+	US_FirstName,
+	US_LastName,
+	US_PhoneNumber,
+	US_BirthDate,
+	US_JoinDate
+FROM User 
+WHERE US_PK = ?
+LIMIT 1
+;`;
+	let inputs = [id];
+	db.query(query, inputs, 
+		(err, results) => 
+		{ 
+			if (err) console.log("User.js | getUserFromID | ERROR: " + err.message);
+			if (results.length > 0)
+			{
+				callback.found(convertToUserObject(results[0]));
+			}
+			else
+			{
+				callback.notFound();
+			}
+		});
+}
+
+/**
  * Retrieves the user from the database by username. 
  * @param {string} username - The username of the user.
  * @param {userObject} callback - found() and notFound() expected
