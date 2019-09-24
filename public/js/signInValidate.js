@@ -20,3 +20,19 @@ $().ready(function () {
         }
     })
 });
+
+function submitRegister(){
+    var data = {
+        username: $("#usernameRegister").val(),
+        password: $("#passwordRegister").val(),
+        email: $("#emailRegister").val(),
+        firstName: $("#firstNameRegister").val(),
+        lastName: $("#lastNameRegister").val(),
+    };
+    $.post("/user/register", data, function(res){
+        if(res.status === "success") {
+            alert("Congratulations! You have successfully registered.");
+        }
+
+    });
+}
