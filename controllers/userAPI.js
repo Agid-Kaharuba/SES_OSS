@@ -78,4 +78,8 @@ router.post('/confirm_purchase/:listingID', (req, res) =>
 
 })
 
+router.get('/edit_Profile/:id', (req, res) => 
+{
+})
+
 module.exports = { router };

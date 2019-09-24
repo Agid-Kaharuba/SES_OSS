@@ -157,3 +157,21 @@ exports.loginUser = function(username, password, callback = {success: () => {}, 
 				() => callback.fail("Login fail - Username does not exist.")
 		});
 }
+
+exports.editUser = function(username, firstName, lastName, birthDate, phoneNumber, email)
+{
+	var db = database.connectDatabase();
+	var query = 
+	`UPDATE User (username, firstName, lastName, birthDate, phoneNumber, email) VALUES(?,?,?,?,?,?)
+	 WHERE US_username = SS_US`
+
+	 var inputs = [username, email, firstName, lastName, phoneNumber, birthDate];
+	 db.query(query, inputs, (err, results, fields) => {
+		if (err){
+			console.log("Profile Update Error")
+			res.sendStatus(500)
+		}
+		console.log("Updated User")
+	 })
+
+}
