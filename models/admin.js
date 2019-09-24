@@ -2,6 +2,7 @@ const database = require('../utils/database');
 const userModel = require('./user');
 const auth = require('../utils/authUtil');
 const jsonResponse = require('../utils/JSONResponse');
+const listingModel = require('./listing');
 
 exports.checkAdminPrivileges = function(userID, callback = (hasPrivileges) => {}) 
 {
@@ -96,13 +97,39 @@ const deleteUserInternal = function(id, callback = {success: () => {}, fail: (re
     {
         if (err)
         {
-            callback.fail('Failed to admin delete user from database!')
-            console.error("admin.js | deleteUserInternal| Got admin delete error: " + err);
+            console.error('admin.js | deleteUserInternal| Got admin user delete error: ' + err);
+            callback.fail('Failed to admin delete user from database!');
         } 
         else
         {
             callback.success();
         }
+    })
+}
+
+exports.deleteListing = function(id, callback = {success: () => {}, fail: (reason) => {}})
+{
+    listingModel.GetListing(id, (results) => {
+        if (results.length == 0)
+        {
+            callback.fail('Could not delete a listing that does not exist!');
+            return;
+        }
+        const db = database.connectDatabase();
+        let query = `DELETE FROM Listing WHERE LS_PK = ?`
+        
+        db.query(query, [id], (err, results) =>
+        {
+            if (err)
+            {
+                console.error('admin.js | deleteUserInternal| Got admin listing delete error: ' + err);
+                callback.fail('Failed to delete listing from database!');
+            }
+            else 
+            {
+                callback.success();
+            }
+        })
     })
 }
 

@@ -32,9 +32,13 @@ router.post('/add_listing/', (req, res) =>
 
 })
 
-router.post('/remove_listing', (req, res) => 
+router.post('/delete_listing=:id', (req, res) => 
 {
-
+    adminModel.deleteListing(req.params.id, 
+    {
+        success: () => res.send(jsonResponse.success()),
+        fail: (reason) => res.send(jsonResponse.fail(reason))
+    })
 })
 
 router.post('/give_admin_userid=:id', adminModel.authorizeAdmin, (req, res) =>
