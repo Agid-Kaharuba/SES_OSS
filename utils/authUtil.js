@@ -39,7 +39,8 @@ exports.getSessionFromCookie = function(obj, callback = {found: (session) => {},
     {
         if (err)
         {
-            console.error('Failed to get sesison from database!')
+            console.error('Failed to get session from database!')
+            callback.notFound();
             return;
         }
         
@@ -50,27 +51,29 @@ exports.getSessionFromCookie = function(obj, callback = {found: (session) => {},
     })
 }
 
-exports.tryAuthorizeUser = function(req, callback = {success: (rawSession), fail: () => {}})
+exports.tryAuthorizeUser = function(req, callback = {success: (rawSession) => {}, fail: () => {}})
 {
-    getSessionFromCookie(req, {
+    exports.getSessionFromCookie(req, {
         found: (rawSession) => 
         {
             if (Date.now() < rawSession.SS_ExpiryDate)
             {
-                success(rawSession)
+                callback.success(rawSession)
             }
             else 
             {
-                fail();
+                callback.fail();
             }
         },
-        notFound: fail
+        notFound: () => {
+            callback.fail();
+        }
     });
 }
 
 exports.authorizeUser = function(req, res, next)
 {
-    tryAuthorizeUser(req, 
+    exports.tryAuthorizeUser(req, 
     {
         success: next,
         fail: () => res.send(jsonResponse.fail('Invalid authentication credentials!'))

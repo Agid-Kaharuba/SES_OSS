@@ -126,6 +126,36 @@ LIMIT 1
 }
 
 /**
+ * Checks that a user exists according to the id provided
+ * @param  {string} id - id of user.
+ * @param {userObject} callback - found() and notFound() expected
+ */
+exports.checkUserExistsByID = function(id, callback = {found: () => {}, notFound: () => {}})
+{
+	var db = database.connectDatabase();
+	var query = `
+SELECT NULL 
+FROM User 
+WHERE US_PK = ?
+LIMIT 1
+;`;
+	var inputs = [id];
+	db.query(query, inputs, 
+		(err, results) => 
+		{ 
+			if (err) console.log("User.js | checkUserExistsByID | ERROR: " + err.message); 
+			if (results.length > 0)
+			{
+				callback.found();
+			}
+			else
+			{
+				callback.notFound();
+			}
+		}); 
+}
+
+/**
  * Registers a user in the database
  * @param {userObject} user - User to be added to database.
  * @param {userObject} callback - success() and fail({string} reason) expected
@@ -150,7 +180,7 @@ VALUES (?, ?, ?, ?, ?, ? ,?)
 		{
 		   if (errDb)
 		   {
-			   console.log("User.js | registerUser | ERROR: " + err.message) 
+			   console.log("User.js | registerUser | ERROR: " + errDb.message) 
 			   callback.fail("Error when creating user.");
 			   return;
 		   }
