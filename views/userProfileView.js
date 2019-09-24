@@ -1,0 +1,4 @@
+exports.viewUserProfile = function(listings) 
+{
+
+}
