@@ -107,20 +107,44 @@
 				Admin Privileges
 			</div>
 			<div class="main">
-				<div class="widget">
-					<div class="container m-4">
-						<div class="card card-body bg-light">
-							<label>Give Admin Privileges</label>
-							<input id="giveAdminInput" type="text">
-							<input id="confirmGiveAdminInput" type="submit">
-						</div>
+				<div class="container m-4">
+					<div class="card card-body bg-light">
+						<h2>Give Admin Privileges</h2>
+						<input id="giveAdminInput" type="text">
+						<input id="confirmGiveAdminInput" type="submit">
 					</div>
+				</div>
 
-					<div class="container m-4">
-						<div class="card card-body bg-light">
-							<label>Revoke Admin Privileges</label>
-							<input id="revokeAdminInput" type="text">
-							<input id="confirmRevokeAdminInput" type="submit">
+				<div class="container m-4">
+					<div class="card card-body bg-light">
+						<h2>Revoke Admin Privileges</h2>
+						<input id="revokeAdminInput" type="text">
+						<input id="confirmRevokeAdminInput" type="submit">
+					</div>
+				</div>
+
+				<div class="container m-4">
+					<div class="card card-body bg-light">
+						<h2>Current Admins</h2>
+						<div class="overflow-auto">
+							<table class="table">
+								<thead class="thead-dark">
+									<tr>
+										<th scope="col">ID</th>
+										<th scope="col">Username</th>
+										<th scope="col">First Name</th>
+										<th scope="col">Last Name</th>
+									</tr>
+								</thead>		
+								<% for (result of results) { %>
+								<tr>
+									<td><%= result.id%></td>
+									<td><%= result.username%></td>
+									<td><%= result.firstName%></td>
+									<td><%= result.lastName%></td>
+								</tr>
+								<% } %>
+							</table>
 						</div>
 					</div>
 				</div>

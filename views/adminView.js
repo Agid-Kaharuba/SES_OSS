@@ -14,8 +14,3 @@ exports.userManagement = function()
 {
     return path.join(__dirname, '../public/adminDashboard/userManagement.html');
 }
-
-exports.adminPrivileges = function() 
-{
-    return path.join(__dirname, '../public/adminDashboard/adminPrivileges.html');
-}

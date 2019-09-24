@@ -26,7 +26,12 @@ router.get('/userManagement', auth.authorizeAdmin, (req, res) =>
 
 router.get('/adminPrivileges', auth.authorizeAdmin, (req, res) => 
 {
-    res.sendFile(view.adminPrivileges());
+    const renderWith = (results) => res.render('pages/adminDashboard/adminPrivileges', {results});
+
+    adminModel.getAllAdmins({
+        success: (results) => renderWith(results),
+        fail: (reason) => renderWith([])
+    })
 })
 
 router.post('/add_user=:id', auth.authorizeAdmin, (req, res) => 

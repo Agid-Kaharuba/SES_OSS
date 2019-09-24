@@ -3,6 +3,36 @@ const userModel = require('./user');
 const auth = require('../utils/authUtil');
 const listingModel = require('./listing');
 
+exports.getAllAdmins = function(callback = {success: (results) => {}, fail: (reason) => {}})
+{
+    const db = database.connectDatabase();
+    let query = `
+    SELECT
+        US_PK AS id,
+        US_Username AS username,
+        US_Email AS email,
+        US_FirstName AS firstName,
+        US_LastName AS lastName,
+        US_PhoneNumber AS phoneNumber,
+        US_BirthDate AS birthDate,
+        US_JoinDate AS joinDate
+    FROM Admin 
+    LEFT JOIN User ON Admin.AD_US = User.US_PK
+    `
+    db.query(query, (err, results) => 
+    {
+        if (err)
+        {
+            console.error('admin.js | getAllAdmins | getting all admins error: ' + err);
+            callback.fail('Failed to get all admins from database!');
+        }
+        else
+        {
+            callback.success(results);
+        }
+    })
+}
+
 exports.giveUserAdminPrivileges = function(userID, callback = {success: () => {}, fail: (reason) => {}})
 {
     auth.checkAdminPrivileges(userID, (hasPrivileges) =>
