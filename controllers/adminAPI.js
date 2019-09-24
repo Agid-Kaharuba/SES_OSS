@@ -8,9 +8,9 @@ const router = express.Router();
 
 // Every method is prepended with "/admin" see app.js
 
-router.get('/dashboard', (req, res) => 
+router.get('/dashboard', auth.authorizeAdmin, (req, res) => 
 {
-
+    
 })
 
 router.post('/add_user=:id', (req, res) => 
@@ -41,7 +41,7 @@ router.post('/delete_listing=:id', (req, res) =>
     })
 })
 
-router.post('/give_admin_userid=:id', adminModel.authorizeAdmin, (req, res) =>
+router.post('/give_admin_userid=:id', auth.authorizeAdmin, (req, res) =>
 {
     userModel.checkUserExistsByID(req.params.id, 
     {
@@ -54,7 +54,7 @@ router.post('/give_admin_userid=:id', adminModel.authorizeAdmin, (req, res) =>
     });
 })
 
-router.post('/revoke_admin_userid=:id', adminModel.authorizeAdmin, (req, res) =>
+router.post('/revoke_admin_userid=:id', auth.authorizeAdmin, (req, res) =>
 {
     userModel.checkUserExistsByID(req.params.id, 
     {

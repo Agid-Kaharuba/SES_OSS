@@ -1,55 +1,11 @@
 const database = require('../utils/database');
 const userModel = require('./user');
 const auth = require('../utils/authUtil');
-const jsonResponse = require('../utils/JSONResponse');
 const listingModel = require('./listing');
-
-exports.checkAdminPrivileges = function(userID, callback = (hasPrivileges) => {}) 
-{
-    const db = database.connectDatabase();
-    let query = 
-    `SELECT * from User INNER JOIN Admin ON Admin.AD_US = User.US_PK 
-    WHERE User.US_PK = ? LIMIT 1`;
-
-    db.query(query, userID, (err, results) => 
-    {
-        if (results.length > 0)
-            callback(true);
-        else
-            callback(false);
-    })
-}
-
-exports.tryAdminAction = function(userID, callback = {success: () => {}, fail: () => {}})
-{
-    exports.checkAdminPrivileges(userID, (hasPrivileges) =>
-    {
-        if (hasPrivileges)
-            callback.success();
-        else
-            callback.fail();
-    })
-}
-
-exports.authorizeAdmin = function(req, res, next) 
-{
-    auth.tryAuthorizeUser(req,
-    {
-        success: (rawSession) => 
-        {
-            exports.tryAdminAction(rawSession.SS_US,
-            {
-                success: next,
-                fail: () => res.send(jsonResponse.fail('Access is not allowed for the user'))
-            })
-        },
-        fail: () => res.send(jsonResponse.fail('Invalid authentication credentials!'))
-    })
-}
 
 exports.giveUserAdminPrivileges = function(userID, callback = {success: () => {}, fail: (reason) => {}})
 {
-    exports.checkAdminPrivileges(userID, (hasPrivileges) =>
+    auth.checkAdminPrivileges(userID, (hasPrivileges) =>
     {
         if (hasPrivileges) 
         {
@@ -70,7 +26,7 @@ exports.giveUserAdminPrivileges = function(userID, callback = {success: () => {}
 
 exports.revokeUserAdminPrivileges = function(userID, callback = {success: () => {}, fail: (reason) => {}})
 {
-    exports.checkAdminPrivileges(userID, (hasPrivileges) =>
+    auth.checkAdminPrivileges(userID, (hasPrivileges) =>
     {
         if (!hasPrivileges) 
         {

@@ -1,5 +1,6 @@
 const jsonResponse = require('./JSONResponse');
 const database = require('../utils/database');
+const admin = require('../models/admin');
 
 // The key of the session store.
 const SessionCookieProp = 'session'
@@ -76,6 +77,49 @@ exports.authorizeUser = function(req, res, next)
     exports.tryAuthorizeUser(req, 
     {
         success: next,
+        fail: () => res.send(jsonResponse.fail('Invalid authentication credentials!'))
+    })
+}
+
+exports.checkAdminPrivileges = function(userID, callback = (hasPrivileges) => {}) 
+{
+    const db = database.connectDatabase();
+    let query = 
+    `SELECT * from User INNER JOIN Admin ON Admin.AD_US = User.US_PK 
+    WHERE User.US_PK = ? LIMIT 1`;
+
+    db.query(query, userID, (err, results) => 
+    {
+        if (results.length > 0)
+            callback(true);
+        else
+            callback(false);
+    })
+}
+
+exports.tryAdminAction = function(userID, callback = {success: () => {}, fail: () => {}})
+{
+    exports.checkAdminPrivileges(userID, (hasPrivileges) =>
+    {
+        if (hasPrivileges)
+            callback.success();
+        else
+            callback.fail();
+    })
+}
+
+exports.authorizeAdmin = function(req, res, next) 
+{
+    exports.tryAuthorizeUser(req,
+    {
+        success: (rawSession) => 
+        {
+            exports.tryAdminAction(rawSession.SS_US,
+            {
+                success: next,
+                fail: () => res.send(jsonResponse.fail('Access is not allowed for the user'))
+            })
+        },
         fail: () => res.send(jsonResponse.fail('Invalid authentication credentials!'))
     })
 }
@@ -178,8 +222,8 @@ exports.deleteSession = function(sessionID, callback = {success: () => {}, fail:
 
 exports.invalidateSession = function(req, callback = {success: () => {}, fail: () => {}})
 {
-    getSessionFromCookie(req, {
-        found: (rawSession) => deleteSession(rawSession.SS_PK, callback),
+    exports.getSessionFromCookie(req, {
+        found: (rawSession) => exports.deleteSession(rawSession.SS_PK, callback),
         notFound: () => callback.fail()
     })
 }
