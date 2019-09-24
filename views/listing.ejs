@@ -16,6 +16,7 @@
 </head> 
 <!-- tool bar -->
 <body class="bg-light">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>    
  
 <nav class="navbar navbar-expand-lg navbar-light bg-secondary">
     <button aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation"
@@ -78,13 +79,21 @@
             <div class="flex-row d-flex mb-2 mt-1 mr-5 ">
                     <div class="col-lg-12 col-md-12 col-sm-12 col-12 form-group2 mx-auto">
                         <ul class="list group mb-3 mx-auto">
-                            <h4 id="header0" class="text-muted mt-5">Categories</h4>
+                            <h3><a id="header0" class="text-muted mt-5" href="#">Categories</a></h4>
                             <h5 id="header1" class="mt-3">All</h5>    
                             <h5 id="header2" class="mt-3">Hats</h5> 
                             <h5 id="header3" class="mt-3">doors</h5> 
                             <h5 id="header4" class="mt-3">sq</h5> 
-                            <h5 id="header5" class="mt-3">clothes</h5> 
-                            <h5 id="header6" class="mt-3">CPU</h5> 
+                            <h5><a class="mt-3" href="#">MotherBoards</a></h5> 
+                            <h5><a id="header6" href="#">CPU</a></h5>
+                            <h5><a id="header7" class="mt-3" href="#">Cases</a></h5>
+                            <h5><a id="header8" class="mt-3" href="#"></a>Cables</h5>
+                            <h5><a id="header9" class="mt-3" href="#"></a>Cooling</h5>
+                            <h5><a id="header10" class="mt-3" href="#"></a>RAM</h5>
+                            <h5><a id="header11" class="mt-3" href="#"></a>Disks</h5>
+                            <h5><a id="header12" class="mt-3" href="#"></a>GPU</h5>
+
+                            <h5><a id="header7" href="#" >Fans</a></h5>
                             <h5 id="header7" class="mt-3">Desktops</h5> 
                             <h5 id="header8" class="mt-3">Music</h5>
                             <div id="recent" class="card" style="width: 9rem; height: 12rem;">
@@ -120,44 +129,26 @@
                   <div class="card" style="width: 18rem;">
                     <img src="..." class="card-img-top" alt="...">
                     <div class="card-body">
-                      <h6 class="card-title py-4">Image Name</h6>
+                   
                     </div>
                   </div>
                 <div>
-                 
-                  <h3 class="fixed-right"><%= listing.listingTitle %></h3>
-                  <h5 class="text-muted"><%= listing.sellerUsername %> </h5>
+                  <h3><a href="/listing/listing.listingTitle" class="sellerTitle" style="position: relative; right: 500px;"><%= listing.listingTitle %></a></h3>
+                  <h5 class="text-muted"><a href="#"><%= listing.sellerUsername %></a></h5>
                   <p id= "d0"> <%= listing.listingDescription %> </p>
-                  <h4 class="text-muted"><%= listing.remainingStock %> </h4>
+                  <h4 class="text-muted"><%= listing.remainingStock%> </h4>
+                  <h4 class="text-muted"><%= listing.sellerPrice%> </h4>
                   <a href="#" class="btn btn-primary">Product Rating</a>
                 </div>
               </li>
             <% }); %>
               
             
+    
             
 
           </ul>
-          <div class="btn-toolbar mb-5 mt-2 justify-content-center" role="toolbar" aria-label="Toolbar with button groups">
-                <div class="btn-group mr-2" role="group" aria-label="First group">
-                  <button type="button" class="btn btn-secondary"><</button>
-                </div>
-                
-                <div class="btn-group" role="group" aria-label="Second group">
-                    <button type="button" class="btn btn-secondary">1</button>
-                    <button type="button" class="btn btn-secondary">2</button>
-                    <button type="button" class="btn btn-secondary">3</button>
-                    <button type="button" class="btn btn-secondary">4</button>
-                    <button type="button" class="btn btn-secondary">5</button>
-                    <button type="button" class="btn btn-secondary">6</button>
-                </div>
-                <div class="btn-group ml-2" role="group" aria-label="Third group">
-                  <button type="button" class="btn btn-secondary">></button>
-                </div>
-            </div>  
-		</div>
-		 
-		 </div>
+
 	
           
 
@@ -205,7 +196,6 @@
             </div>
         </div>
 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <script crossorigin="anonymous"
                 integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
                 src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>

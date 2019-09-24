@@ -22,8 +22,9 @@ app.use('/styles', express.static('html/styles'));
 app.use(express.static('js'));
 
 app.set('view engine','ejs');
-app.get('/listings/Search',function(req,res){
-    ejs.renderFile('listing', {listing : listings}); 
+
+app.get('/confirmPurchase',function(req,res){
+    ejs.renderFile('confirmPurchase'); 
 });
 
 var port = process.env.PORT || 3000
