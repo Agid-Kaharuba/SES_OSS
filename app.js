@@ -1,5 +1,6 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
+const bodyParser = require("body-parser");
 var dotenv = require('dotenv');
 const app = express();
 dotenv.config();
@@ -16,6 +17,7 @@ app.use(express.static('js'));
 // For parsing json.
 app.use(express.json());
 // To be able to read cookies.
+app.use(bodyParser());
 app.use(cookieParser());
 
 //HOW TO USE - APP.USE
