@@ -9,10 +9,10 @@ const router = express.Router();
 
 // Every method is prepended with "/user" see app.js
 
-router.post('/register', (req, res) => {
+router.post('/register', (req, res) =>
+{
     var user = req.body;
-
-    userModel.checkUserExists(user.username,
+        userModel.checkUserExists(user.username,
         {
             found:
                 () => res.send(jsonResponse.fail("Could not register an already existing user")),
@@ -27,7 +27,8 @@ router.post('/register', (req, res) => {
         });
 });
 
-router.post('/login', (req, res) => {
+router.post('/login', (req, res) =>
+{
     console.log(req.body);
     userModel.loginUser(req.body.username, req.body.password,
         {

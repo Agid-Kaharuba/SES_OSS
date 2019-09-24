@@ -21,9 +21,8 @@ let convertToUserObject = function (DBUser) {
  * @param {userObject} callback - found() and notFound() expected
  */
 exports.getUser = function (username, callback = {
-    found: (user) => {
-    }, notFound: () => {
-    }
+    found: (user) => {},
+    notFound: () => {}
 }) {
     var db = database.connectDatabase();
     var query = `
@@ -43,7 +42,8 @@ LIMIT 1
 ;`;
     var sanitsedInputs = [username];
     db.query(query, sanitsedInputs,
-        (err, results) => {
+        (err, results) =>
+        {
             if (err) console.log("User.js | getUser | ERROR: " + err.message);
             if (results.length > 0) {
                 callback.found(convertToUserObject(results[0]));
@@ -61,9 +61,8 @@ LIMIT 1
  * @param {userObject} callback - found() and notFound() expected
  */
 exports.checkUserExists = function (username, callback = {
-    found: () => {
-    }, notFound: () => {
-    }
+    found: (user) => {},
+    notFound: () => {}
 }) {
     var db = database.connectDatabase();
     var query = `
