@@ -13,7 +13,7 @@
 		<script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
 		<script src="https://code.highcharts.com/highcharts.js"></script>
 		<script src="https://code.highcharts.com/modules/data.js"></script>
-		<script src="../userDashboard/dashboard.js"></script>
+		<script src="../styles/dashboard.css"></script>
 
 		<style>
 			.ad {
@@ -90,17 +90,14 @@
 		</div>
 		<div class="main-content">
 			<div class="title">
-				Create Your Ad
-            </div>
-            <form>
-                Product Name:<br>
-                <input type="text" name="productName"><br>
-                Product Type:<br>
-                <input type="text" name="productType"><br>
-                Price:<br>
-                <input type="number" price="productPrice"><br><br>
-                <input type="submit" value="Submit">
-              </form>
+				Manage Your Ads
+			</div>
+			<div class="main">
+				<div class="widget">
+					<div class="title">List of Active Ads</div>
+					<div class="chart"></div>
+				</div>
+			</div>
 		</div>
 	</body>
 </html>
