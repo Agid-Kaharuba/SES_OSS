@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    	<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Responsive vertical menu navigation</title>
+
+		<!-- Bootstrap -->
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+		<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+		<!-- Bootstrap END -->
+
+		<link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:700, 600,500,400,300' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+		<link rel="stylesheet" href="../styles/dashboard.css">
+
+		<script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+		<script src="https://code.highcharts.com/highcharts.js"></script>
+		<script src="https://code.highcharts.com/modules/data.js"></script>
+		<script src="../styles/dashboard.css"></script>
+
+		<style>
+			.ad {
+				position: absolute;
+				width: 300px;
+				height: 250px;
+				border: 1px solid #ddd;
+				left: 50%;
+				transform: translateX(-50%);
+				top: 250px;
+				z-index: 10;
+			}
+			.ad .close {
+				position: absolute;
+				font-family: 'ionicons';
+				width: 20px;
+				height: 20px;
+				color: #fff;
+				background-color: #999;
+				font-size: 20px;
+				left: -20px;
+				top: -1px;
+				display: table-cell;
+				vertical-align: middle;
+				cursor: pointer;
+				text-align: center;
+			}
+		</style>
+		<script type="text/javascript">
+			$(function() {
+				$('.close').click(function() {
+					$('.ad').css('display', 'none');
+				})
+			})
+		</script>
+
+	</head>
+	<body>
+		<div class="header">
+			<div class="logo">
+				<i class="fa fa-tachometer"></i>
+				<span>Brand</span>
+			</div>
+			<a href="#" class="nav-trigger"><span></span></a>
+		</div>
+		<div class="side-nav">
+			<div class="logo">
+				<i class="fa fa-tachometer"></i>
+				<span>Brand</span>
+			</div>
+			<nav>
+				<ul>
+					<li>
+						<a href="dashboard" >
+							<span><i class="fa fa-user"></i></span>
+							<span>Admin Control Panel</span>
+						</a>
+					</li>
+					<li class="active">
+						<a href="listingManagement">
+
+							<span><i class="fa fa-bar-chart"></i></span>
+							<span>Listing Management</span>
+						</a>
+					</li>
+					<li>
+						<a href="userManagement">
+							<span><i class="fa fa-bar-chart"></i></span>
+							<span>User Management</span>
+						</a>
+					</li>
+					<li>
+						<a href="adminPrivileges">
+							<span><i class="fa fa-bar-chart"></i></span>
+							<span>Admin Privileges</span>
+						</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+		<div class="main-content">
+			<div class="title">
+				Listing Management
+			</div>
+			<div class="main">
+				<div class="widget">
+					<div class="container m-4">
+						<div class="card card-body bg-light">
+							<label>Delete Listing</label>
+							<input id="deleteListingInput" type="text">
+							<input id="confirmDeleteListing" type="submit">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+
+	<script>
+		$().ready(() => 
+		{
+			$("#confirmDeleteListing").click(() =>
+			{
+				let inp = $("#deleteListingInput").val();
+				console.log("got " + inp);
+				$.post("delete_listing=" + inp, null, (data) =>
+				{
+					if (data.status == "success")
+					{
+						alert("Successful!");
+					} 
+					else
+					{
+						alert("Failed!\nCause: " + data.reason);
+					}
+				})
+			})
+		})
+	</script>
+</html>

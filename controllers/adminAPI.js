@@ -2,6 +2,7 @@ const express = require('express');
 const jsonResponse = require('../utils/JSONResponse');
 const userModel = require('../models/user')
 const adminModel = require('../models/admin');
+const view = require('../views/adminView');
 const auth = require('../utils/authUtil');
 
 const router = express.Router();
@@ -10,15 +11,30 @@ const router = express.Router();
 
 router.get('/dashboard', auth.authorizeAdmin, (req, res) => 
 {
-    
+    res.sendFile(view.dashboard());
 })
 
-router.post('/add_user=:id', (req, res) => 
+router.get('/listingManagement', auth.authorizeAdmin, (req, res) => 
+{
+    res.sendFile(view.listingManagement());
+})
+
+router.get('/userManagement', auth.authorizeAdmin, (req, res) => 
+{
+    res.sendFile(view.userManagement());
+})
+
+router.get('/adminPrivileges', auth.authorizeAdmin, (req, res) => 
+{
+    res.sendFile(view.adminPrivileges());
+})
+
+router.post('/add_user=:id', auth.authorizeAdmin, (req, res) => 
 {
 
 })
 
-router.post('/delete_user=:id', (req, res) => 
+router.post('/delete_user=:id', auth.authorizeAdmin, (req, res) => 
 {
     adminModel.deleteUser(req.params.id,
     {
@@ -27,12 +43,12 @@ router.post('/delete_user=:id', (req, res) =>
     })
 })
 
-router.post('/add_listing/', (req, res) => 
+router.post('/add_listing/', auth.authorizeAdmin, (req, res) => 
 {
 
 })
 
-router.post('/delete_listing=:id', (req, res) => 
+router.post('/delete_listing=:id', auth.authorizeAdmin, (req, res) => 
 {
     adminModel.deleteListing(req.params.id, 
     {
