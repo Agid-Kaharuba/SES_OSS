@@ -158,7 +158,7 @@ exports.loginUser = function(username, password, callback = {success: () => {}, 
 		});
 }
 
-exports.GetRecentListings = async function (callback) 
+exports.retreiveUser = async function (callback) 
 {
 	var db = await database.connectDatabase();
 	var query = `
