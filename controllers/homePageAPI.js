@@ -13,4 +13,10 @@ router.get('/', (req, res) =>
 
 });
 
+router.get('confirmPurchase', (req, res) =>
+{
+	res.render('confirmPurchase');
+
+}); 
+
 module.exports = { router };

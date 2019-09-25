@@ -1,3 +1,4 @@
+
 exports.success = function(obj = {}) 
 {
     obj['status'] = 'success';

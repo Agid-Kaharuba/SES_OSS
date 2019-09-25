@@ -3,7 +3,6 @@ const router = express.Router();
 const listingModel = require('../models/listing');
 const view = require('../views/listingView');
 const jsonResponse = require('../utils/JSONResponse');
-
 // Every method is prepended with "/listing" see app.js
 
 router.get('/id=:id', (req, res) => // e.g. listing/id=4bb8590e-ce26-11e9-a859-256794b0b57d
@@ -11,7 +10,9 @@ router.get('/id=:id', (req, res) => // e.g. listing/id=4bb8590e-ce26-11e9-a859-2
 	console.log('Receieved req for listing id: ' + req.params.id); // Example params usage.
 	listingModel.GetListing(req.params.id,
 		(result) => {
-			res.send(view.viewListing(result));
+			//res.send(view.viewListing(result));
+			res.render('listingResult', { listings: result });
+			//ejs.renderFile('listingResult', {listing : result}); 
 		});
 });
 
@@ -20,10 +21,10 @@ router.get('/search=:query', (req, res) =>
 	console.log('Received search query: ' + req.params.query); // Example params usage.
 	listingModel.SearchListings(req.params.query, 
 		(results) =>
-		{
-			res.send(view.viewListings(results));
+		{ 
+			res.render('listing', { listings: results });
 		});
-});
+})
 
 router.get('/summary=:purchaseID', (req, res) =>
 {
@@ -51,5 +52,30 @@ router.get('/paymentSummary', (req, res) =>
 {
 	res.render('pages/paymentSummary')
 });
+
+router.get('/listing/Search=',function(req,res){
+    ejs.renderFile('listing', {listing : listings}); 
+});
+
+function search(namekey, results){
+	for (var i = 0; i < results.length; i++){
+		if (results[i].listingTitle == namekey){
+			return results[i]; 
+		}
+	} 
+} 
+
+
+router.get('listing.listingTitle', function(req,res){
+
+	ejs.renderFile('listingResult', {listing : search(listings)}); 
+
+});
+
+
+router.get('/listing/');
+
+router.get('listing/listingResult');
+
 
 module.exports = { router };
