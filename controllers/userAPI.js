@@ -4,7 +4,6 @@ const userModel = require('../models/user')
 const userView = require('../views/userView')
 const jsonResponse = require('../utils/JSONResponse');
 const auth = require('../utils/authUtil');
-
 const router = express.Router();
 
 // Every method is prepended with "/user" see app.js
@@ -78,8 +77,15 @@ router.post('/confirm_purchase/:listingID', (req, res) =>
 
 })
 
-router.get('/edit_Profile/:id', (req, res) => 
+router.get('/', (req, res) =>
 {
-})
+	console.log("Receieved req for homePage listings");
+	userModel.retrieveUser((err, results) =>
+		{
+			if (err) throw err;
+			res.render('views/userView', {results});
+		});
+
+});
 
 module.exports = { router };

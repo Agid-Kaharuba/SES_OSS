@@ -158,20 +158,22 @@ exports.loginUser = function(username, password, callback = {success: () => {}, 
 		});
 }
 
-exports.editUser = function(username, firstName, lastName, birthDate, phoneNumber, email)
+exports.GetRecentListings = async function (callback) 
 {
-	var db = database.connectDatabase();
-	var query = 
-	`UPDATE User (username, firstName, lastName, birthDate, phoneNumber, email) VALUES(?,?,?,?,?,?)
-	 WHERE US_username = SS_US`
+	var db = await database.connectDatabase();
+	var query = `
+SELECT 
+	US_Username as username,
+	US_Password as password,
+	US_Email as email,
+	US_FirstName as firstName,
+	US_LastName as firstName,
+	US_PhoneNumber as phoneNumber,
+	US_BirthDate as DOB,
+FROM User
+WHERE US_Username = SS_US
+LIMIT 1;
+;`;
 
-	 var inputs = [username, email, firstName, lastName, phoneNumber, birthDate];
-	 db.query(query, inputs, (err, results, fields) => {
-		if (err){
-			console.log("Profile Update Error")
-			res.sendStatus(500)
-		}
-		console.log("Updated User")
-	 })
-
+	await db.query(query, callback);
 }

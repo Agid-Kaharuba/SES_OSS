@@ -1,4 +1,0 @@
-exports.viewUserProfile = function(listings) 
-{
-
-}
