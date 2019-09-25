@@ -1,0 +1,118 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+   <% include partials/head %>
+
+</head>
+<style>
+label
+{
+    margin-left: 5px;
+	    color: #3F51B5;
+}
+h3
+{
+    font-size: 1.75rem;
+   
+   
+    margin-top: 10px;
+   
+}
+</style>
+<body class="bg-light">
+<% include partials/navbar %><br>
+<h2 class='text-center'> <%= title %> </h2>
+
+<div class='text-center'>
+	<p>Quantity: <%= quantity %> </p> <p>Item Name: <%= name %></p><p>Price: <%= price %></p> 
+</div>
+
+<div>
+
+    <div class="Text">
+        <nav class="navbar navbar-default navbar-fixed">
+        </nav>
+		<form action = "/receipt" method="post" >
+        <div class=" container project_choose">
+        <div class="row d-flex payment_block">
+
+            <div class = "col-lg-6 col-md-6 col-sm-6 col-12">
+                <h3>Payment</h3>
+                <div class = "form-group">
+                    <div class="icon-container">
+                        Accepted Cards
+                        <i class="fa fa-cc-visa" style="color:navy;"></i>
+                        <i class="fa fa-cc-amex" style="color:blue;"></i>
+                        <i class="fa fa-cc-mastercard" style="color:red;"></i>
+                        <i class="fa fa-cc-discover" style="color:orange;"></i>
+                    </div>
+                    <label for="cardType">Select Payment Method</label>
+                    <select id="cardType" name="cardtype" class="form-control">
+                        <%cardTypes.forEach(function (cardtype) {%>
+                            <option value="<%= cardtype.name %>"><%= cardtype.name %></option>
+                        <%})%>
+
+                    </select>
+                    <label for="cname">Name on Card</label>
+                    <input class = "form-control" type="text" id="cname" name="cardname" placeholder="John More Doe" required>
+                    <div class = "row">
+                        <div class = "col-lg-8 col-md-8">
+                            <label  for="ccnum">Credit card number</label>
+                            <input class = "form-control " type="text" id="ccnum" name="cardnumber" placeholder="1111-2222-3333-4444" required>
+                        </div>
+                        <div class = "col-lg-4 col-md-4">
+                            <label for="cvv">CVV</label>
+                            <input class = "form-control" type="text" id="cvv" name="cvv" placeholder="352" required>
+                        </div>
+                    </div>
+
+                    <label for="expdate">Expiry</label>
+                    <input class = "form-control" type="date" id="expmonth" name="expmonth" placeholder="September" required/>
+
+
+                </div>
+
+            </div>
+			<div class = "col-lg-6 col-md-6 col-sm-6 col-12">
+			<h3>Delivary Address</h3>
+			<div class = "form-group">
+			<label for="fname"><i class="fa fa-user"></i> Full Name</label>
+            <input class  = "form-control" type="text" id="fname" name="firstname" placeholder="John M. Doe" required>
+            <label for="email"><i class="fa fa-envelope"></i> Email</label>
+            <input class  = "form-control" type="email" id="email" name="email" placeholder="john@example.com" required>
+            <label for="adr"><i class="fa fa-address-card-o"></i> Home Address</label>
+            <input  class  = "form-control" type="text" id="adr" name="homeaddress" placeholder="542 W. 15th Street" required>
+                <label for="adr"><i class="fa fa-address-card-o"></i> Street</label>
+                <input  class  = "form-control" type="text" id="adr" name="street" placeholder="Street" required>
+                <label for="adr"><i class="fa fa-address-card-o"></i> Postal code</label>
+                <input  class  = "form-control" type="number" id="adr" name="postalcode" placeholder="Postal Code" required>
+            <label  for="city"><i class="fa fa-institution"></i> City</label>
+            <input class  = "form-control" type="text" id="city" name="city" placeholder="New York" required>
+			
+				</div>
+		</div>
+
+		 
+		 <div class = "row d-flex form-group ml-1 mr-1">
+		 
+			
+			
+			
+				
+		 </div>
+		 <div class = "col-lg-4 col-md-4"></div>
+		 
+		 <div class = " form-group col-lg-4 col-md-4 " >
+		  <input type = "submit" name = "checkout" value = "Continue"  class="btn btn-primary w-100">
+		  </div>
+		 </div>
+	
+          
+        <div id="push"></div>
+    </div>
+	</form>
+	</div>
+</div>
+   <% include partials/footer %>
+</body>
+</html>
