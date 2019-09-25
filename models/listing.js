@@ -33,6 +33,7 @@ exports.SearchListings = function (searchTerm, callback = (result) => { })
 SELECT
 	US_Username as sellerUsername,
 	LS_Title as listingTitle,
+	LS_Price as listingPrice,
 	LS_PK as listingID
 FROM Listing
 	INNER JOIN User ON LS_US_Seller = US_PK
