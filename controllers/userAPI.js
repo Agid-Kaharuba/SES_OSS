@@ -67,12 +67,6 @@ router.post('/confirm_purchase/:listingID', (req, res) => {
 
 router.get('/', (req, res) =>
 {
-	console.log("Receieved req for homePage listings");
-	userModel.retrieveUser((err, results) =>
-		{
-			if (err) throw err;
-			res.render('views/userView', {results});
-		});
 
 });
 
