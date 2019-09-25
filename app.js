@@ -32,7 +32,13 @@ app.use('/images', express.static('public/images'));
 app.use('/styles', express.static('public/styles'));
 app.use('/js', express.static('public/js'));
 app.use(express.static('js'));
-app.set('view engine', 'ejs');
+
+app.set('view engine','ejs');
+
+app.get('/confirmPurchase',function(req,res){
+    ejs.renderFile('confirmPurchase'); 
+});
+
 var port = process.env.PORT || 3000
 app.listen(port, () => 
 {
