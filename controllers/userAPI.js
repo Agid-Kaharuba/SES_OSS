@@ -1,7 +1,7 @@
 const express = require('express');
 
 const userModel = require('../models/user');
-const userView = require('../views/userView');
+//const userView = require('../views/userView');
 const jsonResponse = require('../utils/JSONResponse');
 const auth = require('../utils/authUtil');
 const router = express.Router();
@@ -42,26 +42,31 @@ router.post('/login', (req, res) =>
         });
 });
 
-router.get('/view-account', auth.authorizeUser, (req, res) => {
-    res.send(userView.viewAccount());
+router.get('/view-account', auth.authorizeUser, (req, res) => 
+{
+    //res.send(userView.viewAccount());
 });
 
-router.post('/logout', (req, res) => {
+router.post('/logout', (req, res) => 
+{
     auth.invalidateSession(req, {
         success: () => res.send('Logout Sucessful'),
         fail: () => res.send(jsonResponse.fail('Failed to logout'))
     })
 });
 
-router.put('/modify', (req, res) => {
+router.put('/modify', (req, res) => 
+{
 
 });
 
-router.get('/purchase/:listingID', (req, res) => {
+router.get('/purchase/:listingID', (req, res) => 
+{
 
 });
 
-router.post('/confirm_purchase/:listingID', (req, res) => {
+router.post('/confirm_purchase/:listingID', (req, res) => 
+{
 
 });
 
