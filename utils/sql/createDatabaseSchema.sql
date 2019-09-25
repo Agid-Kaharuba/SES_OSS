@@ -76,6 +76,7 @@ CREATE TABLE Address
   AD_State 		varchar(64) NULL,
   AD_Country 	varchar(64) NULL,
   AD_PostCode 	varchar(8) NULL,
+  AD_IsPrimary	BIT NOT NULL DEFAULT 0,
   PRIMARY KEY (AD_PK),
   FOREIGN KEY (AD_US) REFERENCES User(US_PK),
   UNIQUE KEY AD_PK_UNIQUE (AD_PK)
@@ -124,6 +125,7 @@ CREATE TABLE Listing
   LS_Title 			varchar(256) NULL,
   LS_Description	varchar(2048) NULL,
   LS_RemainingStock	INT NOT NULL,
+  LS_Price 			decimal(10,2) NULL,			
   LS_IsActive		BIT NOT NULL DEFAULT 1,
   LS_PostedDate		datetime NOT NULL DEFAULT NOW(),
   PRIMARY KEY (LS_PK),
@@ -145,6 +147,7 @@ CREATE TABLE Purchase
   PC_AD_Delivery		varchar(36) NOT NULL,
   PC_TrackingNumber		varchar(64) NULL,
   PC_Price 				decimal(10,2) NULL,
+  PC_Quantity			INT NOT NULL,
   PC_Date				datetime NOT NULL DEFAULT NOW(),
   PRIMARY KEY (PC_PK),
   FOREIGN KEY (PC_LS) 			REFERENCES Listing(LS_PK),

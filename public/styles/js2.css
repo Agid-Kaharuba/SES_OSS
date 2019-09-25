@@ -22,6 +22,7 @@ html,body {
 #push {
  height: 200px;
 }
+
 .footer {
     border-top: 1px solid #e5e5e5;
     color: #777;
@@ -30,10 +31,9 @@ html,body {
 }
 
 .product-item-container {
-    display: inline-block;
+    float: left;
     width: 400px;
-    height: 500px;
-    border: 1px solid #750000;
+    min-height: 400px;
     margin: 10px;
 }
 

@@ -6,7 +6,7 @@ exports.connectDatabase = function()
 {
 	if (!db)
 	{
-		var db = mysql.createConnection(
+		db = mysql.createConnection(
 		{
 			host        : process.env.MYSQL_HOST,
 			user        : process.env.MYSQL_USER,
@@ -30,12 +30,23 @@ exports.connectDatabase = function()
 
 exports.createSchema = function()
 {
+	runScriptsFile(__dirname + "/sql/createDatabaseSchema.sql");
+}
+
+exports.populateDatabase = function()
+{	
+	runScriptsFile(__dirname + "/sql/populateDatabase.sql");
+}
+
+function runScriptsFile(dir)
+{
 	var db = exports.connectDatabase();
-	var schema = fs.readFileSync(__dirname + "/sql/createDatabaseSchema.sql");
+	var schema = fs.readFileSync(dir);
 	var scripts = schema.toString().split("\n\n");
-	var errors = 0
-	scripts.forEach(function (script, index)
+
+	for(let i = 0; i < scripts.length; i++)
 	{
+		var script = scripts[i]
 		if (script != "")
 		{
 			db.query(script, (err) =>
@@ -43,12 +54,10 @@ exports.createSchema = function()
 				if (err)
 				{
 					console.log("Unable to run the following script: " + script);
-					console.log(err.sqlMessage);
-					errors ++;
+					console.log(err.sqlMessage);	
+					console.log("-------------------------------------------------------")			
 				}
 			});
 		}
-	});
-
-	return errors;
-}
+	}
+};
