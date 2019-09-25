@@ -16,6 +16,45 @@ let convertToUserObject = function (DBUser) {
 };
 
 /**
+ * Retrieves the user from the database by id.
+ * @param {string} id - The id of the user, this is the primary key in the database.
+ * @param {userObject} callback - found(user) and notFound() expected
+ */
+exports.getUserFromID = function(id, callback = {found: (user) => {}, notFound: () => {}})
+{
+	const db = database.connectDatabase();
+	let query = `
+SELECT
+	US_PK,
+	US_Username,
+	US_Email,
+	US_FirstName,
+	US_LastName,
+	US_PhoneNumber,
+	US_BirthDate,
+	US_JoinDate
+FROM User 
+WHERE US_PK = ?
+LIMIT 1
+;`;
+	let inputs = [id];
+	db.query(query, inputs, 
+		(err, results) => 
+		{ 
+			if (err) console.log("User.js | getUserFromID | ERROR: " + err.message);
+			if (results.length > 0)
+			{
+				callback.found(convertToUserObject(results[0]));
+			}
+			else
+			{
+				callback.notFound();
+			}
+		});
+}
+
+/**
+ * Retrieves the user from the database by username. 
  * Retrieves the user from the database by username.
  * @param {string} username - The username of the user.
  * @param {userObject} callback - found() and notFound() expected
@@ -84,6 +123,36 @@ LIMIT 1
 };
 
 /**
+ * Checks that a user exists according to the id provided
+ * @param  {string} id - id of user.
+ * @param {userObject} callback - found() and notFound() expected
+ */
+exports.checkUserExistsByID = function(id, callback = {found: () => {}, notFound: () => {}})
+{
+	var db = database.connectDatabase();
+	var query = `
+SELECT NULL 
+FROM User 
+WHERE US_PK = ?
+LIMIT 1
+;`;
+	var inputs = [id];
+	db.query(query, inputs, 
+		(err, results) => 
+		{ 
+			if (err) console.log("User.js | checkUserExistsByID | ERROR: " + err.message); 
+			if (results.length > 0)
+			{
+				callback.found();
+			}
+			else
+			{
+				callback.notFound();
+			}
+		}); 
+}
+
+/**
  * Registers a user in the database
  * @param {userObject} user - User to be added to database.
  * @param {userObject} callback - success() and fail({string} reason) expected
@@ -105,6 +174,15 @@ exports.registerUser = function (user, callback = {
 INSERT INTO User (US_Username, US_Password, US_Email, US_FirstName, US_LastName, US_PhoneNumber, US_BirthDate)
 VALUES (?, ?, ?, ?, ?, ? ,?)
 ;`;
+		var sanitsedInputs = [user.username, encryptedPassword, user.email, user.firstName, user.lastName, user.phoneNumber, user.birthDate];
+		db.query(query, sanitsedInputs, (errDb) =>
+		{
+		   if (errDb)
+		   {
+			   console.log("User.js | registerUser | ERROR: " + errDb.message) 
+			   callback.fail("Error when creating user.");
+			   return;
+		   }
         var sanitsedInputs = [user.username, encryptedPassword, user.email, user.firstName, user.lastName, user.phoneNumber, user.birthDate];
         db.query(query, sanitsedInputs, (errDb) => {
             if (errDb) {
