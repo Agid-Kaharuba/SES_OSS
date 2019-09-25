@@ -69,7 +69,6 @@ function search(namekey, results){
 router.get('listing.listingTitle', function(req,res){
 
 	ejs.renderFile('listingResult', {listing : search(listings)}); 
-
 });
 
 
