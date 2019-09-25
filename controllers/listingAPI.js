@@ -3,11 +3,6 @@ const router = express.Router();
 const listing = require('../models/listing');
 const view = require('../views/listingView');
 // Every method is prepended with "/listing" see app.js
-//uses jquery 
-// app.use('/jquery', express.static(__dirname + '/node_modules/jquery/dist/'));
-
-//app.use('/jquery', express.static(__dirname + '/jquery'));
-
 
 router.get('/id=:id', (req, res) => // e.g. listing/id=4bb8590e-ce26-11e9-a859-256794b0b57d
 {
@@ -82,12 +77,6 @@ router.get('listing.listingTitle',function(req,res){
 	ejs.renderFile('listingResult', {listing : search(listings)}); 
 
 });
-
-
-
-// router.get('/listings/Search=/listingResult',function(req,res){
-//     ejs.renderFile('listingResult', {listing : listings}); 
-// });
 
 
 router.get('/listing/');
