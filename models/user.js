@@ -134,7 +134,6 @@ exports.loginUser = function (username, password, callback = {success: (user) =>
                         if (err) {
                             callback.fail("There was an error comparing the hash.")
                         }
-
                         if (compareResult) {
                             callback.success(user);
                         } else {
@@ -146,3 +145,36 @@ exports.loginUser = function (username, password, callback = {success: (user) =>
                 () => callback.fail("Login fail - Username or Password does not match.")
         });
 };
+
+exports.GetUserProfile = function (sessionPk, callback = {found: (user) => {}, notFound: () => {}}) 
+{
+	var db = database.connectDatabase();
+	var query = `
+SELECT 
+	US_Username as username,
+	US_Password as password,
+	US_Email as email,
+	US_FirstName as firstName,
+	US_LastName as firstName,
+	US_PhoneNumber as phoneNumber,
+	US_BirthDate as DOB,
+FROM Session
+	INNER JOIN User ON SS_US = US_PK 
+WHERE SS_PK = ? 
+;`;
+
+	var inputs = [];
+	db.query(query, sanitsedInputs, 
+		(err, results) => 
+		{ 
+			if (err) console.log("User.js | getUser | ERROR: " + err.message);
+			if (results.length > 0)
+			{
+				callback.found(results);
+			}
+			else
+			{
+				callback.notFound();
+			}
+		});	
+}
