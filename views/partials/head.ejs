@@ -44,26 +44,38 @@
             </li>
         </ul>
         <div class="inline-block">
-            <form action="">
-                <div class="px-3 py-1 bg-light rounded rounded-pill shadow-sm" style="margin:0 20px">
-                    <div class="input-group" style="width: 280px">
-                        <input aria-describedby="button-addon1" class="form-control border-0 bg-light"
-                               placeholder="What're you searching for?"
-                               type="search">
-                        <div class="input-group-append">
-                            <button class="btn btn-link text-primary" id="button-addon1" type="submit"><i
-                                        class="fa fa-search"></i></button>
-                        </div>
+            <div class="px-3 py-1 bg-light rounded rounded-pill shadow-sm" style="margin:0 20px">
+                <div class="input-group" style="width: 280px">
+                    <input aria-describedby="button-addon1" class="form-control border-0 bg-light"
+                           placeholder="What're you searching for?" id="searchInput"
+                           type="search">
+                    <div class="input-group-append">
+                        <button class="btn btn-link text-primary" id="button-addon1" type="button" onclick="window.location.href='/listing?search=' + $('#searchInput').val()"><i
+                                    class="fa fa-search"></i></button>
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
-        <button class="btn btn-primary" data-target="#exampleModalCenter" data-toggle="modal" type="button">
-            Carts
-        </button>
-        <button class="btn btn-info" data-target="#Signin" data-toggle="modal" href="#" style="margin:0 10px">Sign In
-        </button>
-        <button class="btn btn-info" data-target="#exampleModalScrollable" data-toggle="modal" href="#">Register
-        </button>
+        <% if(currentUser) { %>
+            <div class="inline-block mr-4 text-light">
+                Hello <%= currentUser %>
+            </div>
+            <button class="btn btn-primary mr-2" onclick="window.location.href='/user/cart'" type="button">
+                Carts
+            </button>
+            <button class="btn btn-warning mr-2" onclick="window.location.href='/user/profile'" type="button">
+                Profile
+            </button>
+            <button class="btn btn-danger mr-2" onclick="window.location.href='/user/logout'" type="button">
+                Logout
+            </button>
+        <% } else { %>
+            <button class="btn btn-info mr-2" data-target="#Signin" data-toggle="modal" href="#" style="margin:0 10px">
+                Sign In
+            </button>
+            <button class="btn btn-info mr-2" data-target="#exampleModalScrollable" data-toggle="modal" href="#">
+                Register
+            </button>
+        <% } %>
     </div>
 </nav>
