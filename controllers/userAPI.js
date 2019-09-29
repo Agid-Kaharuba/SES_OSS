@@ -8,7 +8,8 @@ const router = express.Router();
 
 // Every method is prepended with "/user" see app.js
 
-router.post('/register', (req, res) => {
+router.post('/register', (req, res) =>
+{
 	var user = req.body;
 	userModel.checkUserExists(user.username,
 		{
@@ -25,7 +26,8 @@ router.post('/register', (req, res) => {
 		});
 });
 
-router.post('/login', (req, res) => {
+router.post('/login', (req, res) =>
+{
 	console.log(req.body);
 	userModel.loginUser(req.body.username, req.body.password,
 		{
@@ -43,11 +45,13 @@ router.post('/login', (req, res) => {
 		});
 });
 
-router.get('/view-account', auth.authorizeUser, (req, res) => {
+router.get('/view-account', auth.authorizeUser, (req, res) =>
+{
 	//res.send(userView.viewAccount());
 });
 
-router.get('/logout', (req, res) => {
+router.get('/logout', (req, res) =>
+{
 	auth.invalidateSession(req, {
 		success: () => {
 			res.cookie('currentUser', "", {maxAge: Date.now()});
@@ -57,19 +61,23 @@ router.get('/logout', (req, res) => {
 	})
 });
 
-router.put('/modify', (req, res) => {
+router.put('/modify', (req, res) =>
+{
 
 });
 
-router.get('/purchase/:listingID', (req, res) => {
+router.get('/purchase/:listingID', (req, res) =>
+{
 
 });
 
-router.post('/confirm_purchase/:listingID', (req, res) => {
+router.post('/confirm_purchase/:listingID', (req, res) =>
+{
 
 });
 
-router.get('/', (req, res) => {
+router.get('/', (req, res) =>
+{
 
 });
 
