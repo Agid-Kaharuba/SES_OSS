@@ -49,7 +49,8 @@ router.get('/summary=:purchaseID', (req, res) =>
 
 router.get('/confirmPurchase', (req, res) =>
 {
-	res.render('pages/confirmPurchase')
+	let currentUser = req.cookies.currentUser;
+	res.render('pages/confirmPurchase', { currentUser })
 });
 
 router.get('/paymentSummary', (req, res) =>

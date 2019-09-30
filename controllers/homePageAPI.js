@@ -10,7 +10,6 @@ router.get('/', (req, res) =>
 		if (err) throw err;
 		
 		let currentUser = req.cookies.currentUser;
-		console.log(currentUser);
 		res.render('pages/home', 
 		{
 			currentUser,
