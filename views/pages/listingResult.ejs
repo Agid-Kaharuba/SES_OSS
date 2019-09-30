@@ -1,0 +1,55 @@
+<% include ../partials/head %>
+      <style>
+
+
+
+
+      </style>
+      <div class="container">
+          <!-- Content here -->
+<div class="card justify-content-center mt-3" style="width: 1150px; max-height: 1040px; text-align: center; position: relative;">
+  <div class="row no-gutters">
+ 
+      <div class="col-md-8">
+        <div class="card-body">
+            <script> 
+            listing.search(function(namekey, result){
+              for (var i = 0; i < result.length; i++){
+                if  (result[i].listingTitle == namekey){
+                  return result[i]; 
+                }
+              } 
+            });   
+            </script>
+       
+            <div class="card justify-content-center bg-light mb-3" style=" width: 1100px; position: relative; ">
+              <%for(var i = 0; i < result.length; i++) {%>
+              <div class="card-header">
+                  <h3 id="titleId"><%= result[i].listingTitle%></h3> 
+              </div>
+
+              <div class="imageBox" style="width: 35rem; box-sizing: content-box; top: 10%; left: 5%; position: absolute;">
+                  <img src="/images/no-image.jpg" class="card-img" alt="...">
+                </div>
+              <div class="card-body" style="width: 500px; height: 800px; position: relative">
+                  <h4 id="userId" style="position: absolute; right: -400px;" >SellerName: <%= result[i].sellerUsername%></h4> 
+                  <h4 id="priceId" style="position: absolute; right: -400px; top: 10%;" > Price: $<%= result[i].listingPrice%></h4>  
+                  <h4 id="remainId" style="position: absolute; right: -400px; top: 17%;">Stock Avaliable: <%= result[i].remainingStock%></h4> 
+                <button class="btn btn-dark btn-lg" onclick="window.location.href='/listing/confirmPurchase'" style="position: absolute; right: -400px; top: 25%;">Purchase</button>
+                <div>
+                  <div class="card" style="position: absolute; top: 70%; left: 50px; width: 1000px; top: 50%; height: 380px;">
+                      <p class="card-text" style="position: absolute; left: 500px; top: 20%; left: 50%;"><%= result[i].listingDescription%></p>     
+                  </div>
+              </div>
+              </div>
+              <% } %> 
+              </div>
+              
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<% include ../partials/foot %>

@@ -184,8 +184,10 @@ VALUES (?, ?, ?, ?, ?, ? ,?)
 			}
 		});
 		var sanitsedInputs = [user.username, encryptedPassword, user.email, user.firstName, user.lastName, user.phoneNumber, user.birthDate];
-		db.query(query, sanitsedInputs, (errDb) => {
-			if (errDb) {
+		db.query(query, sanitsedInputs, (errDb) => 
+    {
+			if (errDb) 
+      {
 				console.log("User.js | registerUser | ERROR: " + err.message);
 				callback.fail("Error when creating user.");
 				return;
@@ -193,7 +195,6 @@ VALUES (?, ?, ?, ?, ?, ? ,?)
 
 			callback.success();
 		});
-
 	});
 };
 
