@@ -8,10 +8,12 @@ const jsonResponse = require('../utils/JSONResponse');
 router.get('/id=:id', (req, res) => // e.g. listing/id=4bb8590e-ce26-11e9-a859-256794b0b57d
 {
 	console.log('Receieved req for listing id: ' + req.params.id); // Example params usage.
+
+	let currentUser = req.cookies.currentUser;
 	listingModel.GetListing(req.params.id,
 		(result) => 
 		{
-			res.render('pages/listingResult', {result});
+			res.render('pages/listingResult', {currentUser, result});
 		});
 });
 
@@ -20,10 +22,11 @@ router.get('/id=:id', (req, res) => // e.g. listing/id=4bb8590e-ce26-11e9-a859-2
 router.get('/search=:query', (req, res) => 
 {
 	console.log('Received search query: ' + req.params.query); // Example params usage.
+	let currentUser = req.cookies.currentUser;
 	listingModel.SearchListings(req.params.query, 
 		(results) =>
 		{ 
-			res.render('pages/listing', { listings: results });
+			res.render('pages/listing', { currentUser, listings: results });
 		});
 })
 
