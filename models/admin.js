@@ -3,7 +3,7 @@ const userModel = require('./user');
 const auth = require('../utils/authUtil');
 const listingModel = require('./listing');
 
-exports.getAllAdmins = function(callback = {success: (results) => {}, fail: (reason) => {}})
+exports.getAllAdmins = function(callback = {success: (results) => { }, fail: (reason) => { }})
 {
     const db = database.connectDatabase();
     let query = `
@@ -33,7 +33,7 @@ exports.getAllAdmins = function(callback = {success: (results) => {}, fail: (rea
     })
 }
 
-exports.giveUserAdminPrivileges = function(userID, callback = {success: () => {}, fail: (reason) => {}})
+exports.giveUserAdminPrivileges = function(userID, callback = {success: () => { }, fail: (reason) => { }})
 {
     auth.checkAdminPrivileges(userID, (hasPrivileges) =>
     {
@@ -46,15 +46,19 @@ exports.giveUserAdminPrivileges = function(userID, callback = {success: () => {}
         let query = `INSERT INTO Admin (AD_US) VALUES (?)`
         db.query(query, [userID], (err, results) => 
         {
-            if (err)
-                callback.fail('Failed to give user admin from database!')
-            else
+			if (err)
+			{
+				callback.fail('Failed to give user admin from database!')
+			}
+			else
+			{
                 callback.success();
+			}
         })
     })
 }
 
-exports.revokeUserAdminPrivileges = function(userID, callback = {success: () => {}, fail: (reason) => {}})
+exports.revokeUserAdminPrivileges = function(userID, callback = {success: () => { }, fail: (reason) => { }})
 {
     auth.checkAdminPrivileges(userID, (hasPrivileges) =>
     {
@@ -67,10 +71,14 @@ exports.revokeUserAdminPrivileges = function(userID, callback = {success: () => 
         let query = `DELETE FROM Admin WHERE AD_US = ?`
         db.query(query, [userID], (err, results) => 
         {
-            if (err)
-                callback.fail('Failed to revoke user admin from database!')
-            else
+			if (err)
+			{
+				callback.fail('Failed to revoke user admin from database!')
+			}
+			else
+			{
                 callback.success();
+			}
         })
     })
 }
@@ -95,7 +103,8 @@ const deleteUserInternal = function(id, callback = {success: () => {}, fail: (re
 
 exports.deleteListing = function(id, callback = {success: () => {}, fail: (reason) => {}})
 {
-    listingModel.GetListing(id, (results) => {
+	listingModel.GetListing(id, (results) => 
+	{
         if (results.length == 0)
         {
             callback.fail('Could not delete a listing that does not exist!');

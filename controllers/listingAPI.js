@@ -9,9 +9,8 @@ router.get('/id=:id', (req, res) => // e.g. listing/id=4bb8590e-ce26-11e9-a859-2
 {
 	console.log('Receieved req for listing id: ' + req.params.id); // Example params usage.
 	listingModel.GetListing(req.params.id,
-		(result) => {
-
-
+		(result) => 
+		{
 			res.render('pages/listingResult', {result});
 		});
 });
@@ -24,7 +23,6 @@ router.get('/search=:query', (req, res) =>
 	listingModel.SearchListings(req.params.query, 
 		(results) =>
 		{ 
-			
 			res.render('pages/listing', { listings: results });
 		});
 })
@@ -34,7 +32,7 @@ router.get('/summary=:purchaseID', (req, res) =>
 	console.log('Received request to see purchase summary.')
 	var userPK = "This needs to be set as the user PK defined by the session."; //and pass it through to the 'GetPurchaseSummary' such that a user cannot see another users purchase summaries
 	listingModel.GetPurchaseSummary(req.params.purchaseID, userPK, 		
-		{
+	{
 		found: 
 			(result) => 
 			{
@@ -43,7 +41,7 @@ router.get('/summary=:purchaseID', (req, res) =>
 			},
 		notFound: 
 			() => res.send(jsonResponse.fail("Payment Summary Not Found")),
-		})
+	});
 });
 
 router.get('/confirmPurchase', (req, res) =>
@@ -54,16 +52,12 @@ router.get('/confirmPurchase', (req, res) =>
 router.get('/paymentSummary', (req, res) =>
 {
 	res.render('pages/paymentSummary')
-	router.get('/listing/Search=',function(req,res){
+	router.get('/listing/Search=', function(req,res)
+	{
 		ejs.renderFile('pages/listing', {listing : listings}); 
 	});
 });
 
-
-
 router.get('/listing/');
 
-
-
 module.exports = { router };
-			

@@ -28,10 +28,11 @@ router.get('/adminPrivileges', auth.authorizeAdmin, (req, res) =>
 {
     const renderWith = (results) => res.render('pages/adminDashboard/adminPrivileges', {results});
 
-    adminModel.getAllAdmins({
+    adminModel.getAllAdmins(
+	{
         success: (results) => renderWith(results),
         fail: (reason) => renderWith([])
-    })
+    });
 })
 
 router.post('/add_user=:id', auth.authorizeAdmin, (req, res) => 
@@ -45,7 +46,7 @@ router.post('/delete_user=:id', auth.authorizeAdmin, (req, res) =>
     {
         success: () => res.send(jsonResponse.success()),
         fail: (reason) => {res.send(jsonResponse.fail(reason))}
-    })
+    });
 })
 
 router.post('/add_listing/', auth.authorizeAdmin, (req, res) => 
@@ -59,7 +60,7 @@ router.post('/delete_listing=:id', auth.authorizeAdmin, (req, res) =>
     {
         success: () => res.send(jsonResponse.success()),
         fail: (reason) => res.send(jsonResponse.fail(reason))
-    })
+    });
 })
 
 router.post('/give_admin_userid=:id', auth.authorizeAdmin, (req, res) =>
@@ -88,4 +89,4 @@ router.post('/revoke_admin_userid=:id', auth.authorizeAdmin, (req, res) =>
     });
 })
 
-module.exports = {router};
+module.exports = { router };

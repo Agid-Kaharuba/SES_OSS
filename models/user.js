@@ -1,18 +1,19 @@
 const database = require('../utils/database');
 const bcrypt = require('bcrypt');
 
-let convertToUserObject = function (DBUser) {
-	return {
-		id: DBUser.US_PK,
-		username: DBUser.US_Username || null,
-		password: DBUser.US_Password || null,
-		email: DBUser.US_Email || null,
-		firstName: DBUser.US_FirstName || null,
-		lastName: DBUser.US_LastName || null,
-		phoneNumber: DBUser.US_PhoneNumber || null,
-		birthDate: DBUser.US_BirthDate || null,
-		joinDate: DBUser.US_JoinDate || null
-	};
+let convertToUserObject = function (DBUser) 
+{
+	return 	{
+				id: DBUser.US_PK,
+				username: DBUser.US_Username || null,
+				password: DBUser.US_Password || null,
+				email: DBUser.US_Email || null,
+				firstName: DBUser.US_FirstName || null,
+				lastName: DBUser.US_LastName || null,
+				phoneNumber: DBUser.US_PhoneNumber || null,
+				birthDate: DBUser.US_BirthDate || null,
+				joinDate: DBUser.US_JoinDate || null
+			};
 };
 
 /**
@@ -20,11 +21,8 @@ let convertToUserObject = function (DBUser) {
  * @param {string} id - The id of the user, this is the primary key in the database.
  * @param {userObject} callback - found(user) and notFound() expected
  */
-exports.getUserFromID = function (id, callback = {
-	found: (user) => {
-	}, notFound: () => {
-	}
-}) {
+exports.getUserFromID = function (id, callback = { found: (user) => { }, notFound: () => { }})
+{
 	const db = database.connectDatabase();
 	let query = `
 SELECT
@@ -42,11 +40,16 @@ LIMIT 1
 ;`;
 	let inputs = [id];
 	db.query(query, inputs,
-		(err, results) => {
+		(err, results) => 
+		{
 			if (err) console.log("User.js | getUserFromID | ERROR: " + err.message);
-			if (results.length > 0) {
+
+			if (results.length > 0) 
+			{
 				callback.found(convertToUserObject(results[0]));
-			} else {
+			} 
+			else
+			{
 				callback.notFound();
 			}
 		});
@@ -58,12 +61,8 @@ LIMIT 1
  * @param {string} username - The username of the user.
  * @param {userObject} callback - found() and notFound() expected
  */
-exports.getUser = function (username, callback = {
-	found: (user) => {
-	},
-	notFound: () => {
-	}
-}) {
+exports.getUser = function (username, callback = { found: (user) => { }, notFound: () => { }})
+{
 	var db = database.connectDatabase();
 	var query = `
 SELECT
@@ -82,16 +81,19 @@ LIMIT 1
 ;`;
 	var sanitsedInputs = [username];
 	db.query(query, sanitsedInputs,
-		(err, results) => {
+		(err, results) => 
+		{
 			if (err) console.log("User.js | getUser | ERROR: " + err.message);
-			if (results.length > 0) {
+
+			if (results.length > 0) 
+			{
 				callback.found(convertToUserObject(results[0]));
-			} else {
+			} 
+			else
+			{
 				callback.notFound();
 			}
 		});
-
-
 };
 
 /**
@@ -99,12 +101,8 @@ LIMIT 1
  * @param  {string} username - Username of user.
  * @param {userObject} callback - found() and notFound() expected
  */
-exports.checkUserExists = function (username, callback = {
-	found: (user) => {
-	},
-	notFound: () => {
-	}
-}) {
+exports.checkUserExists = function (username, callback = { found: (user) => { }, notFound: () => { }})
+{
 	var db = database.connectDatabase();
 	var query = `
 SELECT NULL 
@@ -114,11 +112,16 @@ LIMIT 1
 ;`;
 	var sanitsedInputs = [username];
 	db.query(query, sanitsedInputs,
-		(err, results) => {
+		(err, results) => 
+		{
 			if (err) console.log("User.js | checkUserExists | ERROR: " + err.message);
-			if (results.length > 0) {
+
+			if (results.length > 0) 
+			{
 				callback.found();
-			} else {
+			}
+			else
+			{
 				callback.notFound();
 			}
 		});
@@ -129,11 +132,8 @@ LIMIT 1
  * @param  {string} id - id of user.
  * @param {userObject} callback - found() and notFound() expected
  */
-exports.checkUserExistsByID = function (id, callback = {
-	found: () => {
-	}, notFound: () => {
-	}
-}) {
+exports.checkUserExistsByID = function (id, callback = { found: () => { }, notFound: () => { }})
+{
 	var db = database.connectDatabase();
 	var query = `
 SELECT NULL 
@@ -143,11 +143,16 @@ LIMIT 1
 ;`;
 	var inputs = [id];
 	db.query(query, inputs,
-		(err, results) => {
+		(err, results) => 
+		{
 			if (err) console.log("User.js | checkUserExistsByID | ERROR: " + err.message);
-			if (results.length > 0) {
+
+			if (results.length > 0) 
+			{
 				callback.found();
-			} else {
+			}
+			else
+			{
 				callback.notFound();
 			}
 		});
@@ -158,14 +163,13 @@ LIMIT 1
  * @param {userObject} user - User to be added to database.
  * @param {userObject} callback - success() and fail({string} reason) expected
  */
-exports.registerUser = function (user, callback = {
-	success: () => {
-	}, fail: () => {
-	}
-}) {
-	bcrypt.hash(user.password, 10, (errHash, encryptedPassword) => {
+exports.registerUser = function (user, callback = { success: () => { }, fail: () => { }})
+{
+	bcrypt.hash(user.password, 10, (errHash, encryptedPassword) => 
+	{
 		console.log(user.password);
-		if (errHash) {
+		if (errHash) 
+		{
 			callback.fail("Error creating user hash.");
 			return;
 		}
@@ -176,8 +180,10 @@ INSERT INTO User (US_Username, US_Password, US_Email, US_FirstName, US_LastName,
 VALUES (?, ?, ?, ?, ?, ? ,?)
 ;`;
 		var sanitsedInputs = [user.username, encryptedPassword, user.email, user.firstName, user.lastName, user.phoneNumber, user.birthDate];
-		db.query(query, sanitsedInputs, (errDb) => {
-			if (errDb) {
+		db.query(query, sanitsedInputs, (errDb) => 
+		{
+			if (errDb) 
+			{
 				console.log("User.js | registerUser | ERROR: " + errDb.message);
 				callback.fail("Error when creating user.");
 
@@ -185,9 +191,9 @@ VALUES (?, ?, ?, ?, ?, ? ,?)
 		});
 		var sanitsedInputs = [user.username, encryptedPassword, user.email, user.firstName, user.lastName, user.phoneNumber, user.birthDate];
 		db.query(query, sanitsedInputs, (errDb) => 
-    {
+		{
 			if (errDb) 
-      {
+			{
 				console.log("User.js | registerUser | ERROR: " + err.message);
 				callback.fail("Error when creating user.");
 				return;
@@ -204,22 +210,26 @@ VALUES (?, ?, ?, ?, ?, ? ,?)
  * @param {string} password - Password credential.
  * @param {userObject} callback - success() and fail({string} reason) expected
  */
-exports.loginUser = function (username, password, callback = {
-	success: (user) => {
-	}, fail: (reason) => {
-	}
-}) {
+exports.loginUser = function (username, password, callback = { success: (user) => { }, fail: (reason) => { }})
+{
 	exports.getUser(username,
 		{
 			found:
-				(user) => {
-					bcrypt.compare(password, user.password, (err, compareResult) => {
-						if (err) {
+				(user) => 
+				{
+					bcrypt.compare(password, user.password, (err, compareResult) => 
+					{
+						if (err) 
+						{
 							callback.fail("There was an error comparing the hash.")
 						}
-						if (compareResult) {
+
+						if (compareResult) 
+						{
 							callback.success(user);
-						} else {
+						}
+						else 
+						{
 							callback.fail("Login fail - Username or Password does not match.");
 						}
 					});
@@ -229,11 +239,8 @@ exports.loginUser = function (username, password, callback = {
 		});
 };
 
-exports.GetUserProfile = function (sessionPk, callback = {
-	found: (user) => {
-	}, notFound: () => {
-	}
-}) {
+exports.GetUserProfile = function (sessionPk, callback = { found: (user) => { }, notFound: () => { }})
+{
 	var db = database.connectDatabase();
 	var query = `
 SELECT 
@@ -249,13 +256,18 @@ FROM Session
 WHERE SS_PK = ? 
 ;`;
 
-	var inputs = [];
-	db.query(query, sanitsedInputs,
-		(err, results) => {
+	var inputs = [sessionPk];
+	db.query(query, inputs,
+		(err, results) => 
+		{
 			if (err) console.log("User.js | getUser | ERROR: " + err.message);
-			if (results.length > 0) {
+
+			if (results.length > 0) 
+			{
 				callback.found(results);
-			} else {
+			} 
+			else
+			{
 				callback.notFound();
 			}
 		});

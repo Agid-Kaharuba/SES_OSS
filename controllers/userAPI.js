@@ -13,16 +13,16 @@ router.post('/register', (req, res) =>
 	var user = req.body;
 	userModel.checkUserExists(user.username,
 		{
-			found:
+			found: 
 				() => res.send(jsonResponse.fail("Could not register an already existing user")),
-			notFound:
+			notFound: 
 				() => userModel.registerUser(user,
-					{
-						success:
-							() => res.redirect("/?register=success"),
-						fail:
-							(reason) => res.send(jsonResponse.fail(reason))
-					})
+				{
+					success:
+						() => res.redirect("/?register=success"),
+					fail:
+						(reason) => res.send(jsonResponse.fail(reason))
+				})
 		});
 });
 
@@ -33,13 +33,14 @@ router.post('/login', (req, res) =>
 		{
 			success:
 				(user) => auth.attach(res, user,
+				{
+					success: () => 
 					{
-						success: () => {
-							res.cookie("currentUser", user.username);
-							res.redirect("/?login=success");
-						},
-						fail: () => res.send(jsonResponse.fail('Failed to create a new session'))
-					}),
+						res.cookie("currentUser", user.username);
+						res.redirect("/?login=success");
+					},
+					fail: () => res.send(jsonResponse.fail('Failed to create a new session'))
+				}),
 			fail:
 				(reason) => res.send(jsonResponse.fail(reason)),
 		});
@@ -52,13 +53,15 @@ router.get('/view-account', auth.authorizeUser, (req, res) =>
 
 router.get('/logout', (req, res) =>
 {
-	auth.invalidateSession(req, {
-		success: () => {
-			res.cookie('currentUser', "", {maxAge: Date.now()});
-			res.redirect("/?logout=success");
-		},
-		fail: () => res.send(jsonResponse.fail('Failed to logout'))
-	})
+	auth.invalidateSession(req, 
+		{
+			success: () => 
+			{
+				res.cookie('currentUser', "", {maxAge: Date.now()});
+				res.redirect("/?logout=success");
+			},
+			fail: () => res.send(jsonResponse.fail('Failed to logout'))
+		});
 });
 
 router.put('/modify', (req, res) =>
@@ -81,4 +84,4 @@ router.get('/', (req, res) =>
 
 });
 
-module.exports = {router};
+module.exports = { router };
