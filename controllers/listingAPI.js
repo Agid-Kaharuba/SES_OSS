@@ -3,6 +3,7 @@ const router = express.Router();
 const listingModel = require('../models/listing');
 const view = require('../views/listingView');
 const jsonResponse = require('../utils/JSONResponse');
+const attachmentUtil = require('../utils/attachmentUtil')
 // Every method is prepended with "/listing" see app.js
 
 router.get('/id=:id', (req, res) => // e.g. listing/id=4bb8590e-ce26-11e9-a859-256794b0b57d
@@ -13,6 +14,7 @@ router.get('/id=:id', (req, res) => // e.g. listing/id=4bb8590e-ce26-11e9-a859-2
 	listingModel.GetListing(req.params.id,
 		(result) => 
 		{
+			result[0].imgLocation = attachmentUtil.getImgPath(result[0].imgLocation);
 			res.render('pages/listingResult', {currentUser, result});
 		});
 });
@@ -26,6 +28,10 @@ router.get('/search=:query', (req, res) =>
 	listingModel.SearchListings(req.params.query, 
 		(results) =>
 		{ 
+			for (var i = 0; i < results.length; i++)
+			{
+				results[i].imgLocation = attachmentUtil.getImgPath(results[i].imgLocation);
+			}
 			res.render('pages/listing', { currentUser, listings: results });
 		});
 })

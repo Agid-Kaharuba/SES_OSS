@@ -10,12 +10,15 @@ SELECT
     LS_Title as listingTitle,
 	LS_Description as listingDescription,
 	LS_Price as listingPrice,
-	LS_RemainingStock as remainingStock
+	LS_RemainingStock as remainingStock,
+	AT_Directory as imgLocation
 FROM Listing
 	INNER JOIN User ON LS_US_Seller = US_PK
+	LEFT JOIN Attachment ON LS_PK = AT_ParentPK AND AT_ParentID = 'LS' AND AT_Type = 'IMG'
 WHERE
-	LS_IsActive = 1 AND 
-    LS_PK = ?
+	LS_IsActive = 1 AND
+	LS_PK = ?
+LIMIT 1
 ;`;
 
 	db.query(query, [listingPK], 
@@ -34,9 +37,11 @@ SELECT
 	US_Username as sellerUsername,
 	LS_Title as listingTitle,
 	LS_Price as listingPrice,
-	LS_PK as listingID
+	LS_PK as listingID,
+	AT_Directory as imgLocation
 FROM Listing
 	INNER JOIN User ON LS_US_Seller = US_PK
+	LEFT JOIN Attachment ON LS_PK = AT_ParentPK AND AT_ParentID = 'LS' AND AT_Type = 'IMG'
 WHERE
 	LS_IsActive = 1 AND 
     INSTR(LS_Title, ?)
