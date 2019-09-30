@@ -195,7 +195,7 @@ VALUES (?, ?, ?, ?, ?, ? ,?)
         });
 
     });
-};
+});
 
 /**
  * Attempts to log a user in using the given credentials
@@ -255,4 +255,4 @@ WHERE SS_PK = ?
 				callback.notFound();
 			}
 		});	
-}
+}}

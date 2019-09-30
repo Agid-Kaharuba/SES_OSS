@@ -10,7 +10,7 @@ SELECT
     LS_Title as listingTitle,
 	LS_Description as listingDescription,
 	LS_Price as listingPrice,
-    LS_RemainingStock as remainingStock
+	LS_RemainingStock as remainingStock
 FROM Listing
 	INNER JOIN User ON LS_US_Seller = US_PK
 WHERE
