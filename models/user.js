@@ -1,4 +1,5 @@
 const database = require('../utils/database');
+const auth = require('../utils/authUtil');
 const bcrypt = require('bcrypt');
 
 let convertToUserObject = function (DBUser)
@@ -267,6 +268,42 @@ exports.loginUser = function (username, password, callback = {
 				() => callback.fail("Login fail - Username or Password does not match.")
 		});
 };
+
+/**
+ * Get a user from a cookie
+ * @param {} req The request object.
+ * @param {} callback callbacks found(user), notFound() and done(). Also has a regardless(user) callback in which the user may be null.
+ */
+exports.getUserFromCookie = function(req, callback = { found: (user) => {}, notFound: () => {}, done: () => {}, regardless: (user) => {}})
+{
+	auth.getSessionFromCookie(req, 
+	{
+		found: (rawSession) =>
+		{
+			this.getUserByID(rawSession.SS_US,
+			{
+				found: (user) => 
+				{
+					callback.found(user);
+					callback.regardless(user);
+					callback.done();
+				},
+				notFound: () =>
+				{
+					callback.notFound();
+					callback.regardless(null);
+					callback.done();
+				}
+			});
+		},
+		notFound: () =>
+		{
+			callback.notFound();
+			callback.regardless(null);
+			callback.done();
+		}
+	})
+}
 
 exports.GetUserProfile = function (sessionPk, callback = {
 	found: (user) =>
