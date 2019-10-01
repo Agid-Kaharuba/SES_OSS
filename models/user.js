@@ -7,6 +7,7 @@ let convertToUserObject = function (DBUser)
 	return {
 		id: DBUser.US_PK,
 		username: DBUser.US_Username || null,
+		password: DBUser.US_Password || null,
 		email: DBUser.US_Email || null,
 		firstName: DBUser.US_FirstName || null,
 		lastName: DBUser.US_LastName || null,
