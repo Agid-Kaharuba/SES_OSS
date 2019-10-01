@@ -245,7 +245,7 @@ exports.getUserFromCookie = function(req, callback = { found: (user) => {}, notF
 	{
 		found: (rawSession) =>
 		{
-			this.getUserByID(rawSession.SS_US,
+			exports.getUserFromID(rawSession.SS_US,
 			{
 				found: (user) => 
 				{
@@ -277,11 +277,11 @@ exports.getUserFromCookie = function(req, callback = { found: (user) => {}, notF
  */
 exports.getUserInfo = function(req, callback = (user, isAdmin) => {})
 {
-	this.getUserFromCookie(req,
+	exports.getUserFromCookie(req,
 	{
 		found: (user) => 
 		{
-			auth.checkAdminPrivileges(user.id, isAdmin, (hasPrivileges) => 
+			auth.checkAdminPrivileges(user.id, (hasPrivileges) => 
 				callback(user, hasPrivileges));
 		},
 		notFound: () => callback(null, false)
