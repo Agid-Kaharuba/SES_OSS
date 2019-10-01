@@ -249,23 +249,23 @@ exports.getUserFromCookie = function(req, callback = { found: (user) => {}, notF
 			{
 				found: (user) => 
 				{
-					callback.found(user);
-					callback.regardless(user);
-					callback.done();
+					if (callback.hasOwnProperty('found')) callback.found(user);
+					if (callback.hasOwnProperty('regardless')) callback.regardless(user);
+					if (callback.hasOwnProperty('done')) callback.done();
 				},
 				notFound: () =>
 				{
 					callback.notFound();
-					callback.regardless(null);
-					callback.done();
+					if (callback.hasOwnProperty('regardless')) callback.regardless(null);
+					if (callback.hasOwnProperty('done')) callback.done();
 				}
 			});
 		},
 		notFound: () =>
 		{
 			callback.notFound();
-			callback.regardless(null);
-			callback.done();
+			if (callback.hasOwnProperty('regardless')) callback.regardless(user);
+			if (callback.hasOwnProperty('done')) callback.done();
 		}
 	})
 }
@@ -359,8 +359,8 @@ exports.modifyPassword = function (user, newPassword, callback = { success: () =
 		if (err)
 		{
 			console.trace("Failed to hash new password: " + err);
-			callback.fail();
-			callback.done();
+			if (callback.hasOwnProperty('fail')) callback.fail();
+			if (callback.hasOwnProperty('done')) callback.done();
 			return;
 		}
 
@@ -379,19 +379,19 @@ exports.modifyPassword = function (user, newPassword, callback = { success: () =
 				if (err)
 				{
 					console.trace("Failed to get update new password: " + err);
-					callback.fail();
+					if (callback.hasOwnProperty('fail')) callback.fail();
 				}
 				else
 				{
-					callback.success();
+					if (callback.hasOwnProperty('success')) callback.success();
 				}
-				callback.done();
+				if (callback.hasOwnProperty('done')) callback.done();
 			})
 		}
 		else 
 		{
-			callback.fail();
-			callback.done();
+			if (callback.hasOwnProperty('fail')) callback.fail();
+			if (callback.hasOwnProperty('done')) callback.done();
 		}
 	})
 }
@@ -437,8 +437,8 @@ const modifyUserByCheck = function(check, user, callback = { success: () => {}, 
 	}
 	else 
 	{
-		callback.fail();
-		callback.done();
+		if (callback.hasOwnProperty('fail')) callback.fail();
+		if (callback.hasOwnProperty('done')) callback.done();
 		return;
 	}
 
@@ -447,13 +447,13 @@ const modifyUserByCheck = function(check, user, callback = { success: () => {}, 
 		if (err)
 		{
 			console.trace("Failed to update User: " + err);
-			callback.fail();
+			if (callback.hasOwnProperty('fail')) callback.fail();
 		}
 		else
 		{
-			callback.success();
+			if (callback.hasOwnProperty('success')) callback.success();
 		}
-		callback.done();
+		if (callback.hasOwnProperty('done')) callback.done();
 	})
 }
 
