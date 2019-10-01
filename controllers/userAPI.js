@@ -53,6 +53,45 @@ router.post('/logout', (req, res) => {
     })
 });
 
+router.post('user/profile/editProfile', auth.authorizeUser, (req, res) =>
+{
+	var editData = [req.body.editProfile_userName, 
+					req.body.editProfile_firstName, 
+					req.body.editProfile_lastName,
+					req.body.editProfile_DOB,
+					req.body.editProfile_phoneNumber,
+					req.body.editProfile_email]
+	userModel.editUserProfile((editData, result) => {
+			res.send('editProfileView', { profile : result });
+		});
+});
+
+router.post('user/profile/editAddress', auth.authorizeUser, (req, res) =>
+{
+	var editData = [req.body.editAddress_line1, 
+					req.body.editAddress_line2, 
+					req.body.editProfile_lastName,
+					req.body.editProfile_DOB,
+					req.body.editProfile_phoneNumber,
+					req.body.editProfile_email]
+	userModel.editUserProfile((editData, result) => {
+			res.send('editAddressView', { profile : result });
+		});
+});
+
+router.post('user/profile/editPayment', auth.authorizeUser, (req, res) =>
+{
+	var editData = [req.body.editAddress_line1, 
+					req.body.editAddress_line2, 
+					req.body.editProfile_lastName,
+					req.body.editProfile_DOB,
+					req.body.editProfile_phoneNumber,
+					req.body.editProfile_email]
+	userModel.editUserProfile((editData, result) => {
+			res.send('editAddressView', { profile : result });
+		});
+});
+
 router.put('/modify', (req, res) => {
 
 });
