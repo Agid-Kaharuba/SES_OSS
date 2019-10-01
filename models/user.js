@@ -2,18 +2,32 @@ const database = require('../utils/database');
 const auth = require('../utils/authUtil');
 const bcrypt = require('bcrypt');
 
-let convertToUserObject = function (DBUser)
+let convertToFullUserObject = function (rawUser)
 {
 	return {
-		id: DBUser.US_PK,
-		username: DBUser.US_Username || null,
-		password: DBUser.US_Password || null,
-		email: DBUser.US_Email || null,
-		firstName: DBUser.US_FirstName || null,
-		lastName: DBUser.US_LastName || null,
-		phoneNumber: DBUser.US_PhoneNumber || null,
-		birthDate: DBUser.US_BirthDate || null,
-		joinDate: DBUser.US_JoinDate || null
+		id: rawUser.US_PK,
+		username: rawUser.US_Username || null,
+		password: rawUser.US_Password || null,
+		email: rawUser.US_Email || null,
+		firstName: rawUser.US_FirstName || null,
+		lastName: rawUser.US_LastName || null,
+		phoneNumber: rawUser.US_PhoneNumber || null,
+		birthDate: rawUser.US_BirthDate || null,
+		joinDate: rawUser.US_JoinDate || null
+	};
+};
+
+let convertToUserObject = function (rawUser)
+{
+	return {
+		id: rawUser.US_PK,
+		username: rawUser.US_Username || null,
+		email: rawUser.US_Email || null,
+		firstName: rawUser.US_FirstName || null,
+		lastName: rawUser.US_LastName || null,
+		phoneNumber: rawUser.US_PhoneNumber || null,
+		birthDate: rawUser.US_BirthDate || null,
+		joinDate: rawUser.US_JoinDate || null
 	};
 };
 
@@ -61,25 +75,18 @@ LIMIT 1
 };
 
 /**
- * Retrieves the user from the database by username.
- * Retrieves the user from the database by username.
+ * Retrieves the database user object from the database by username.
  * @param {string} username - The username of the user.
  * @param {userObject} callback - found() and notFound() expected
  */
-exports.getUser = function (username, callback = {
-	found: (user) =>
-	{
-	},
-	notFound: () =>
-	{
-	}
-})
+exports.getRawUser = function(username, callback = { found: (rawUser) => {}, notFound: () => {} })
 {
 	var db = database.connectDatabase();
 	var query = `
 SELECT
 	US_PK,
 	US_Username,
+	US_Password,
 	US_Email,
 	US_FirstName,
 	US_LastName,
@@ -97,14 +104,39 @@ LIMIT 1
 			if (err) console.trace("Could not get user! ERROR: " + err.message);
 			if (results.length > 0)
 			{
-				callback.found(convertToUserObject(results[0]));
-			} else
+				callback.found(results[0]);
+			} 
+			else
 			{
 				callback.notFound();
 			}
-		});
+	});
+}
 
+/**
+ * Retrieves the user from the database by username. Be careful as the user contains the hashed password as well!
+ * @param {string} username - The username of the user.
+ * @param {userObject} callback - found() and notFound() expected
+ */
+exports.getFullUser = function (username, callback = { found: (user) => {}, notFound: () => {}})
+{
+	exports.getRawUser(username, {
+		found: (rawUser) => callback.found(convertToFullUserObject(rawUser)),
+		notFound: callback.notFound
+	})
+};
 
+/**
+ * Retrieves the user from the database by username.
+ * @param {string} username - The username of the user.
+ * @param {userObject} callback - found() and notFound() expected
+ */
+exports.getUser = function (username, callback = { found: (user) => {}, notFound: () => {}})
+{
+	exports.getRawUser(username, {
+		found: (rawUser) => callback.found(convertToUserObject(rawUser)),
+		notFound: callback.notFound
+	})
 };
 
 /**
@@ -245,7 +277,7 @@ exports.loginUser = function (username, password, callback = {
 	}
 })
 {
-	exports.getUser(username,
+	exports.getFullUser(username,
 		{
 			found:
 				(user) =>
