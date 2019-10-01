@@ -146,35 +146,116 @@ exports.loginUser = function (username, password, callback = {success: (user) =>
         });
 };
 
-exports.GetUserProfile = function (sessionPk, callback = {found: (user) => {}, notFound: () => {}}) 
-{
-	var db = database.connectDatabase();
-	var query = `
-SELECT 
-	US_Username as username,
-	US_Password as password,
-	US_Email as email,
-	US_FirstName as firstName,
-	US_LastName as firstName,
-	US_PhoneNumber as phoneNumber,
-	US_BirthDate as DOB,
-FROM Session
-	INNER JOIN User ON SS_US = US_PK 
-WHERE SS_PK = ? 
-;`;
 
-	var inputs = [];
-	db.query(query, sanitsedInputs, 
-		(err, results) => 
-		{ 
-			if (err) console.log("User.js | getUser | ERROR: " + err.message);
-			if (results.length > 0)
-			{
-				callback.found(results);
-			}
-			else
-			{
-				callback.notFound();
-			}
-		});	
-}
+exports.GetUserProfile = function (callback = (result) => { }) {
+	var db = database.connectDatabase();
+    var query = `
+    SELECT
+        US_PK AS id,
+        US_Username AS username,
+        US_Email AS email,
+        US_FirstName AS firstName,
+        US_LastName AS lastName,
+        US_PhoneNumber AS phoneNumber,
+        US_BirthDate AS birthDate,
+        US_JoinDate AS joinDate
+    FROM Session 
+    LEFT JOIN User ON Session.SS_US = User.US_Username
+    `
+    db.query(query, (err, results) => 
+    {
+        if (err)
+        {
+            console.error('user.js | getUserProfile | getting user profile error: ' + err);
+            callback.fail('Failed to get profile from database');
+        }
+        else
+        {
+            callback.success(results);
+        }
+    })
+};
+
+exports.editUserProfile = function (editData, callback = (result) => { }) {
+	var db = database.connectDatabase();
+    var query = `
+    UPDATE User
+    SET US_Username = ?,
+	SET US_Email = ?,
+	SET US_FirstName = ?,
+	SET US_LastName = ?,
+	SET US_PhoneNumber = ?,
+	SET US_BirthDate = ?,
+	SET US_JoinDate = ? 
+    FROM User 
+    LEFT JOIN Session ON User.US_Username = Session.SS_US
+	`
+	
+    db.query(query, editData, (err, results) => 
+    {
+        if (err)
+        {
+            console.error('user.js | editUserProfile | editing user profile error: ' + err);
+            callback.fail('Failed to edit profile from database');
+        }
+        else
+        {
+            callback.success(results);
+        }
+    })
+};
+
+exports.editUserAddress = function (editData, callback = (result) => { }) {
+	var db = database.connectDatabase();
+    var query = `
+    UPDATE Address
+    SET AD_Line1 = ?,
+	SET AD_Line2 = ?,
+	SET AD_City = ?,
+	SET AD_State = ?,
+	SET AD_Country = ?,
+	SET AD_PostCode = ?,
+    FROM User 
+    LEFT JOIN Address ON User.US_PK = Address.AD_US
+	`
+	
+    db.query(query, editData, (err, results) => 
+    {
+        if (err)
+        {
+            console.error('user.js | editUserAddress | editing user address error: ' + err);
+            callback.fail('Failed to edit address from database');
+        }
+        else
+        {
+            callback.success(results);
+        }
+    })
+};
+
+exports.editUserPayment = function (editData, callback = (result) => { }) {
+	var db = database.connectDatabase();
+    var query = `
+    UPDATE Payment
+    SET PM_Nickname = ?,
+	SET PM_Name = ?,
+	SET PM_CardNumber = ?,
+	SET PM_Expiry = ?,
+	SET PM_CVC = ?,
+    FROM User 
+    LEFT JOIN Payment ON User.US_PK = Payment.AD_US
+	`
+	
+    db.query(query, editData, (err, results) => 
+    {
+        if (err)
+        {
+            console.error('user.js | editUserPayment | editing user payment error: ' + err);
+            callback.fail('Failed to edit address from database');
+        }
+        else
+        {
+            callback.success(results);
+        }
+    })
+};
