@@ -280,7 +280,7 @@ exports.getUserFromCookie = function(req, callback = { found: (user) => {}, notF
 	{
 		found: (rawSession) =>
 		{
-			this.getUserByID(rawSession.SS_US,
+			exports.getUserFromID(rawSession.SS_US,
 			{
 				found: (user) => 
 				{
@@ -302,6 +302,24 @@ exports.getUserFromCookie = function(req, callback = { found: (user) => {}, notF
 			callback.regardless(null);
 			callback.done();
 		}
+	})
+}
+
+/**
+ * Gets the user and checks if the user is an admin from a cookie. <p> </p>
+ * Specifically designed to help out with getting information for the top bar.
+ * @param {} callback callback with callback(user, isAdmin). user may be null if it not found.
+ */
+exports.getUserInfo = function(req, callback = (user, isAdmin) => {})
+{
+	exports.getUserFromCookie(req,
+	{
+		found: (user) => 
+		{
+			auth.checkAdminPrivileges(user.id, (hasPrivileges) => 
+				callback(user, hasPrivileges));
+		},
+		notFound: () => callback(null, false)
 	})
 }
 
@@ -342,6 +360,7 @@ WHERE SS_PK = ?
 			}
 		});
 };
+
 /**
  * Function for internal use!
  * Returns an SQL comparision based on user model. E.g if user has id then it will return US_PK = <ID HERE>.
