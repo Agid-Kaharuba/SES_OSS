@@ -128,13 +128,13 @@ exports.createListingForUserID = function(userid, listing, callback = { success:
 		if (err)
 		{
 			console.trace('Failed to create listing: ' + err);
-			callback.fail();
+			if (callback.hasOwnProperty('fail')) callback.fail();
 		}
 		else
 		{
-			callback.success();
+			if (callback.hasOwnProperty('success')) callback.success();
 		}
-		callback.done();
+		if (callback.hasOwnProperty('done')) callback.done();
 	})
 }
 
@@ -179,13 +179,13 @@ exports.modifyListingByID = function(listingid, listing, callback = { success: (
 		if (err)
 		{
 			console.trace('Failed to modify listing by id: ' + err);
-			callback.fail();
+			if (callback.hasOwnProperty('fail')) callback.fail();
 		}
 		else
 		{
-			callback.success();
+			if (callback.hasOwnProperty('success')) callback.success();
 		}
-		callback.done();
+		if (callback.hasOwnProperty('done')) callback.done();
 	})
 }
 
