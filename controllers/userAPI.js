@@ -89,7 +89,7 @@ router.get('/profile/editAddress', function(req, res) {
     res.render('editAddressView');
 });
 
-router.post('/user/profile/editAddressDone', auth.authorizeUser, (req, res) =>
+router.post('/profile/editAddressDone', auth.authorizeUser, (req, res) =>
 {                   
     auth.getSessionFromCookie(req,
     {
@@ -116,13 +116,13 @@ router.post('/user/profile/editAddressDone', auth.authorizeUser, (req, res) =>
 
 });
 
-router.get('/user/profile/editPayment', function(req, res) {
+router.get('/profile/editPayment', function(req, res) {
     res.render('editPaymentView');
 });
 
-router.post('/user/profile/editAddressDone', auth.authorizeUser, (req, res) =>
+router.post('/profile/editAddressDone', auth.authorizeUser, (req, res) =>
 {                   
-    auth.getSessionFromCookie(req,
+    auth.getSessionFromCooksie(req,
     {
         found: (sessionPK) => 
         {

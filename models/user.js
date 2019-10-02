@@ -147,7 +147,11 @@ exports.loginUser = function (username, password, callback = {success: (user) =>
 };
 
 
-exports.GetUserProfile = function (sessionPk, callback = (result) => { }) {
+exports.GetUserProfile = function (sessionPk, callback = {
+    success: () => {
+    }, fail: () => {
+    }
+}) {
 	var db = database.connectDatabase();
     var query = `
     SELECT
@@ -177,7 +181,11 @@ exports.GetUserProfile = function (sessionPk, callback = (result) => { }) {
     })
 };
 
-exports.editUserProfile = function (editData, callback = (result) => { }) {
+exports.editUserProfile = function (editData, callback = {
+    success: () => {
+    }, fail: () => {
+    }
+}) {
 	var db = database.connectDatabase();
     var query = `
     UPDATE User
@@ -204,7 +212,11 @@ exports.editUserProfile = function (editData, callback = (result) => { }) {
     })
 };
 
-exports.editUserAddress = function (editData, callback = (result) => { }) {
+exports.editUserAddress = function (editData, callback = {
+    success: () => {
+    }, fail: () => {
+    }
+}) {
 	var db = database.connectDatabase();
     var query = `
     UPDATE Address
@@ -234,7 +246,11 @@ exports.editUserAddress = function (editData, callback = (result) => { }) {
     })
 };
 
-exports.editUserPayment = function (editData, callback = (result) => { }) {
+exports.editUserPayment = function (editData, callback = {
+    success: () => {
+    }, fail: () => {
+    }
+}) {
 	var db = database.connectDatabase();
     var query = `
     UPDATE Payment
