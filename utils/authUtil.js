@@ -1,5 +1,6 @@
 const jsonResponse = require('./JSONResponse');
 const database = require('../utils/database');
+const admin = require('../models/admin');
 
 // The key of the session store.
 const SessionCookieProp = 'session'
@@ -16,14 +17,14 @@ let convertToDateTime = function(date)
     return date.toISOString().slice(0, 19).replace('T',' ');
 }
 
-exports.getSessionFromUser = function (user, callback = (err, results, fields) => {}) 
+exports.getSessionFromUser = function(user, callback = (err, results, fields) => {}) 
 {
     const db = database.connectDatabase();
     let query = `SELECT * FROM Session WHERE SS_US = ? LIMIT 1`;
     db.query(query, [user.id], callback);
 }
 
-const getSessionFromCookie = function(obj, callback = {found: (session) => {}, notFound: () => {}})
+exports.getSessionFromCookie = function(obj, callback = {found: (session) => {}, notFound: () => {}})
 {
     if (!obj.cookies.hasOwnProperty(SessionCookieProp))
     {
@@ -39,7 +40,8 @@ const getSessionFromCookie = function(obj, callback = {found: (session) => {}, n
     {
         if (err)
         {
-            console.error('Failed to get sesison from database!')
+            console.error('Failed to get session from database!')
+            callback.notFound();
             return;
         }
         
@@ -50,22 +52,83 @@ const getSessionFromCookie = function(obj, callback = {found: (session) => {}, n
     })
 }
 
-exports.authorizeUser = function(req, res, next)
+exports.tryAuthorizeUser = function(req, callback = {success: (rawSession) => {}, fail: () => {}})
 {
-    getSessionFromCookie(req, {
-        found: (session) => 
+    exports.getSessionFromCookie(req, {
+        found: (rawSession) => 
         {
-            if (Date.now() < session.SS_ExpiryDate)
+            if (Date.now() < rawSession.SS_ExpiryDate)
             {
-                next();
+                callback.success(rawSession)
             }
             else 
             {
-                res.send(jsonResponse.fail('Invalid authentication credentials!'));
+                callback.fail();
             }
         },
-        notFound: () => res.send(jsonResponse.fail('Invalid authentication credentials!'))
+        notFound: () => {
+            callback.fail();
+        }
     });
+}
+
+exports.authorizeUser = function(req, res, next)
+{
+    exports.tryAuthorizeUser(req, 
+    {
+        success: next,
+        fail: () => res.send(jsonResponse.fail('Invalid authentication credentials!'))
+    })
+}
+
+exports.checkAdminPrivileges = function(userID, callback = (hasPrivileges) => {}) 
+{
+    const db = database.connectDatabase();
+    let query = 
+    `SELECT * from User INNER JOIN Admin ON Admin.AD_US = User.US_PK 
+    WHERE User.US_PK = ? LIMIT 1`;
+
+    db.query(query, [userID], (err, results) => 
+    {
+        if (err)
+        {
+            console.trace("Failed to check admin privileges, returning false! " + err);
+            callback(false);
+            return;
+        }
+
+        if (results.length > 0)
+            callback(true);
+        else
+            callback(false);
+    })
+}
+
+exports.tryAdminAction = function(userID, callback = {success: () => {}, fail: () => {}})
+{
+    exports.checkAdminPrivileges(userID, (hasPrivileges) =>
+    {
+        if (hasPrivileges)
+            callback.success();
+        else
+            callback.fail();
+    })
+}
+
+exports.authorizeAdmin = function(req, res, next) 
+{
+    exports.tryAuthorizeUser(req,
+    {
+        success: (rawSession) => 
+        {
+            exports.tryAdminAction(rawSession.SS_US,
+            {
+                success: next,
+                fail: () => res.send(jsonResponse.fail('Access is not allowed for the user'))
+            })
+        },
+        fail: () => res.send(jsonResponse.fail('Invalid authentication credentials!'))
+    })
 }
 
 let attachSessionOnCookie = function(res, payload)
@@ -136,7 +199,7 @@ exports.attach = function(res, user, callback = {success: () => {}, fail: () => 
     });
 }
 
-const deleteSessionForUser = function(user, callback = {success: () => {}, fail: () => {}})
+exports.deleteSessionForUser = function(user, callback = {success: () => {}, fail: () => {}})
 {
     const db = database.connectDatabase();
 
@@ -150,7 +213,7 @@ const deleteSessionForUser = function(user, callback = {success: () => {}, fail:
     })
 }
 
-const deleteSession = function(sessionID, callback = {success: () => {}, fail: () => {}})
+exports.deleteSession = function(sessionID, callback = {success: () => {}, fail: () => {}})
 {
     const db = database.connectDatabase();
 
@@ -166,8 +229,8 @@ const deleteSession = function(sessionID, callback = {success: () => {}, fail: (
 
 exports.invalidateSession = function(req, callback = {success: () => {}, fail: () => {}})
 {
-    getSessionFromCookie(req, {
-        found: (session) => deleteSession(session.SS_PK, callback),
+    exports.getSessionFromCookie(req, {
+        found: (rawSession) => exports.deleteSession(rawSession.SS_PK, callback),
         notFound: () => callback.fail()
     })
 }

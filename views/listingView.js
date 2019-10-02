@@ -11,7 +11,7 @@
 // Note; you might have to account for the fact where there are no listings found
 exports.viewListings = function(listings)
 {
-
+	// return Path.join(_dirname,'../public/Listings/listingsResults.html');
 }
 
 //this is for displaying a single listing when on a listing's page.
@@ -28,7 +28,7 @@ exports.viewListings = function(listings)
 // Note; you might have to account for the fact where there are no listings found
 exports.viewListing = function(listing) 
 {
-
+	// return Path.join(_dirname,'../public/Listings/listingsResults.html');	
 }
 
 //this is for displaying the summary of a purchase after a purchase has been completed.

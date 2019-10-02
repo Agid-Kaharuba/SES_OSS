@@ -10,7 +10,7 @@ SELECT
     LS_Title as listingTitle,
 	LS_Description as listingDescription,
 	LS_Price as listingPrice,
-    LS_RemainingStock as remainingStock
+	LS_RemainingStock as remainingStock
 FROM Listing
 	INNER JOIN User ON LS_US_Seller = US_PK
 WHERE
@@ -33,6 +33,7 @@ exports.SearchListings = function (searchTerm, callback = (result) => { })
 SELECT
 	US_Username as sellerUsername,
 	LS_Title as listingTitle,
+	LS_Price as listingPrice,
 	LS_PK as listingID
 FROM Listing
 	INNER JOIN User ON LS_US_Seller = US_PK
@@ -101,4 +102,119 @@ LIMIT 1
 			return;
 		}
 	});
+}
+
+/**
+ * Create a new listing for a particular user identified by id.
+ * @param {string} userid The id of the user.
+ * @param {} listing The listing model.
+ * @param {} callback callbacks with success() if successful, fail() if failed, and done() when done. Note that done() is called after fail() or success().
+ */
+exports.createListingForUserID = function(userid, listing, callback = { success: () => {}, fail: () => {}, done: () => {} })
+{
+	const db = database.connectDatabase();
+	let query = `
+		INSERT INTO Listing (LS_US_Seller, LS_Title, LS_Description, LS_Price, LS_RemainingStock, LS_IsActive)
+		VALUES (?, ?, ?, ?, ?, 1);
+	`
+	if (listing.remainingStock == null)
+		var remainingStock = 1;
+	else
+		var remainingStock = listing.remainingStock;
+
+	let inputs = [userid, listing.title, listing.description, listing.price, remainingStock, 1];
+	db.query(query, inputs, (err, results) =>
+	{
+		if (err)
+		{
+			console.trace('Failed to create listing: ' + err);
+			if (callback.hasOwnProperty('fail')) callback.fail();
+		}
+		else
+		{
+			if (callback.hasOwnProperty('success')) callback.success();
+		}
+		if (callback.hasOwnProperty('done')) callback.done();
+	})
+}
+
+/**
+ * Create a new listing from a full model.
+ * @param {} listing The listing model.
+ * @param {} callback callbacks with success() if successful, fail() if failed, and done() when done. Note that done() is called after fail() or success().
+ */
+exports.createListing = function(listing, callback = { success: () => {}, fail: () => {}, done: () => {} })
+{
+	createListingForUserID(listing.user.id, listing, callback);
+}
+
+/**
+ * Modify a listing defined by its id.
+ * @param {} listingid The id or primary key of the listing.
+ * @param {} listing The updated listing model.
+ * @param {} callback callbacks with success() if successful, fail() if failed, and done() when done. Note that done() is called after fail() or success().
+ */
+exports.modifyListingByID = function(listingid, listing, callback = { success: () => {}, fail: () => {}, done: () => {} })
+{
+	const db = database.connectDatabase();
+	let query = `
+		UPDATE Listing SET
+		LS_US_Seller = COALESCE(?, LS_US_Seller),
+		LS_Title = COALESCE(?, LS_Title),
+		LS_Description = COALESCE(?, LS_Description),
+		LS_Price = COALESCE(?, LS_Price),
+		LS_IsActive = COALESCE(?, LS_isActive),
+		LS_RemainingStock = COALESCE(?, LS_RemainingStock)
+		WHERE LS_PK = ?;
+	`
+	// Try to get user id from user model inside listing model.
+	if (!listing.hasOwnProperty('user')) 
+		var userid = null;
+	else
+		var userid = user.userid;
+
+	let inputs = [userid, listing.title, listing.description, listing.price, listing.isActive, listing.remainingStock, listingid]
+	db.query(query, inputs, (err, results) => 
+	{
+		if (err)
+		{
+			console.trace('Failed to modify listing by id: ' + err);
+			if (callback.hasOwnProperty('fail')) callback.fail();
+		}
+		else
+		{
+			if (callback.hasOwnProperty('success')) callback.success();
+		}
+		if (callback.hasOwnProperty('done')) callback.done();
+	})
+}
+
+/**
+ * Modify a listing.
+ * @param {} listing The updated listing model.
+ * @param {} callback callbacks with success() if successful, fail() if failed, and done() when done. Note that done() is called after fail() or success().
+ */
+exports.modifyListing = function(listing, callback = { success: () => {}, fail: () => {}, done: () => {} })
+{
+	modifyListingByID(listing.id, listing, callback);
+}
+
+/**
+ * Turns a listing into active state.
+ * @param {string} listingID The listing id.
+ * @param {} callback callbacks with success() if successful, fail() if failed, and done() when done. Note that done() is called after fail() or success().
+ */
+exports.openListing = function(listingID, callback = { success: () => {}, fail: () => {}, done: () => {} })
+{
+	modifyListingByID(listingID, {isActive: true}, callback);
+}
+
+/**
+ * Turns a listing into an inactive state.
+ * @param {string} listingID The listing id.
+ * @param {} callback callbacks with success() if successful, fail() if failed, and done() when done. Note that done() is called after fail() or success().
+ */
+exports.closeListing = function(listingID, callback = { success: () => {}, fail: () => {}, done: () => {} })
+{
+	modifyListingByID(listingID, {isActive: false}, callback);
 }
