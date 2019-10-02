@@ -80,7 +80,7 @@ router.post('/user/profile/editAddress', auth.authorizeUser, (req, res) =>
 		});
 });
 
-router.post('/user/profile/editPayment', auth.authorizeUser, (req, res) =>
+router.post('/user/profile/viewEditPayment', auth.authorizeUser, (req, res) =>
 {
 	var editData = [req.body.editPayment_nickname, 
 					req.body.editPayment_cardholderName, 
@@ -88,7 +88,7 @@ router.post('/user/profile/editPayment', auth.authorizeUser, (req, res) =>
 					req.body.editPayment_Expiry,
 					req.body.editPayment_CVV]
 	userModel.editUserProfile((editData, result) => {
-			res.send('editAddressView', { profile : result });
+			res.send('editPaymentView', { profile : result });
 		});
 });
 
