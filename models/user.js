@@ -161,6 +161,7 @@ exports.GetUserProfile = function (callback = (result) => { }) {
         US_JoinDate AS joinDate
     FROM Session 
     LEFT JOIN User ON Session.SS_US = User.US_Username
+    LIMIT 1
     `
     db.query(query, (err, results) => 
     {
@@ -180,15 +181,13 @@ exports.editUserProfile = function (editData, callback = (result) => { }) {
 	var db = database.connectDatabase();
     var query = `
     UPDATE User
-    SET US_Username = ?,
-	SET US_Email = ?,
 	SET US_FirstName = ?,
 	SET US_LastName = ?,
 	SET US_PhoneNumber = ?,
 	SET US_BirthDate = ?,
-	SET US_JoinDate = ? 
     FROM User 
-    LEFT JOIN Session ON User.US_Username = Session.SS_US
+    LEFT JOIN Session ON User.US_PK = ?
+    LIMIT 1
 	`
 	
     db.query(query, editData, (err, results) => 
@@ -217,6 +216,8 @@ exports.editUserAddress = function (editData, callback = (result) => { }) {
 	SET AD_PostCode = ?,
     FROM User 
     LEFT JOIN Address ON User.US_PK = Address.AD_US
+    WHERE AD_US = ?
+    LIMIT 1
 	`
 	
     db.query(query, editData, (err, results) => 
@@ -244,6 +245,7 @@ exports.editUserPayment = function (editData, callback = (result) => { }) {
 	SET PM_CVC = ?,
     FROM User 
     LEFT JOIN Payment ON User.US_PK = Payment.AD_US
+    LIMIT 1
 	`
 	
     db.query(query, editData, (err, results) => 

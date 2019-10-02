@@ -59,12 +59,10 @@ router.post('/logout', (req, res) => {
 
 router.post('/user/profile/editProfile', auth.authorizeUser, (req, res) =>
 {
-	var editData = [req.body.editProfile_userName, 
-					req.body.editProfile_firstName, 
+	var editData = [req.body.editProfile_firstName, 
 					req.body.editProfile_lastName,
 					req.body.editProfile_DOB,
-					req.body.editProfile_phoneNumber,
-					req.body.editProfile_email]
+					req.body.editProfile_phoneNumber]
 	userModel.editUserProfile((editData, result) => {
 			res.send('editProfileView', { profile : result });
 		});
