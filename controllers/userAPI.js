@@ -47,7 +47,7 @@ router.post('/login', (req, res) =>
 
 router.get('/profile', (req, res) => 
 {
-    var sessionPk = authUtil.getSessionFromCookie(req);
+    var sessionPk = auth.getSessionFromCookie(req);
 	userModel.GetUserProfile(sessionPk,
     {
         success: (result) => 
