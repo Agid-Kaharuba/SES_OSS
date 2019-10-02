@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const listingModel = require('../models/listing');
+const userModel = require('../models/user')
+const baseView = require('../views/base')
 const view = require('../views/listingView');
 const jsonResponse = require('../utils/JSONResponse');
 // Every method is prepended with "/listing" see app.js
@@ -9,20 +11,22 @@ router.get('/id=:id', (req, res) => // e.g. listing/id=4bb8590e-ce26-11e9-a859-2
 {
 	console.log('Receieved req for listing id: ' + req.params.id); // Example params usage.
 	listingModel.GetListing(req.params.id,
-		(result) => {
-			//res.send(view.viewListing(result));
-			res.render('listingResult', { listings: result });
-			//ejs.renderFile('listingResult', {listing : result}); 
+		(result) => 
+		{
+			baseView.renderWithAddons(req, res, 'pages/listingResult', {result});
 		});
 });
+
+
 
 router.get('/search=:query', (req, res) => 
 {
 	console.log('Received search query: ' + req.params.query); // Example params usage.
+	
 	listingModel.SearchListings(req.params.query, 
 		(results) =>
 		{ 
-			res.render('listing', { listings: results });
+			baseView.renderWithAddons(req, res, 'pages/listing', {listings: results });
 		});
 })
 
@@ -31,7 +35,7 @@ router.get('/summary=:purchaseID', (req, res) =>
 	console.log('Received request to see purchase summary.')
 	var userPK = "This needs to be set as the user PK defined by the session."; //and pass it through to the 'GetPurchaseSummary' such that a user cannot see another users purchase summaries
 	listingModel.GetPurchaseSummary(req.params.purchaseID, userPK, 		
-		{
+	{
 		found: 
 			(result) => 
 			{
@@ -40,7 +44,7 @@ router.get('/summary=:purchaseID', (req, res) =>
 			},
 		notFound: 
 			() => res.send(jsonResponse.fail("Payment Summary Not Found")),
-		})
+	});
 });
 
 router.get('/confirmPurchase', (req, res) =>
@@ -51,31 +55,12 @@ router.get('/confirmPurchase', (req, res) =>
 router.get('/paymentSummary', (req, res) =>
 {
 	res.render('pages/paymentSummary')
+	router.get('/listing/Search=', function(req,res)
+	{
+		ejs.renderFile('pages/listing', {listing : listings}); 
+	});
 });
-
-router.get('/listing/Search=',function(req,res){
-    ejs.renderFile('listing', {listing : listings}); 
-});
-
-function search(namekey, results){
-	for (var i = 0; i < results.length; i++){
-		if (results[i].listingTitle == namekey){
-			return results[i]; 
-		}
-	} 
-} 
-
-
-router.get('listing.listingTitle', function(req,res){
-
-	ejs.renderFile('listingResult', {listing : search(listings)}); 
-
-});
-
 
 router.get('/listing/');
-
-router.get('listing/listingResult');
-
 
 module.exports = { router };
