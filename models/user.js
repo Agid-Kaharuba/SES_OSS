@@ -208,15 +208,15 @@ exports.editUserAddress = function (editData, callback = (result) => { }) {
 	var db = database.connectDatabase();
     var query = `
     UPDATE Address
-    SET AD_Line1 = ?,
-	SET AD_Line2 = ?,
-	SET AD_City = ?,
-	SET AD_State = ?,
-	SET AD_Country = ?,
-	SET AD_PostCode = ?,
+        SET AD_Line1 = ?,
+        SET AD_Line2 = ?,
+        SET AD_City = ?,
+        SET AD_State = ?,
+        SET AD_Country = ?,
+        SET AD_PostCode = ?,
     FROM User 
-    LEFT JOIN Address ON User.US_PK = Address.AD_US
-    WHERE AD_US = ?
+        LEFT JOIN Session ON SS_PK = ? AND SS_US = US_PK
+    WHERE AD_US = SS_US
     LIMIT 1
 	`
 	
@@ -238,13 +238,13 @@ exports.editUserPayment = function (editData, callback = (result) => { }) {
 	var db = database.connectDatabase();
     var query = `
     UPDATE Payment
-    SET PM_Nickname = ?,
-	SET PM_Name = ?,
-	SET PM_CardNumber = ?,
-	SET PM_Expiry = ?,
-	SET PM_CVC = ?,
+        SET PM_Nickname = ?,
+        SET PM_Name = ?,
+        SET PM_CardNumber = ?,
+        SET PM_Expiry = ?,
+        SET PM_CVC = ?,
     FROM User 
-    LEFT JOIN Payment ON User.US_PK = Payment.AD_US
+    LEFT JOIN Session ON SS_PK = ? AND SS_US = US_PK
     LIMIT 1
 	`
 	

@@ -90,32 +90,60 @@ router.get('/user/profile/editAddress', function(req, res) {
 });
 
 router.post('/user/profile/editAddressDone', auth.authorizeUser, (req, res) =>
-{
-	var editData = [req.body.editAddress_line1, 
-					req.body.editAddress_line2, 
-					req.body.editProfile_lastName,
-					req.body.editProfile_DOB,
-					req.body.editProfile_phoneNumber]
-	userModel.editUserProfile((editData, result) => {
-			res.redirect('/user/profile')
-		});
+{                   
+    auth.getSessionFromCookie(req,
+    {
+        found: (sessionPK) => 
+        {
+            var editData = 
+            [
+                req.body.editAddress_line1, 
+				req.body.editAddress_line2, 
+				req.body.editAddress_city,
+				req.body.editAddress_state,
+                req.body.editAddress_country,
+                req.body.editAddress_postcode,
+                sessionPK
+            ];
+
+            userModel.editUserAddress((editData, result) => 
+            {
+                res.redirect('/user/profile')
+            });
+        },
+        notFound: () => {} 
+    });
+
 });
 
 router.get('/user/profile/editPayment', function(req, res) {
     res.render('editPaymentView');
 });
 
+router.post('/user/profile/editAddressDone', auth.authorizeUser, (req, res) =>
+{                   
+    auth.getSessionFromCookie(req,
+    {
+        found: (sessionPK) => 
+        {
+            var editData = 
+            [
+                req.body.editPayment_nickname, 
+				req.body.editPayment_cardholderName, 
+				req.body.editPayment_number,
+				req.body.editPayment_Expiry,
+				req.body.editPayment_CVV,
+                sessionPK
+            ];
 
-router.post('/user/profile/editPaymentDone', auth.authorizeUser, (req, res) =>
-{
-	var editData = [req.body.editPayment_nickname, 
-					req.body.editPayment_cardholderName, 
-					req.body.editPayment_number,
-					req.body.editPayment_Expiry,
-					req.body.editPayment_CVV]
-	userModel.editUserProfile((editData, result) => {
-            res.redirect('/user/profile')
-		});
+            userModel.editUserAddress((editData, result) => 
+            {
+                res.redirect('/user/profile')
+            });
+        },
+        notFound: () => {} 
+    });
+
 });
 
 router.put('/modify', (req, res) => {
