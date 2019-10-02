@@ -137,7 +137,7 @@ router.get('/profile/editPayment', function(req, res) {
 
 router.post('/profile/editAddressDone', auth.authorizeUser, (req, res) =>
 {                   
-    auth.getSessionFromCooksie(req,
+    auth.getSessionFromCookie(req,
     {
         found: (sessionPK) => 
         {
