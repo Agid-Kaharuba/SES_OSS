@@ -74,8 +74,7 @@ router.post('/user/profile/editAddress', auth.authorizeUser, (req, res) =>
 					req.body.editAddress_line2, 
 					req.body.editProfile_lastName,
 					req.body.editProfile_DOB,
-					req.body.editProfile_phoneNumber,
-					req.body.editProfile_email]
+					req.body.editProfile_phoneNumber]
 	userModel.editUserProfile((editData, result) => {
 			res.send('editAddressView', { profile : result });
 		});
@@ -83,12 +82,11 @@ router.post('/user/profile/editAddress', auth.authorizeUser, (req, res) =>
 
 router.post('/user/profile/editPayment', auth.authorizeUser, (req, res) =>
 {
-	var editData = [req.body.editAddress_line1, 
-					req.body.editAddress_line2, 
-					req.body.editProfile_lastName,
-					req.body.editProfile_DOB,
-					req.body.editProfile_phoneNumber,
-					req.body.editProfile_email]
+	var editData = [req.body.editPayment_nickname, 
+					req.body.editPayment_cardholderName, 
+					req.body.editPayment_number,
+					req.body.editPayment_Expiry,
+					req.body.editPayment_CVV]
 	userModel.editUserProfile((editData, result) => {
 			res.send('editAddressView', { profile : result });
 		});
