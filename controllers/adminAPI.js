@@ -3,6 +3,7 @@ const jsonResponse = require('../utils/JSONResponse');
 const userModel = require('../models/user')
 const adminModel = require('../models/admin');
 const view = require('../views/adminView');
+const baseView = require('../views/base')
 const auth = require('../utils/authUtil');
 
 const router = express.Router();
@@ -11,28 +12,28 @@ const router = express.Router();
 
 router.get('/dashboard', auth.authorizeAdmin, (req, res) => 
 {
-    res.sendFile(view.dashboard());
+    baseView.renderWithAddons(req, res, 'pages/adminDashboard/dashboard');
 })
 
 router.get('/listingManagement', auth.authorizeAdmin, (req, res) => 
 {
-    res.sendFile(view.listingManagement());
+    baseView.renderWithAddons(req, res, 'pages/adminDashboard/listingManagement');
 })
 
 router.get('/userManagement', auth.authorizeAdmin, (req, res) => 
 {
-    res.sendFile(view.userManagement());
+    baseView.renderWithAddons(req, res, 'pages/adminDashboard/userManagement');
 })
 
 router.get('/adminPrivileges', auth.authorizeAdmin, (req, res) => 
 {
-    const renderWith = (results) => res.render('pages/adminDashboard/adminPrivileges', {results});
+    const renderWith = (results) => baseView.renderWithAddons(req, res, 'pages/adminDashboard/adminPrivileges', {results});
 
     adminModel.getAllAdmins(
-	{
+    {
         success: (results) => renderWith(results),
         fail: (reason) => renderWith([])
-    });
+    })
 })
 
 router.post('/add_user=:id', auth.authorizeAdmin, (req, res) => 

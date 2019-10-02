@@ -88,8 +88,15 @@ exports.checkAdminPrivileges = function(userID, callback = (hasPrivileges) => {}
     `SELECT * from User INNER JOIN Admin ON Admin.AD_US = User.US_PK 
     WHERE User.US_PK = ? LIMIT 1`;
 
-    db.query(query, userID, (err, results) => 
+    db.query(query, [userID], (err, results) => 
     {
+        if (err)
+        {
+            console.trace("Failed to check admin privileges, returning false! " + err);
+            callback(false);
+            return;
+        }
+
         if (results.length > 0)
             callback(true);
         else
