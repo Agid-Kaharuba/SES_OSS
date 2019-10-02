@@ -47,10 +47,15 @@ router.post('/login', (req, res) =>
 
 router.get('/profile', (req, res) => 
 {
-	userModel.GetUserProfile(
-		(result) => {
+    var sessionPk = authUtil.getSessionFromCookie(req);
+	userModel.GetUserProfile(sessionPk,
+    {
+        success: (result) => 
+        {
 			res.render('userProfileView', { profile: result });
-		});
+        },
+        fail: () => { jsonResponse.fail("get user profile failed"); }
+    })
 });
 
 router.get('/logout', (req, res) =>
