@@ -1,5 +1,5 @@
 const express = require('express');
-
+const baseView = require('../views/base')
 const userModel = require('../models/user');
 const jsonResponse = require('../utils/JSONResponse');
 const auth = require('../utils/authUtil');
@@ -52,7 +52,7 @@ router.get('/profile', (req, res) =>
     {
         success: (result) => 
         {
-			res.render('userProfileView', { profile: result });
+			baseView.renderWithAddons('userProfileView', { profile: result });
         },
         fail: () => { jsonResponse.fail("get user profile failed"); }
     })
