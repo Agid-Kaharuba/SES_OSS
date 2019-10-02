@@ -42,8 +42,12 @@ router.post('/login', (req, res) =>
         });
 });
 
-router.get('/view-account', auth.authorizeUser, (req, res) => {
-    res.send(userView.viewAccount());
+router.get('/user/profile', (req, res) => 
+{
+	userModel.GetUserProfile(
+		(result) => {
+			res.render('userProfileView', { profile: result });
+		});
 });
 
 router.post('/logout', (req, res) => {
@@ -53,7 +57,7 @@ router.post('/logout', (req, res) => {
     })
 });
 
-router.post('user/profile/editProfile', auth.authorizeUser, (req, res) =>
+router.post('/user/profile/editProfile', auth.authorizeUser, (req, res) =>
 {
 	var editData = [req.body.editProfile_userName, 
 					req.body.editProfile_firstName, 
@@ -66,7 +70,7 @@ router.post('user/profile/editProfile', auth.authorizeUser, (req, res) =>
 		});
 });
 
-router.post('user/profile/editAddress', auth.authorizeUser, (req, res) =>
+router.post('/user/profile/editAddress', auth.authorizeUser, (req, res) =>
 {
 	var editData = [req.body.editAddress_line1, 
 					req.body.editAddress_line2, 
@@ -79,7 +83,7 @@ router.post('user/profile/editAddress', auth.authorizeUser, (req, res) =>
 		});
 });
 
-router.post('user/profile/editPayment', auth.authorizeUser, (req, res) =>
+router.post('/user/profile/editPayment', auth.authorizeUser, (req, res) =>
 {
 	var editData = [req.body.editAddress_line1, 
 					req.body.editAddress_line2, 
