@@ -57,7 +57,7 @@ router.get('/profile', (req, res) =>
         fail: () => { jsonResponse.fail("get user profile failed"); }
     })
 });
-
+\
 router.get('/logout', (req, res) =>
 {
 	auth.invalidateSession(req, 
