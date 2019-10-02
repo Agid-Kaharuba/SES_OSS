@@ -47,15 +47,7 @@ router.post('/login', (req, res) =>
 
 router.get('/profile', (req, res) => 
 {
-    var sessionPk = auth.getSessionFromCookie(req);
-	userModel.GetUserProfile(sessionPk,
-    {
-        success: (result) => 
-        {
-			baseView.renderWithAddons('userProfileView', { profile: result });
-        },
-        fail: () => { jsonResponse.fail("get user profile failed"); }
-    })
+	baseView.renderWithAddons(req, res, 'userProfileView');
 });
 
 router.get('/logout', (req, res) =>
