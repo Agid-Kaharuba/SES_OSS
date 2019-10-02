@@ -128,12 +128,12 @@
 							<th>Post Code</th>
                         </tr>
                         <tr id="userInfo">
-                            <th id="displayLine1"><%= profile.line1 %></th>
-                            <th id="displayLine2"><%= profile.line2 %></th>
-							<th id="displayCity"><%= profile.city %></th>
-							<th id="displayState"><%= profile.state %></th>
-							<th id="diplayCountry"><%= profile.country %></th>
-							<th id="displayPostcode"><%= profile.postCode %></th>
+                            <th id="displayLine1"><%= user.line1 %></th>
+                            <th id="displayLine2"><%= user.line2 %></th>
+							<th id="displayCity"><%= user.city %></th>
+							<th id="displayState"><%= user.state %></th>
+							<th id="diplayCountry"><%= user.country %></th>
+							<th id="displayPostcode"><%= user.postCode %></th>
 						</tr>
 					</table>
 					<form action="editProfile">
@@ -149,11 +149,11 @@
 							<th>CVV</th>
                         </tr>
                         <tr id="userInfo">
-                            <th id="displayLine1"><%= profile.nickname %></th>
-                            <th id="displayLine2"><%= profile.name %></th>
-							<th id="displayCity"><%= profile.number %></th>
-							<th id="displayState"><%= profile.expiry %></th>
-							<th id="diplayCountry"><%= profile.cvv %></th>
+                            <th id="displayLine1"><%= user.nickname %></th>
+                            <th id="displayLine2"><%= user.name %></th>
+							<th id="displayCity"><%= user.number %></th>
+							<th id="displayState"><%= user.expiry %></th>
+							<th id="diplayCountry"><%= user.cvv %></th>
 						</tr>
 					</table>
 					<form action="user/profile/editPayment">
