@@ -96,27 +96,67 @@
 			<div class="main">
 				<div class="widget">
                     <div class="title">Profile Information</div>
-                    <table class="userTable">
+                    <table class="userProfileTable">
                         <tr>
                             <th>Username</th>
                             <th>First Name</th>
 							<th>Last Name</th>
 							<th>Date of Birth</th>
-							<th>Email</th>npm install -g nodemon
+							<th>Email</th>
 							<th>Phone Number</th>
-							<th>Payment Info</th>
                         </tr>
                         <tr id="userInfo">
-                            <th id="displayUsername"><%= results[i].username %></th>
-                            <th id="displayFirstName"><%= results[i].firstName %></th>
-							<th id="displayLastName"><%= results[i].lastName %></th>
-							<th id="displayDOB"><%= results[i].DOB %></th>
-							<th id="displayEmail"><%= results[i].email %></th>
-							<th id="displayPhone"><%= results[i].phoneNumber %></th>
-							<th id="displayCard">3344</th>
+                            <th id="displayUsername"><%= profile.username %></th>
+                            <th id="displayFirstName"><%= profile.firstName %></th>
+							<th id="displayLastName"><%= profile.lastName %></th>
+							<th id="displayDOB"><%= profile.DOB %></th>
+							<th id="displayEmail"><%= profile.email %></th>
+							<th id="displayPhone"><%= profile.phoneNumber %></th>
 						</tr>
 					</table>
-					<form action="editUserProfile.html">
+					<form action="user/profile/editProfile">
+						<input type="submit" value="Edit Profile Information" />
+					</form>
+					<div class="title">Current User Address</div>
+                    <table class="userAddressTable">
+                        <tr>
+                            <th>Line 1</th>
+                            <th>Line 2</th>
+							<th>City</th>
+							<th>State</th>
+							<th>Country</th>
+							<th>Post Code</th>
+                        </tr>
+                        <tr id="userInfo">
+                            <th id="displayLine1"><%= profile.line1 %></th>
+                            <th id="displayLine2"><%= profile.line2 %></th>
+							<th id="displayCity"><%= profile.city %></th>
+							<th id="displayState"><%= profile.state %></th>
+							<th id="diplayCountry"><%= profile.country %></th>
+							<th id="displayPostcode"><%= profile.postCode %></th>
+						</tr>
+					</table>
+					<form action="editProfile">
+						<input type="submit" value="Edit Profile Information" />
+					</form>
+					<div class="title">Current User Payment Details</div>
+                    <table class="userAddressTable">
+                        <tr>
+                            <th>Nickname</th>
+                            <th>Cardholder Name</th>
+							<th>Card Number</th>
+							<th>Expiry</th>
+							<th>CVV</th>
+                        </tr>
+                        <tr id="userInfo">
+                            <th id="displayLine1"><%= profile.nickname %></th>
+                            <th id="displayLine2"><%= profile.name %></th>
+							<th id="displayCity"><%= profile.number %></th>
+							<th id="displayState"><%= profile.expiry %></th>
+							<th id="diplayCountry"><%= profile.cvv %></th>
+						</tr>
+					</table>
+					<form action="user/profile/editPayment">
 						<input type="submit" value="Edit Profile Information" />
 					</form>
 					<div class="chart"></div>
