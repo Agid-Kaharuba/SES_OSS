@@ -41,7 +41,7 @@ router.post('/login', (req, res) =>
         });
 });
 
-router.get('/user/profile', (req, res) => 
+router.get('/profile', (req, res) => 
 {
 	userModel.GetUserProfile(
 		(result) => {
@@ -56,11 +56,11 @@ router.post('/logout', (req, res) => {
     })
 });
 
-router.get('/user/profile/editProfile', function(req, res) {
+router.get('/profile/editProfile', function(req, res) {
     res.render('editProfileView');
 });
 
-router.post('/user/profile/editProfileDone', auth.authorizeUser, (req, res) =>
+router.post('/profile/editProfileDone', auth.authorizeUser, (req, res) =>
 {                   
     auth.getSessionFromCookie(req,
     {
@@ -85,7 +85,7 @@ router.post('/user/profile/editProfileDone', auth.authorizeUser, (req, res) =>
 
 });
 
-router.get('/user/profile/editAddress', function(req, res) {
+router.get('/profile/editAddress', function(req, res) {
     res.render('editAddressView');
 });
 

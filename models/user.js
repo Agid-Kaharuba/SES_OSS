@@ -216,7 +216,7 @@ exports.editUserAddress = function (editData, callback = (result) => { }) {
         SET AD_PostCode = ?,
     FROM User 
         LEFT JOIN Session ON SS_PK = ? AND SS_US = US_PK
-    WHERE AD_US = SS_US
+    WHERE AD_US = SS_US1
     LIMIT 1
 	`
 	
