@@ -114,9 +114,9 @@
 							<th id="displayPhone"><%= user.phoneNumber %></th>
 						</tr>
 					</table>
-					<form action="/profile/editProfile">
+					<form action="./editProfile">
 						<input type="submit" value="Edit Profile Information" />
-					</form>
+					</form>1
 					<div class="title">Current User Address</div>
                     <table class="userAddressTable">
                         <tr>
@@ -136,7 +136,7 @@
 							<th id="displayPostcode"><%= user.postCode %></th>
 						</tr>
 					</table>
-					<form action="/profile/editAddress">
+					<form action="./editAddress">
 						<input type="submit" value="Edit Profile Information" />
 					</form>
 					<div class="title">Current User Payment Details</div>
@@ -156,7 +156,7 @@
 							<th id="diplayCountry"><%= user.cvv %></th>
 						</tr>
 					</table>
-					<form action="/profile/editPayment">
+					<form action="./editPayment">
 						<input type="submit" value="Edit Profile Information" />
 					</form>
 					<div class="chart"></div>
