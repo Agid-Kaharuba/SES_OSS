@@ -147,7 +147,7 @@ exports.loginUser = function (username, password, callback = {success: (user) =>
 };
 
 
-exports.GetUserProfile = function (callback = (result) => { }) {
+exports.GetUserProfile = function (sessionPk, callback = (result) => { }) {
 	var db = database.connectDatabase();
     var query = `
     SELECT
@@ -181,14 +181,14 @@ exports.editUserProfile = function (editData, callback = (result) => { }) {
 	var db = database.connectDatabase();
     var query = `
     UPDATE User
-	SET US_FirstName = ?,
-	SET US_LastName = ?,
-	SET US_PhoneNumber = ?,
-	SET US_BirthDate = ?,
+	    SET US_FirstName = ?,
+	    SET US_LastName = ?,
+	    SET US_BirthDate = ?,
+	    SET US_PhoneNumber = ?,
     FROM User 
-    LEFT JOIN Session ON User.US_PK = ?
+        LEFT JOIN Session ON SS_PK = ? AND SS_US = US_PK
     LIMIT 1
-	`
+	;`;
 	
     db.query(query, editData, (err, results) => 
     {

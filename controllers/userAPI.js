@@ -1,7 +1,6 @@
 const express = require('express');
 
 const userModel = require('../models/user');
-const userView = require('../views/userView');
 const jsonResponse = require('../utils/JSONResponse');
 const auth = require('../utils/authUtil');
 const router = express.Router();
@@ -57,18 +56,40 @@ router.post('/logout', (req, res) => {
     })
 });
 
-router.post('/user/profile/editProfile', auth.authorizeUser, (req, res) =>
-{
-	var editData = [req.body.editProfile_firstName, 
-					req.body.editProfile_lastName,
-					req.body.editProfile_DOB,
-					req.body.editProfile_phoneNumber]
-	userModel.editUserProfile((editData, result) => {
-			res.send('editProfileView', { profile : result });
-		});
+router.get('/user/profile/editProfile', function(req, res) {
+    res.render('editProfileView');
 });
 
-router.post('/user/profile/editAddress', auth.authorizeUser, (req, res) =>
+router.post('/user/profile/editProfileDone', auth.authorizeUser, (req, res) =>
+{                   
+    auth.getSessionFromCookie(req,
+    {
+        found: (sessionPK) => 
+        {
+            var editData = 
+            [
+                req.body.editProfile_firstName, 
+                req.body.editProfile_lastName,
+                req.body.editProfile_DOB,
+                req.body.editProfile_phoneNumber,
+                sessionPK
+            ];
+
+            userModel.editUserProfile((editData, result) => 
+            {
+                res.redirect('/user/profile')
+            });
+        },
+        notFound: () => {} 
+    });
+
+});
+
+router.get('/user/profile/editAddress', function(req, res) {
+    res.render('editAddressView');
+});
+
+router.post('/user/profile/editAddressDone', auth.authorizeUser, (req, res) =>
 {
 	var editData = [req.body.editAddress_line1, 
 					req.body.editAddress_line2, 
@@ -76,11 +97,16 @@ router.post('/user/profile/editAddress', auth.authorizeUser, (req, res) =>
 					req.body.editProfile_DOB,
 					req.body.editProfile_phoneNumber]
 	userModel.editUserProfile((editData, result) => {
-			res.send('editAddressView', { profile : result });
+			res.redirect('/user/profile')
 		});
 });
 
-router.post('/user/profile/viewEditPayment', auth.authorizeUser, (req, res) =>
+router.get('/user/profile/editPayment', function(req, res) {
+    res.render('editPaymentView');
+});
+
+
+router.post('/user/profile/editPaymentDone', auth.authorizeUser, (req, res) =>
 {
 	var editData = [req.body.editPayment_nickname, 
 					req.body.editPayment_cardholderName, 
@@ -88,7 +114,7 @@ router.post('/user/profile/viewEditPayment', auth.authorizeUser, (req, res) =>
 					req.body.editPayment_Expiry,
 					req.body.editPayment_CVV]
 	userModel.editUserProfile((editData, result) => {
-			res.send('editPaymentView', { profile : result });
+            res.redirect('/user/profile')
 		});
 });
 
