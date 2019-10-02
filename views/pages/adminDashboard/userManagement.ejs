@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html>
+<%- include ../../partials/head %>
 	<head>
 		<meta charset="utf-8">
 	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -75,19 +74,19 @@
 			<nav>
 				<ul>
 					<li>
-						<a href="dashboard" >
+						<a href="dashboard" ></a>
 							<span><i class="fa fa-user"></i></span>
 							<span>Admin Control Panel</span>
 						</a>
 					</li>
-					<li class="active">
+					<li>
 						<a href="listingManagement">
 
 							<span><i class="fa fa-bar-chart"></i></span>
 							<span>Listing Management</span>
 						</a>
 					</li>
-					<li>
+					<li class="active">
 						<a href="userManagement">
 							<span><i class="fa fa-bar-chart"></i></span>
 							<span>User Management</span>
@@ -104,14 +103,14 @@
 		</div>
 		<div class="main-content">
 			<div class="title">
-				Listing Management
+				User Management
 			</div>
 			<div class="main">
 				<div class="container m-4">
 					<div class="card card-body bg-light">
-						<h2>Delete Listing</h2>
-						<input id="deleteListingInput" type="text">
-						<input id="confirmDeleteListing" type="submit">
+						<h2>Delete User</h2>
+						<input id="deleteUserInput" type="text">
+						<input id="confirmDeleteUser" type="submit">
 					</div>
 				</div>
 			</div>
@@ -121,11 +120,11 @@
 	<script>
 		$().ready(() => 
 		{
-			$("#confirmDeleteListing").click(() =>
+			$("#confirmDeleteUser").click(() =>
 			{
-				let inp = $("#deleteListingInput").val();
+				let inp = $("#deleteUserInput").val();
 				console.log("got " + inp);
-				$.post("delete_listing=" + inp, null, (data) =>
+				$.post("delete_user=" + inp, null, (data) =>
 				{
 					if (data.status == "success")
 					{

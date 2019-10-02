@@ -56,13 +56,18 @@
                 </div>
             </div>
         </div>
-        <% if(currentUser) { %>
+        <% if(user != null) { %>
             <div class="inline-block mr-4 text-light">
-                Hello <%= currentUser %>
+                Hello <%= user.username %>
             </div>
             <button class="btn btn-primary mr-2" onclick="window.location.href='/user/cart'" type="button">
                 Carts
             </button>
+            <% if (isAdmin)  { %>
+            <button class="btn btn-warning mr-2" onclick="window.location.href='/admin/dashboard'" type="button">
+                Admin Dashboard
+            </button>
+            <% } %>
             <button class="btn btn-warning mr-2" onclick="window.location.href='/user/profile'" type="button">
                 Profile
             </button>

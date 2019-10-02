@@ -257,6 +257,7 @@ exports.loginUser = function (username, password, callback = { success: (user) =
 					{
 						if (err) 
 						{
+							console.trace("Password hash error " + err);
 							callback.fail("There was an error comparing the hash.")
 						}
 
@@ -280,7 +281,7 @@ exports.loginUser = function (username, password, callback = { success: (user) =
  * @param {} req The request object.
  * @param {} callback callbacks found(user), notFound() and done(). Also has a regardless(user) callback in which the user may be null.
  */
-exports.getUserFromCookie = function(req, callback = { found: (user) => {}, notFound: () => {}, done: () => {}, regardless: (user) => {}})
+exports.getUserFromCookie = function(req, callback = { found: (user) => {}, notFound: () => {}, done: () => {}, regardless: (user) => {} })
 {
 	auth.getSessionFromCookie(req, 
 	{
