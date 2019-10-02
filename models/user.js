@@ -330,8 +330,11 @@ exports.getUserInfo = function(req, callback = (user, isAdmin) => {})
 }
 
 
-exports.GetUserProfile = function (sessionPk, callback = (result) => { }) 
-{
+exports.GetUserProfile = function (sessionPk, callback = {
+    success: () => {
+    }, fail: () => {
+    }
+}) {
 	var db = database.connectDatabase();
     var query = `
     SELECT
@@ -361,7 +364,11 @@ exports.GetUserProfile = function (sessionPk, callback = (result) => { })
     })
 };
 
-exports.editUserProfile = function (editData, callback = (result) => { }) {
+exports.editUserProfile = function (editData, callback = {
+    success: () => {
+    }, fail: () => {
+    }
+}) {
 	var db = database.connectDatabase();
     var query = `
     UPDATE User
@@ -388,8 +395,11 @@ exports.editUserProfile = function (editData, callback = (result) => { }) {
     })
 };
 
-exports.editUserAddress = function (editData, callback = (result) => { }) 
-{
+exports.editUserAddress = function (editData, callback = {
+    success: () => {
+    }, fail: () => {
+    }
+}) {
 	var db = database.connectDatabase();
     var query = `
     UPDATE Address
@@ -401,7 +411,7 @@ exports.editUserAddress = function (editData, callback = (result) => { })
         SET AD_PostCode = ?,
     FROM User 
         LEFT JOIN Session ON SS_PK = ? AND SS_US = US_PK
-    WHERE AD_US = SS_US
+    WHERE AD_US = SS_US1
     LIMIT 1
 	`
 	
@@ -419,8 +429,11 @@ exports.editUserAddress = function (editData, callback = (result) => { })
     })
 };
 
-exports.editUserPayment = function (editData, callback = (result) => { }) 
-{
+exports.editUserPayment = function (editData, callback = {
+    success: () => {
+    }, fail: () => {
+    }
+}) {
 	var db = database.connectDatabase();
     var query = `
     UPDATE Payment
