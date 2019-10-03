@@ -1,4 +1,4 @@
-const jsonResponse = require('./JSONResponse');
+const jsonResponse = require('../');
 const database = require('../utils/database');
 const admin = require('../models/admin');
 
@@ -26,12 +26,13 @@ exports.getSessionFromUser = function(user, callback = (err, results, fields) =>
 
 exports.getSessionFromCookie = function(obj, callback = {found: (session) => {}, notFound: () => {}})
 {
-    if (!obj.cookies.hasOwnProperty(SessionCookieProp))
+    let sessionID = obj.cookies[SessionCookieProp];
+    if (sessionID == null)
     {
         callback.notFound();
         return;
     }
-    let sessionID = obj.cookies[SessionCookieProp]; 
+
     let db = database.connectDatabase();
     
     let query = `SELECT * FROM Session Where SS_PK = ? LIMIT 1`;
@@ -88,8 +89,15 @@ exports.checkAdminPrivileges = function(userID, callback = (hasPrivileges) => {}
     `SELECT * from User INNER JOIN Admin ON Admin.AD_US = User.US_PK 
     WHERE User.US_PK = ? LIMIT 1`;
 
-    db.query(query, userID, (err, results) => 
+    db.query(query, [userID], (err, results) => 
     {
+        if (err)
+        {
+            console.trace("Failed to check admin privileges, returning false! " + err);
+            callback(false);
+            return;
+        }
+
         if (results.length > 0)
             callback(true);
         else

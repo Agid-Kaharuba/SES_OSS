@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const listingModel = require('../models/listing');
+const userModel = require('../models/user')
+const baseView = require('../views/base')
 const view = require('../views/listingView');
 const jsonResponse = require('../utils/JSONResponse');
 const attachmentUtil = require('../utils/attachmentUtil')
@@ -10,16 +12,15 @@ router.get('/id=:id', (req, res) => // e.g. listing/id=4bb8590e-ce26-11e9-a859-2
 {
 	console.log('Receieved req for listing id: ' + req.params.id); // Example params usage.
 
-	let currentUser = req.cookies.currentUser;
-	listingModel.GetListing(req.params.id,	
-	{
-		found: (result) => 
+	listingModel.GetListing(req.params.id,
+  {
+    found: (result) => 
 		{
-			result[0].imgName = attachmentUtil.getImgPath(result[0].imgName);
-			res.render('pages/listingResult', {currentUser, result});
+      result[0].imgName = attachmentUtil.getImgPath(result[0].imgName);
+			baseView.renderWithAddons(req, res, 'pages/listingResult', {result});
 		},
-		notFound: () => { res.send(jsonResponse.fail("listingNotFound")); }
-	});
+    notFound: () -> { res.send(jsonResponse.fail("listingNotFound")); }
+  });
 });
 
 
@@ -27,15 +28,15 @@ router.get('/id=:id', (req, res) => // e.g. listing/id=4bb8590e-ce26-11e9-a859-2
 router.get('/search=:query', (req, res) => 
 {
 	console.log('Received search query: ' + req.params.query); // Example params usage.
-	let currentUser = req.cookies.currentUser;
+	
 	listingModel.SearchListings(req.params.query, 
 		(results) =>
-		{ 
+		{
 			for (var i = 0; i < results.length; i++)
 			{
 				results[i].imgName = attachmentUtil.getImgPath(results[i].imgName);
 			}
-			res.render('pages/listing', { currentUser, listings: results });
+			baseView.renderWithAddons(req, res, 'pages/listing', {listings: results });
 		});
 })
 

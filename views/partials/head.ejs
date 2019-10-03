@@ -19,33 +19,10 @@
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
-        <a class="navbar-brand text-warning" href="#">Inside</a>
-        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-            <li class="nav-item active">
-                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item">
-                <div class="dropdown">
-                    <a aria-expanded="false" aria-haspopup="true" class="btn btn-secondary dropdown-toggle"
-                       data-toggle="dropdown"
-                       href="#" id="dropdownMenuLink" role="button">
-                        Category
-                    </a>
-
-                    <div aria-labelledby="dropdownMenuLink" class="dropdown-menu">
-                        <a class="dropdown-item" href="#">hats</a>
-                        <a class="dropdown-item" href="#">cloths</a>
-                        <a class="dropdown-item" href="#">pants</a>
-                    </div>
-                </div>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-danger" href="#" tabindex="-1">Favorite</a>
-            </li>
-        </ul>
-        <div class="inline-block">
+        <a class="navbar-brand text-warning" href="#" onclick="window.location.href='http://localhost:3000'">Home </a>
+        <div class="inline-block" style="width:80%">
             <div class="px-3 py-1 bg-light rounded rounded-pill shadow-sm" style="margin:0 20px">
-                <div class="input-group" style="width: 280px">
+                <div class="input-group">
                     <input aria-describedby="button-addon1" class="form-control border-0 bg-light"
                            placeholder="What're you searching for?" id="searchInput"
                            type="search">
@@ -56,13 +33,15 @@
                 </div>
             </div>
         </div>
-        <% if(currentUser) { %>
+        <% if(user != null) { %>
             <div class="inline-block mr-4 text-light">
-                Hello <%= currentUser %>
+                Hello <%= user.username %>
             </div>
-            <button class="btn btn-primary mr-2" onclick="window.location.href='/user/cart'" type="button">
-                Carts
+            <% if (isAdmin)  { %>
+            <button class="btn btn-warning mr-2" onclick="window.location.href='/admin/dashboard'" type="button">
+                Admin Dashboard
             </button>
+            <% } %>
             <button class="btn btn-warning mr-2" onclick="window.location.href='/user/profile'" type="button">
                 Profile
             </button>

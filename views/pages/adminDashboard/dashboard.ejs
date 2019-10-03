@@ -73,7 +73,7 @@
 			</div>
 			<nav>
 				<ul>
-					<li>
+					<li class="active">
 						<a href="dashboard" >
 							<span><i class="fa fa-user"></i></span>
 							<span>Admin Control Panel</span>
@@ -92,7 +92,7 @@
 							<span>User Management</span>
 						</a>
 					</li>
-					<li class="active">
+					<li>
 						<a href="adminPrivileges">
 							<span><i class="fa fa-bar-chart"></i></span>
 							<span>Admin Privileges</span>
@@ -103,90 +103,15 @@
 		</div>
 		<div class="main-content">
 			<div class="title">
-				Admin Privileges
+				Admin Control Panel
 			</div>
-			<div class="main">
-				<div class="container m-4">
-					<div class="card card-body bg-light">
-						<h2>Give Admin Privileges</h2>
-						<input id="giveAdminInput" type="text">
-						<input id="confirmGiveAdminInput" type="submit">
-					</div>
-				</div>
-
-				<div class="container m-4">
-					<div class="card card-body bg-light">
-						<h2>Revoke Admin Privileges</h2>
-						<input id="revokeAdminInput" type="text">
-						<input id="confirmRevokeAdminInput" type="submit">
-					</div>
-				</div>
-
-				<div class="container m-4">
-					<div class="card card-body bg-light">
-						<h2>Current Admins</h2>
-						<div class="overflow-auto">
-							<table class="table">
-								<thead class="thead-dark">
-									<tr>
-										<th scope="col">ID</th>
-										<th scope="col">Username</th>
-										<th scope="col">First Name</th>
-										<th scope="col">Last Name</th>
-									</tr>
-								</thead>		
-								<% for (result of results) { %>
-								<tr>
-									<td><%= result.id%></td>
-									<td><%= result.username%></td>
-									<td><%= result.firstName%></td>
-									<td><%= result.lastName%></td>
-								</tr>
-								<% } %>
-							</table>
-						</div>
+			<div class="main container">
+				<div class="container">
+					<div class="jumbotron text-center">
+						<h1>Welcome to Admin Control</h1>
 					</div>
 				</div>
 			</div>
 		</div>
 	</body>
-
-	<script>
-		$().ready(() => 
-		{
-			$("#confirmGiveAdminInput").click(() =>
-			{
-				let inp = $("#giveAdminInput").val();
-				console.log("got " + inp);
-				$.post("give_admin_userid=" + inp, null, (data) =>
-				{
-					if (data.status == "success")
-					{
-						alert("Successful!");
-					} 
-					else
-					{
-						alert("Failed!\nCause: " + data.reason);
-					}
-				})
-			})
-
-			$("#confirmRevokeAdminInput").click(() =>
-			{
-				let inp = $("#revokeAdminInput").val();
-				console.log("got " + inp);
-				$.post("revoke_admin_userid=" + inp, null, (data) =>
-				{
-					if (data.status == "success")
-					{
-						alert("Successful!");
-					} 
-					else
-					{
-						alert("Failed!\nCause: " + data.reason);
-					}
-				})
-			})
-		})
-	</script>
 </html>

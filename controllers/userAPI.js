@@ -1,7 +1,6 @@
 const express = require('express');
 
 const userModel = require('../models/user');
-//const userView = require('../views/userView');
 const jsonResponse = require('../utils/JSONResponse');
 const auth = require('../utils/authUtil');
 const router = express.Router();
@@ -46,9 +45,12 @@ router.post('/login', (req, res) =>
 		});
 });
 
-router.get('/view-account', auth.authorizeUser, (req, res) =>
+router.get('/profile', (req, res) => 
 {
-	//res.send(userView.viewAccount());
+	userModel.GetUserProfile(
+		(result) => {
+			res.render('userProfileView', { profile: result });
+		});
 });
 
 router.get('/logout', (req, res) =>
@@ -62,6 +64,96 @@ router.get('/logout', (req, res) =>
 			},
 			fail: () => res.send(jsonResponse.fail('Failed to logout'))
 		});
+});
+
+router.get('/profile/editProfile', function(req, res) {
+    res.render('editProfileView');
+});
+
+router.post('/profile/editProfileDone', auth.authorizeUser, (req, res) =>
+{                   
+    auth.getSessionFromCookie(req,
+    {
+        found: (sessionPK) => 
+        {
+            var editData = 
+            [
+                req.body.editProfile_firstName, 
+                req.body.editProfile_lastName,
+                req.body.editProfile_DOB,
+                req.body.editProfile_phoneNumber,
+                sessionPK
+            ];
+
+            userModel.editUserProfile((editData, result) => 
+            {
+                res.redirect('/user/profile')
+            });
+        },
+        notFound: () => {} 
+    });
+
+});
+
+router.get('/profile/editAddress', function(req, res) {
+    res.render('editAddressView');
+});
+
+router.post('/profile/editAddressDone', auth.authorizeUser, (req, res) =>
+{                   
+    auth.getSessionFromCookie(req,
+    {
+        found: (sessionPK) => 
+        {
+            var editData = 
+            [
+                req.body.editAddress_line1, 
+				req.body.editAddress_line2, 
+				req.body.editAddress_city,
+				req.body.editAddress_state,
+                req.body.editAddress_country,
+                req.body.editAddress_postcode,
+                sessionPK
+            ];
+
+            userModel.editUserAddress((editData, result) => 
+            {
+                res.redirect('/user/profile')
+            });
+        },
+        notFound: () => {} 
+    });
+
+});
+
+router.get('/profile/editPayment', function(req, res) {
+    res.render('editPaymentView');
+});
+
+router.post('/profile/editAddressDone', auth.authorizeUser, (req, res) =>
+{                   
+    auth.getSessionFromCooksie(req,
+    {
+        found: (sessionPK) => 
+        {
+            var editData = 
+            [
+                req.body.editPayment_nickname, 
+				req.body.editPayment_cardholderName, 
+				req.body.editPayment_number,
+				req.body.editPayment_Expiry,
+				req.body.editPayment_CVV,
+                sessionPK
+            ];
+
+            userModel.editUserAddress((editData, result) => 
+            {
+                res.redirect('/user/profile')
+            });
+        },
+        notFound: () => {} 
+    });
+
 });
 
 router.put('/modify', (req, res) =>
