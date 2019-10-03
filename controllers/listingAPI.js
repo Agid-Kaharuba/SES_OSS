@@ -13,13 +13,13 @@ router.get('/id=:id', (req, res) => // e.g. listing/id=4bb8590e-ce26-11e9-a859-2
 	console.log('Receieved req for listing id: ' + req.params.id); // Example params usage.
 
 	listingModel.GetListing(req.params.id,
-  {
-    found: (result) => 
+	{
+		found: (result) => 
 		{
-      result[0].imgName = attachmentUtil.getImgPath(result[0].imgName);
+			result[0].imgName = attachmentUtil.getImgPath(result[0].imgName);
 			baseView.renderWithAddons(req, res, 'pages/listingResult', {result});
 		},
-    notFound: () -> { res.send(jsonResponse.fail("listingNotFound")); }
+		notFound: () => { res.send(jsonResponse.fail("listingNotFound")); }
   });
 });
 
