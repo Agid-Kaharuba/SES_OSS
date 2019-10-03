@@ -3,18 +3,19 @@
 //otherwise return the dir of the img passed in
 const fs = require("fs");
 
-exports.getImgPath = function(imgFileName)
+exports.getImgPath = function(jpgImgName)
 {
-	var defaultFile = 'default.jpg';
-	if (imgFileName == null)
+	var baseDir = __dirname + "/../attachment/IMG/";
+	var defaultFile = baseDir + 'default.jpg';
+	if (jpgImgName == null)
 	{
 		return defaultFile;
 	}
 
-	var dir = __dirname + "/../attachment/IMG/" + imgFileName;
+	var imgDir = baseDir + jpgImgName + '.jpg';
 	if (fs.existsSync(dir))
 	{
-		return imgFileName;
+		return jpgImgName;
 	}
 	else
 	{
