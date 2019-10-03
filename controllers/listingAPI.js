@@ -6,6 +6,8 @@ const baseView = require('../views/base')
 const view = require('../views/listingView');
 const jsonResponse = require('../utils/JSONResponse');
 const attachmentUtil = require('../utils/attachmentUtil')
+const auth = require('../utils/authUtil');
+
 // Every method is prepended with "/listing" see app.js
 
 router.get('/id=:id', (req, res) => // e.g. listing/id=4bb8590e-ce26-11e9-a859-256794b0b57d
@@ -40,36 +42,69 @@ router.get('/search=:query', (req, res) =>
 		});
 })
 
-router.get('/summary=:purchaseID', (req, res) =>
+router.get('/summary=:purchaseID', auth.authorizeUser, (req, res) =>
 {
 	console.log('Received request to see purchase summary.')
 	var userPK = "This needs to be set as the user PK defined by the session."; //and pass it through to the 'GetPurchaseSummary' such that a user cannot see another users purchase summaries
-	listingModel.GetPurchaseSummary(req.params.purchaseID, userPK, 		
+	auth.getSessionFromCookie(req, 
 	{
-		found: 
-			(result) => 
+		found: (session) =>
+		{
+			var userPk = session.SS_US;
+			listingModel.GetPurchaseSummary(req.params.purchaseID, userPK, 		
 			{
-				console.log(result);
-				res.render(view.viewPurchaseSummary(result));
-			},
-		notFound: 
-			() => res.send(jsonResponse.fail("Payment Summary Not Found")),
+				found: 
+					(result) => 
+					{
+						console.log(result);
+						res.render(view.viewPurchaseSummary(result));
+					},
+				notFound: 
+					() => res.send(jsonResponse.fail("Payment Summary Not Found")),
+			});
+		},
+		notFound: () => { res.send("Session not found.") };
 	});
+});
+
+router.get('/purchase=:listingID&quantity=:amount', (req, res) => 
+{
+	console.log(req.params.listingID+ "|" + req.params.amount);
+	listingModel.getPrePurchaseInformation(req.params.listingID, req.params.amount,
+	{
+		
+	});
+});
+
+router.post('/purchaseItem', (req, res) => 
+{
+	console.log(req);
+	listingModel.purchaseItem(
+		req.params.listingPK, 
+		req.params.buyerPK, 
+		req.params.paymentMethodPK, 
+		req.params.deliveryAddressPK, 
+		totalPrice, 
+		quantity,
+	{
+		success: (purchasePK) =>
+		{
+			res.redirect("/summary=" + purchasePK);
+		},
+		fail: (reason) => { res.send(jsonResponse.fail(reason)); }
+	})
 });
 
 router.get('/confirmPurchase', (req, res) =>
 {
 	let currentUser = req.cookies.currentUser;
-	res.render('pages/confirmPurchase', { currentUser })
+	console.log('currentUser is ' + currentUser);
+	baseView.renderWithAddons(req, res, 'pages/confirmPurchase', { currentUser })
 });
 
-router.get('/paymentSummary', (req, res) =>
+router.get('/paymentSummary', auth.authorizeUser, (req, res) =>
 {
-	res.render('pages/paymentSummary')
-	router.get('/listing/Search=', function(req,res)
-	{
-		ejs.renderFile('pages/listing', {listing : listings}); 
-	});
+	baseView.renderWithAddons(req, res, 'pages/paymentSummary');
 });
 
 router.get('/listing/');
