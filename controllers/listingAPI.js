@@ -11,12 +11,15 @@ router.get('/id=:id', (req, res) => // e.g. listing/id=4bb8590e-ce26-11e9-a859-2
 	console.log('Receieved req for listing id: ' + req.params.id); // Example params usage.
 
 	let currentUser = req.cookies.currentUser;
-	listingModel.GetListing(req.params.id,
-		(result) => 
+	listingModel.GetListing(req.params.id,	
+	{
+		found: (result) => 
 		{
-			result[0].imgLocation = attachmentUtil.getImgPath(result[0].imgLocation);
+			result[0].imgName = attachmentUtil.getImgPath(result[0].imgName);
 			res.render('pages/listingResult', {currentUser, result});
-		});
+		},
+		notFound: () => { res.send(jsonResponse.fail("listingNotFound")); }
+	});
 });
 
 
@@ -30,7 +33,7 @@ router.get('/search=:query', (req, res) =>
 		{ 
 			for (var i = 0; i < results.length; i++)
 			{
-				results[i].imgLocation = attachmentUtil.getImgPath(results[i].imgLocation);
+				results[i].imgName = attachmentUtil.getImgPath(results[i].imgName);
 			}
 			res.render('pages/listing', { currentUser, listings: results });
 		});
