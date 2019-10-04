@@ -34,10 +34,10 @@ exports.createMessage = function(message, callback = { success: () => {}, fail: 
     {
         const db = database.connectDatabase();
         let query = `
-        INSERT INTO Message (MS_US_To, MS_US_From, MS_Header, MS_Body)
+        INSERT INTO Message (MS_US_From, MS_US_To, MS_Header, MS_Body)
         VALUES (?, ?, ?, ?)
         `
-        let inputs = [message.useridFrom, useridTo, header, body]
+        let inputs = [message.useridFrom, message.useridTo, message.header, message.body]
         db.query(query, inputs, (err, results) =>
         {
             if (err)
@@ -87,7 +87,7 @@ const getMessageByCheck = function(check, callback = { success: (results) => {},
     })
 }
 
-exports.getMessageByID(id, callback = { success: (message) => {}, fail: (reason) => {} })
+exports.getMessageByID = function(id, callback = { success: (message) => {}, fail: (reason) => {} })
 {
     const db = database.connectDatabase();
     getMessageByCheck('MS_PK = ' + db.escape(id), 
@@ -103,13 +103,13 @@ exports.getMessageByID(id, callback = { success: (message) => {}, fail: (reason)
     })
 }
 
-exports.getMessagesForUserID(userid, callback = { success: (messages) => {}, fail: (reason) => {} })
+exports.getMessagesForUserID = function(userid, callback = { success: (messages) => {}, fail: (reason) => {} })
 {
     const db = database.connectDatabase();
-    getMessageByCheck('MS_US_FROM = ' + db.escape(id), callback)
+    getMessageByCheck('MS_US_FROM = ' + db.escape(userid), callback)
 }
 
-exports.getMessageForUser(user, callback = { success: (message) => {}, fail: (reason) => {} })
+exports.getMessagesForUser = function(user, callback = { success: (message) => {}, fail: (reason) => {} })
 {
     this.getMessageByUserID(user.id, callback);
-}z
+}
