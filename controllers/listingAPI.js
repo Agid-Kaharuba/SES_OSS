@@ -5,7 +5,9 @@ const userModel = require('../models/user')
 const baseView = require('../views/base')
 const view = require('../views/listingView');
 const jsonResponse = require('../utils/JSONResponse');
-const attachmentUtil = require('../utils/attachmentUtil')
+const htmlResponse = require('../utils/HTMLResponse');
+const attachmentUtil = require('../utils/attachmentUtil');
+
 // Every method is prepended with "/listing" see app.js
 
 router.get('/id=:id', (req, res) => // e.g. listing/id=4bb8590e-ce26-11e9-a859-256794b0b57d
@@ -19,7 +21,7 @@ router.get('/id=:id', (req, res) => // e.g. listing/id=4bb8590e-ce26-11e9-a859-2
 			result[0].imgName = attachmentUtil.getImgPath(result[0].imgName);
 			baseView.renderWithAddons(req, res, 'pages/listingResult', {result});
 		},
-		notFound: () => { res.send(jsonResponse.fail("listingNotFound")); }
+		notFound: () => { htmlResponse.fail(req, res, "Could not find the listing that you were looking for :(", "Listing not found"); }
   });
 });
 
@@ -53,7 +55,7 @@ router.get('/summary=:purchaseID', (req, res) =>
 				res.render(view.viewPurchaseSummary(result));
 			},
 		notFound: 
-			() => res.send(jsonResponse.fail("Payment Summary Not Found")),
+			() => htmlResponse.fail(req, res, 'Could not get your purchase summary :(', 'Payment Summary Not Found'),
 	});
 });
 
