@@ -3,6 +3,7 @@ const express = require('express');
 const userModel = require('../models/user');
 const jsonResponse = require('../utils/JSONResponse');
 const auth = require('../utils/authUtil');
+const baseView = require('../views/base');
 const router = express.Router();
 
 // Every method is prepended with "/user" see app.js
@@ -174,6 +175,10 @@ router.post('/confirm_purchase/:listingID', (req, res) =>
 router.get('/', (req, res) =>
 {
 
+});
+
+router.get('/contact', function(req, res) {
+	baseView.renderWithAddons(req, res, 'pages/contact');
 });
 
 module.exports = { router };

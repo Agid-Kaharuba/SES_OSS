@@ -90,4 +90,12 @@ router.post('/revoke_admin_userid=:id', auth.authorizeAdmin, (req, res) =>
     });
 })
 
+router.get('/inbox', function(req, res) {
+    baseView.renderWithAddons(req, res, 'pages/adminDashboard/inbox');
+});
+
+router.get('/email', function(req, res) {
+    baseView.renderWithAddons(req, res, 'pages/adminDashboard/email');
+});
+
 module.exports = { router };
