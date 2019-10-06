@@ -45,12 +45,11 @@ router.get('/search=:query', (req, res) =>
 router.get('/summary=:purchaseID', auth.authorizeUser, (req, res) =>
 {
 	console.log('Received request to see purchase summary.')
-	var userPK = "This needs to be set as the user PK defined by the session."; //and pass it through to the 'GetPurchaseSummary' such that a user cannot see another users purchase summaries
 	auth.getSessionFromCookie(req, 
 	{
 		found: (session) =>
 		{
-			var userPk = session.SS_US;
+			var userPK = session.SS_US;
 			listingModel.GetPurchaseSummary(req.params.purchaseID, userPK, 		
 			{
 				found: 
@@ -63,16 +62,28 @@ router.get('/summary=:purchaseID', auth.authorizeUser, (req, res) =>
 					() => res.send(jsonResponse.fail("Payment Summary Not Found")),
 			});
 		},
-		notFound: () => { res.send("Session not found.") };
+		notFound: () => { res.send("Session not found."); }
 	});
 });
 
 router.get('/purchase=:listingID&quantity=:amount', (req, res) => 
 {
 	console.log(req.params.listingID+ "|" + req.params.amount);
-	listingModel.getPrePurchaseInformation(req.params.listingID, req.params.amount,
+	auth.getSessionFromCookie(req, 
 	{
-		
+		found: (session) =>
+		{
+			var userPK = session.SS_US;
+			listingModel.getPrePurchaseInformation(userPK, req.params.listingID, req.params.amount,
+			{
+				success: (purchaseInfo) => 
+				{
+					//pass this onto the view.
+				},
+				fail: () => { }
+			});
+		},
+		notFound: () => { }
 	});
 });
 

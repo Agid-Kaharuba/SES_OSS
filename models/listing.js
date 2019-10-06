@@ -285,6 +285,52 @@ LIMIT 1
 	});
 }
 
+exports.getPrePurchaseInformation = function(userPK, listingPK, amount, callback = { success: () => { }, fail: () => { } })
+{
+	const db = database.connectDatabase();
+	let paymentMethodsQuery = `
+SELECT 
+	PM_Nickname as paymentNickName,
+	PM_Name as paymentName,
+	CASE WHEN PM_CardNumber IS NOT NULL AND LENGTH(PM_CardNumber) > 4 
+		THEN LPAD(SUBSTR(PM_CardNumber,-4),LENGTH(PM_CardNumber),'*') 
+	ELSE PM_CardNumber 
+END as paymentNumber
+FROM PaymentMethod
+WHERE PM_US = ?
+;`;
+	let sanitisedInputs = [userPK];
+	db.query(paymentMethodsQuery, sanitisedInputs, (err, payments) =>
+	{
+		if (err)
+		{
+			console.trace(err);
+			callback.fail("Failed to retrieve payment options");
+		}
+
+		let addressQuery = `
+SELECT 
+	AD_Line1 as addressLine1,
+	AD_Line2 as addressLine2,
+	AD_City as addressCity,
+	AD_State as addressState,
+	AD_PostCode as addressPostCode,
+	AD_Country as addressCountry
+FROM Address
+WHERE AD_US = ?
+;`;
+		let sanitisedInputs2 = [userPK];
+		db.query(addressQuery, sanitisedInputs2, (err, addresses) =>
+		{
+			if (err)
+			{
+				console.trace(err);
+				callback.fail("Failed to retrieve address options");
+			}
+		});
+	});
+}
+
 /**
  * Modify a listing.
  * @param {} listing The updated listing model.
