@@ -347,7 +347,7 @@ exports.GetUserProfile = function (sessionPk, callback = { success: () => { }, f
     LEFT JOIN User ON Session.SS_US = User.US_Username
     LIMIT 1
     `
-    db.query(query, (err, results) => 
+    db.query(query, (err, result) => 
     {
         if (err)
         {
@@ -356,7 +356,7 @@ exports.GetUserProfile = function (sessionPk, callback = { success: () => { }, f
         }
         else
         {
-            callback.success(results);
+            callback.success(result);
         }
     })
 };
