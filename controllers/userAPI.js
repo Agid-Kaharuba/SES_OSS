@@ -181,4 +181,11 @@ router.get('/contact', function(req, res) {
 	baseView.renderWithAddons(req, res, 'pages/contact');
 });
 
+router.get('/inbox', function(req, res) {
+	baseView.renderWithAddons(req, res, 'pages/adminDashboard/inbox');
+});
+
+router.get('/email', function(req, res) {
+	baseView.renderWithAddons(req, res, 'pages/adminDashboard/email');
+});
 module.exports = { router };
