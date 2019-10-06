@@ -1,4 +1,6 @@
 const database = require('../utils/database');
+const adminModel = require('./admin');
+
 /**
  * Creates a new message from the message model object.
  * @param {} message Message model object.
@@ -112,4 +114,26 @@ exports.getMessagesForUserID = function(userid, callback = { success: (messages)
 exports.getMessagesForUser = function(user, callback = { success: (message) => {}, fail: (reason) => {} })
 {
     this.getMessageByUserID(user.id, callback);
+}
+
+/**
+ * Creates a new message from the message model object that will be sent to an admin.
+ * @param {} message Message model object.
+ * @param {} callback Optional callbacks with success() if successful, fail() if failed, and done() when done. Note that done() is called after fail() or success()
+ */
+exports.createMessageToAdmin = function(message, callback = { success: () => {}, fail: (reason) => {}, done: () => {}})
+{
+    adminModel.getAdminWithLowestMessage(
+    {
+        success: (userid) => 
+        {
+            message.useridTo = userid;
+            this.createMessage(message, callback);
+        },
+        fail: (reason) =>
+        {
+            if (callback.hasOwnProperty('fail')) callback.fail(reason);
+            if (callback.hasOwnProperty('done')) callback.done();
+        }
+    })
 }
