@@ -331,7 +331,7 @@ exports.getUserInfo = function(req, callback = (user, isAdmin) => {})
 
 
 exports.GetUserProfile = function (sessionPk, callback = {
-    success: () => {
+    success: (result) => {
     }, fail: () => {
     }
 }) {
@@ -350,7 +350,7 @@ exports.GetUserProfile = function (sessionPk, callback = {
     LEFT JOIN User ON Session.SS_US = User.US_Username
     LIMIT 1
     `
-    db.query(query, (err, results) => 
+    db.query(query, (err, result) => 
     {
         if (err)
         {
@@ -359,7 +359,7 @@ exports.GetUserProfile = function (sessionPk, callback = {
         }
         else
         {
-            callback.success(results);
+            callback.success(result);
         }
     })
 };
