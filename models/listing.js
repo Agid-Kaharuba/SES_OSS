@@ -52,10 +52,13 @@ FROM Listing
 	LEFT JOIN Attachment ON LS_PK = AT_ParentPK AND AT_ParentID = 'LS' AND AT_Type = 'IMG'
 WHERE
 	LS_IsActive = 1 AND 
-	INSTR(LS_Title, ?)
+	(
+		INSTR(LS_Title, ?)
+		OR LS_PK = ?
+	)
 ;`;
 
-	db.query(query, [searchTerm], 
+	db.query(query, [searchTerm, searchTerm], 
 		(err, results) =>
 		{ 
 			if (err) throw err;
