@@ -5,6 +5,8 @@ const jsonResponse = require('../utils/JSONResponse');
 const htmlResponse = require('../utils/HTMLResponse');
 const auth = require('../utils/authUtil');
 const router = express.Router();
+const listingModel = require('../models/listing');
+const baseView = require('../views/base');
 
 // Every method is prepended with "/user" see app.js
 
@@ -176,5 +178,17 @@ router.get('/', (req, res) =>
 {
 
 });
+
+router.get('/userListings', (req, res) =>
+{
+    baseView.renderWithCallback(req, res, 'pages/user/userListings', (user, isAdmin, next) =>
+    {
+        listingModel.getListingsForUser(user, 
+        {
+            success: (results) => next({results}),
+            fail: (reason) => htmlResponse.fail(req, res, reason, 'Failed to get user listings')
+        })
+    })
+})
 
 module.exports = { router };

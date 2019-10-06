@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+
+        <!-- Bootstrap CSS -->
+        <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+            integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" rel="stylesheet">
+        <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+        <link href="/styles/js2.css" rel="stylesheet" type="text/css">
+        <title>User Listings</title>
+
+        <style type="text/css">
+            tr:hover {
+                background-color: antiquewhite;
+            }
+            .inboxText {
+                -ms-user-select: none;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -webkit-touch-callout: none;
+                user-select: none;
+            }
+        </style>
+    </head>
+
+    <body>
+        <%- include ../../partials/topBar -%>
+
+        <div class="overflow-auto m-4">
+            <table class="table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Date Posted</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">Description</th>
+                    </tr>
+                </thead>		
+                <% for (result of results) { %>
+                <tr class="inboxText" onclick="window.location.href = '../listing/id=<%= result.id%>'">
+                    <td width="10%"><%= result.postedDate.toLocaleDateString()%></td>
+                    <td><%= result.title%></td>
+                    <% if (result.description == null) { %>
+                        <td>No Description</td>
+                    <% } else if (result.description.length > 100) { %>
+                        <td><%= result.description.substring(0, 100).trimEnd() %>....</td>
+                    <% } else { %>
+                        <td><%= result.description %></td>
+                    <% } %>
+                </tr>
+                <% } %>
+            </table>
+        </div>
+
+        <%- include ../../partials/bottomBar -%>
+    </body>
+</html>

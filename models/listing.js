@@ -1,5 +1,20 @@
 const database = require('../utils/database');
+const userModel = require('./user');
 
+exports.convertToListingObject = function(rawListing)
+{
+	return {
+		id: rawListing.LS_PK,
+		sellerID: rawListing.LS_US_Seller,
+		title: rawListing.LS_Title,
+		description: rawListing.LS_Description,
+		price: rawListing.LS_Price,
+		remainingStock: rawListing.LS_RemainingStock,
+		imgName: rawListing.AT_PK,
+		isActive: rawListing.LS_IsActive,
+		postedDate: rawListing.LS_PostedDate,
+	}
+}
 
 exports.GetListing = function (listingPK, callback = { found: (result) => { }, notFound: () => { } })
 {
@@ -230,4 +245,43 @@ exports.openListing = function(listingID, callback = { success: () => {}, fail: 
 exports.closeListing = function(listingID, callback = { success: () => {}, fail: () => {}, done: () => {} })
 {
 	modifyListingByID(listingID, {isActive: false}, callback);
+}
+
+exports.getListingsForUserByID = function(userID, callback = {success: (results) => {}, fail: (reason) => {}}) 
+{
+	const db = database.connectDatabase();
+	let query = `
+		SELECT * FROM Listing
+		INNER JOIN User ON Listing.LS_US_Seller = User.US_PK
+		LEFT JOIN Attachment ON LS_PK = AT_ParentPK AND AT_ParentID = 'LS' AND AT_Type = 'IMG'
+		WHERE Listing.LS_US_Seller = ?
+	`
+	db.query(query, [userID], (err, results) =>
+	{
+		if (err) 
+		{
+			let reason = 'Failed to get listings for user';
+			console.trace(reason + ' ' + err);
+			callback.fail(reason);
+		}
+		else 
+		{
+			let newResults = [];
+
+			for (rawResult of results) 
+			{
+				let obj = this.convertToListingObject(rawResult);
+				obj.user = userModel.convertToUserObject(rawResult);
+				newResults.push(obj);
+			}
+			console.log("Sending ");
+			console.log(newResults);
+			callback.success(newResults);
+		}
+	})
+}
+
+exports.getListingsForUser = function(user, callback = {success: (results) => {}, fail: (reason) => {}})
+{
+	this.getListingsForUserByID(user.id, callback);
 }
