@@ -67,10 +67,13 @@ FROM Listing
 	LEFT JOIN Attachment ON LS_PK = AT_ParentPK AND AT_ParentID = 'LS' AND AT_Type = 'IMG'
 WHERE
 	LS_IsActive = 1 AND 
-	INSTR(LS_Title, ?)
+	(
+		INSTR(LS_Title, ?)
+		OR LS_PK = ?
+	)
 ;`;
 
-	db.query(query, [searchTerm], 
+	db.query(query, [searchTerm, searchTerm], 
 		(err, results) =>
 		{ 
 			if (err) throw err;
@@ -215,6 +218,135 @@ exports.modifyListingByID = function(listingid, listing, callback = { success: (
 		}
 		if (callback.hasOwnProperty('done')) callback.done();
 	})
+}
+
+exports.purchaseItem = function(listingPK, buyerPK, paymentMethodPK, deliveryAddressPK, totalPrice, quantity, callback = { success: (purchasePK) => {}, fail: (reason) => {} })
+{
+	const db = database.connectDatabase();
+	let query = `
+	SELECT 
+		LS_RemainingStock as remainingStock
+		LS_IsActive as isActive
+	FROM Listing
+	WHERE LS_PK = ?
+;`
+	let sanitisedInputs = [listingPK];
+	db.query(query, sanitisedInputs, (err, results) =>
+	{
+		if (err)
+		{
+			var reason = "Failed to check remaining stock of item";
+			console.trace(reason + " - " + err);
+			return callback.fail(reason);
+		}
+		
+		if (results.length == 0)
+		{
+			return callback.fail("No listing found with the provided ID.");
+		}
+		else
+		{
+			if (!results[0].isActive)
+			{
+				return callback.fail("Tried to purchase an item which is no longer available.")
+			}
+			else if (results[0].remainingStock < quantity)
+			{
+				return callback.fail("Tried to purchase more stock than what is available.")
+			}
+			else
+			{
+				let query2 = `
+INSERT INTO Purchase (PC_LS, PC_PM, PC_US_Buyer, PC_AD_Delivery, PC_Price, PC_Quantity)
+	VALUES (?, ?, ?, ?, ?, ?);`;
+				let sanitisedInputs2 = [listingPK, paymentMethodPK, buyerPK, deliveryAddressPK, totalPrice, quantity];
+				db.query(query2, sanitisedInputs2, (err) => { if (err) console.trace(err) });
+
+				let query3 = `
+UPDATE Listing
+	SET LS_RemainingStock = LS_RemainingStock - ?
+WHERE LS_PK = ?
+LIMIT 1
+;`;
+				let sanitisedInputs3 = [quantity, listingPK];
+				db.query(query3, sanitisedInputs3, (err) => { if (err) console.trace(err) });
+
+				let query4 = `
+SELECT PC_PK as purchasePK
+FROM Purchase
+WHERE PC_US_Buyer = ?
+ORDER BY PC_Date DESC
+LIMIT 1
+				;`;
+
+				let sanitisedInputs4 = [buyerPK];
+				db.query(query4, sanitisedInputs4, (err, results) => 
+				{ 
+					let errorMsg = "Error retrieving purchase summary.";
+					if (err)
+					{
+						console.trace(err);
+						return callback.fail(errorMsg);
+					}
+					
+					if (results.length == 0 || results[0].purchasePK == null)
+					{
+						return callback.fail(errorMsg);
+					}
+					else
+					{
+						return callback.success(results[0].purchasePK);
+					}
+				});
+			}
+		}
+	});
+}
+
+exports.getPrePurchaseInformation = function(userPK, listingPK, amount, callback = { success: () => { }, fail: () => { } })
+{
+	const db = database.connectDatabase();
+	let paymentMethodsQuery = `
+SELECT 
+	PM_Nickname as paymentNickName,
+	PM_Name as paymentName,
+	CASE WHEN PM_CardNumber IS NOT NULL AND LENGTH(PM_CardNumber) > 4 
+		THEN LPAD(SUBSTR(PM_CardNumber,-4),LENGTH(PM_CardNumber),'*') 
+	ELSE PM_CardNumber 
+END as paymentNumber
+FROM PaymentMethod
+WHERE PM_US = ?
+;`;
+	let sanitisedInputs = [userPK];
+	db.query(paymentMethodsQuery, sanitisedInputs, (err, payments) =>
+	{
+		if (err)
+		{
+			console.trace(err);
+			callback.fail("Failed to retrieve payment options");
+		}
+
+		let addressQuery = `
+SELECT 
+	AD_Line1 as addressLine1,
+	AD_Line2 as addressLine2,
+	AD_City as addressCity,
+	AD_State as addressState,
+	AD_PostCode as addressPostCode,
+	AD_Country as addressCountry
+FROM Address
+WHERE AD_US = ?
+;`;
+		let sanitisedInputs2 = [userPK];
+		db.query(addressQuery, sanitisedInputs2, (err, addresses) =>
+		{
+			if (err)
+			{
+				console.trace(err);
+				callback.fail("Failed to retrieve address options");
+			}
+		});
+	});
 }
 
 /**

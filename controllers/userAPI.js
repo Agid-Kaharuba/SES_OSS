@@ -4,9 +4,9 @@ const userModel = require('../models/user');
 const jsonResponse = require('../utils/JSONResponse');
 const htmlResponse = require('../utils/HTMLResponse');
 const auth = require('../utils/authUtil');
+const baseView = require('../views/base');
 const router = express.Router();
 const listingModel = require('../models/listing');
-const baseView = require('../views/base');
 
 // Every method is prepended with "/user" see app.js
 
@@ -50,10 +50,22 @@ router.post('/login', (req, res) =>
 
 router.get('/profile', (req, res) => 
 {
-	userModel.GetUserProfile(
-		(result) => {
-			res.render('userProfileView', { profile: result });
-		});
+	console.log("getting profile")
+	auth.getSessionFromCookie(req, 
+	{
+		found: (session) =>
+		{
+			userModel.GetUserProfile(session,
+			{
+				success: (result) => 
+				{
+					res.render('userProfileView', { profile: result });
+				},
+				fail: () => console.log("User not found")
+			});
+		},
+		notFound: () => console.log("Session not found")
+	})
 });
 
 router.get('/logout', (req, res) =>
@@ -190,5 +202,17 @@ router.get('/userListings', (req, res) =>
         })
     })
 })
+
+router.get('/contact', function(req, res) {
+	baseView.renderWithAddons(req, res, 'pages/contact');
+});
+
+router.get('/inbox', function(req, res) {
+	baseView.renderWithAddons(req, res, 'pages/adminDashboard/inbox');
+});
+
+router.get('/email', function(req, res) {
+	baseView.renderWithAddons(req, res, 'pages/adminDashboard/email');
+});
 
 module.exports = { router };
