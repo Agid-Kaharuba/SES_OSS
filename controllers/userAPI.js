@@ -4,6 +4,7 @@ const userModel = require('../models/user');
 const jsonResponse = require('../utils/JSONResponse');
 const htmlResponse = require('../utils/HTMLResponse');
 const auth = require('../utils/authUtil');
+const baseView = require('../views/base');
 const router = express.Router();
 
 // Every method is prepended with "/user" see app.js
@@ -189,4 +190,15 @@ router.get('/', (req, res) =>
 
 });
 
+router.get('/contact', function(req, res) {
+	baseView.renderWithAddons(req, res, 'pages/contact');
+});
+
+router.get('/inbox', function(req, res) {
+	baseView.renderWithAddons(req, res, 'pages/adminDashboard/inbox');
+});
+
+router.get('/email', function(req, res) {
+	baseView.renderWithAddons(req, res, 'pages/adminDashboard/email');
+});
 module.exports = { router };
