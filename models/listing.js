@@ -21,6 +21,9 @@ exports.GetListing = function (listingPK, callback = { found: (result) => { }, n
 	var db = database.connectDatabase();
 	var query = `
 SELECT
+	LS_PK as id,
+	LS_US_Seller as sellerID,
+	LS_PostedDate as postedDate,
 	US_Username as sellerUsername,
     LS_Title as listingTitle,
 	LS_Description as listingDescription,

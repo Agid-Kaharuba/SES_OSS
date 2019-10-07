@@ -17,12 +17,20 @@ router.get('/id=:id', (req, res) => // e.g. listing/id=4bb8590e-ce26-11e9-a859-2
 
 	listingModel.GetListing(req.params.id,
 	{
-		found: (result) => 
+		found: (results) => 
 		{
-			result[0].imgName = attachmentUtil.getImgPath(result[0].imgName);
-			baseView.renderWithAddons(req, res, 'pages/listingResult', {result});
+			if (results.length < 1) 
+			{
+				htmlResponse.fail(req, res, "Could not find the listing that you were looking for :(", "Listing not found");
+			}
+			else 
+			{
+				let result = results[0];
+				result.imgName = attachmentUtil.getImgPath(result.imgName);
+				baseView.renderWithAddons(req, res, 'pages/listingResult', {result});
+			}
 		},
-		notFound: () => { htmlResponse.fail(req, res, "Could not find the listing that you were looking for :(", "Listing not found"); }
+		notFound: () => { htmlResponse.fail(req, res, "Failed to get the listing that you were looking for :(", "Listing Fetch Failure"); }
   });
 });
 
