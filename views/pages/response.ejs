@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+
+        <!-- Bootstrap CSS -->
+        <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+            integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" rel="stylesheet">
+        <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+        <link href="/styles/js2.css" rel="stylesheet" type="text/css">
+    </head>
+
+    <body>
+        <%- include ../partials/topBar %>
+
+        <div class="container my-4">
+
+            <div class="card card-body bg-light my-4">
+
+                <% if (!response.hasOwnProperty('success')) { %>
+                    <div class="text-primary display-1 text-center my-4"></div>
+                <% } else if (response.success) { %>
+                    <div class="text-success display-1 text-center my-4">
+                <% } else { %>
+                    <div class="text-danger display-1 text-center my-4">
+                <% } %>
+                    <h1><b><%= response.title%></b></h1>
+                </div>
+                <hr>
+
+                <div class="container m-4">
+                    <p>
+                        <%= response.description %>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <%- include ../partials/bottomBar %>
+    </body>
+</html>
+

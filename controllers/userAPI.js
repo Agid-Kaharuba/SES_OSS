@@ -2,6 +2,7 @@ const express = require('express');
 
 const userModel = require('../models/user');
 const jsonResponse = require('../utils/JSONResponse');
+const htmlResponse = require('../utils/HTMLResponse');
 const auth = require('../utils/authUtil');
 const router = express.Router();
 
@@ -13,14 +14,14 @@ router.post('/register', (req, res) =>
 	userModel.checkUserExists(user.username,
 		{
 			found: 
-				() => res.send(jsonResponse.fail("Could not register an already existing user")),
+                () => htmlResponse.fail(req, res, 'Could not register an already existing user', 'Registration Failure'),
 			notFound: 
 				() => userModel.registerUser(user,
 				{
 					success:
 						() => res.redirect("/?register=success"),
 					fail:
-						(reason) => res.send(jsonResponse.fail(reason))
+						(reason) => htmlResponse.fail(req, res, reason)
 				})
 		});
 });
@@ -38,10 +39,10 @@ router.post('/login', (req, res) =>
 						res.cookie("currentUser", user.username);
 						res.redirect("/?login=success");
 					},
-					fail: () => res.send(jsonResponse.fail('Failed to create a new session'))
+					fail: () => htmlResponse.fail(req, res, 'Failed to create a new session', 'Failed to login')
 				}),
 			fail:
-				(reason) => res.send(jsonResponse.fail(reason)),
+				(reason) => htmlResponse.fail(req, res, reason, 'Failed to login')
 		});
 });
 
@@ -74,7 +75,7 @@ router.get('/logout', (req, res) =>
 				res.cookie('currentUser', "", {maxAge: Date.now()});
 				res.redirect("/?logout=success");
 			},
-			fail: () => res.send(jsonResponse.fail('Failed to logout'))
+			fail: () => htmlResponse.fail(req, res, 'Failed to logout', 'Logout failure')
 		});
 });
 

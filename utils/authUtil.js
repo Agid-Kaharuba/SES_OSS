@@ -1,4 +1,5 @@
-const jsonResponse = require('../');
+const jsonResponse = require('./JSONResponse');
+const htmlResponse = require('./HTMLResponse');
 const database = require('../utils/database');
 const admin = require('../models/admin');
 
@@ -78,7 +79,7 @@ exports.authorizeUser = function(req, res, next)
     exports.tryAuthorizeUser(req, 
     {
         success: next,
-        fail: () => res.send(jsonResponse.fail('Invalid authentication credentials!'))
+        fail: () => htmlResponse.fail(req, res, 'Invalid authentication credentials!', 'Authentication Failure!')
     })
 }
 
@@ -125,10 +126,10 @@ exports.authorizeAdmin = function(req, res, next)
             exports.tryAdminAction(rawSession.SS_US,
             {
                 success: next,
-                fail: () => res.send(jsonResponse.fail('Access is not allowed for the user'))
+                fail: () => htmlResponse.fail(req, res, 'Access is not allowed for the user', 'Security Error!')
             })
         },
-        fail: () => res.send(jsonResponse.fail('Invalid authentication credentials!'))
+        fail: () => htmlResponse.fail(req, res, 'Invalid authentication credentials!', 'Authentication Failure!')
     })
 }
 
