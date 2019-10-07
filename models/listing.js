@@ -179,16 +179,16 @@ exports.createListingForUserID = function(userid, listing, callback = { success:
  */
 exports.createListing = function(listing, callback = { success: () => {}, fail: () => {}, done: () => {} })
 {
-	createListingForUserID(listing.user.id, listing, callback);
+	this.createListingForUserID(listing.user.id, listing, callback);
 }
 
 /**
  * Modify a listing defined by its id.
  * @param {} listingid The id or primary key of the listing.
  * @param {} listing The updated listing model.
- * @param {} callback callbacks with success() if successful, fail() if failed, and done() when done. Note that done() is called after fail() or success().
+ * @param {} callback callbacks with success() if successful, fail(reason) if failed, and done() when done. Note that done() is called after fail() or success().
  */
-exports.modifyListingByID = function(listingid, listing, callback = { success: () => {}, fail: () => {}, done: () => {} })
+exports.modifyListingByID = function(listingid, listing, callback = { success: () => {}, fail: (reason) => {}, done: () => {} })
 {
 	const db = database.connectDatabase();
 	let query = `
@@ -212,8 +212,8 @@ exports.modifyListingByID = function(listingid, listing, callback = { success: (
 	{
 		if (err)
 		{
-			console.trace('Failed to modify listing by id: ' + err);
-			if (callback.hasOwnProperty('fail')) callback.fail();
+			console.trace('Failed to modify listing in the database! ' + err);
+			if (callback.hasOwnProperty('fail')) callback.fail('Failed to modify listing in the database');
 		}
 		else
 		{
@@ -359,7 +359,7 @@ WHERE AD_US = ?
  */
 exports.modifyListing = function(listing, callback = { success: () => {}, fail: () => {}, done: () => {} })
 {
-	modifyListingByID(listing.id, listing, callback);
+	this.modifyListingByID(listing.id, listing, callback);
 }
 
 /**
@@ -369,7 +369,7 @@ exports.modifyListing = function(listing, callback = { success: () => {}, fail: 
  */
 exports.openListing = function(listingID, callback = { success: () => {}, fail: () => {}, done: () => {} })
 {
-	modifyListingByID(listingID, {isActive: true}, callback);
+	this.modifyListingByID(listingID, {isActive: true}, callback);
 }
 
 /**
@@ -379,7 +379,7 @@ exports.openListing = function(listingID, callback = { success: () => {}, fail: 
  */
 exports.closeListing = function(listingID, callback = { success: () => {}, fail: () => {}, done: () => {} })
 {
-	modifyListingByID(listingID, {isActive: false}, callback);
+	this.modifyListingByID(listingID, {isActive: false}, callback);
 }
 
 exports.getListingsForUserByID = function(userID, callback = {success: (results) => {}, fail: (reason) => {}}) 
