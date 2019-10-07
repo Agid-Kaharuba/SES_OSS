@@ -78,7 +78,7 @@ exports.authorizeUser = function(req, res, next)
 {
     exports.tryAuthorizeUser(req, 
     {
-        success: next,
+        success: () => next(),
         fail: () => htmlResponse.fail(req, res, 'Invalid authentication credentials!', 'Authentication Failure!')
     })
 }
