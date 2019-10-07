@@ -3,6 +3,7 @@ const homePage = require('../models/homePage');
 const auth = require('../utils/authUtil');
 const userModel = require('../models/user');
 const baseView = require('../views/base')
+const htmlResponse = require('../utils/HTMLResponse');
 const router = express.Router();
 
 router.get('/', (req, res) =>
@@ -25,6 +26,11 @@ router.get('/', (req, res) =>
 			isAdmin
 		})
 	}))
+})
+
+router.get('/response', (req, res) =>
+{
+	htmlResponse.renderResponse(req, res);
 })
 
 router.get('confirmPurchase', (req, res) =>

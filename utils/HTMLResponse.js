@@ -14,7 +14,7 @@ exports.respond = function(req, res, response = {})
     {
         response.description = 'No additional description.';
     }
-    baseView.renderWithAddons(req, res, 'pages/response', {response});
+    this.redirectToResponse(res, response);
 }
 
 /**
@@ -27,7 +27,7 @@ exports.successResponse = function(req, res, response = {})
         response.title = 'Success';
     }
     response.success = true;
-    baseView.renderWithAddons(req, res, 'pages/response', {response});
+    this.redirectToResponse(res, response);
 }
 
 /**
@@ -40,7 +40,7 @@ exports.failResponse = function(req, res, response = {})
         response.title = 'Fail';
     }
     response.success = false;
-    baseView.renderWithAddons(req, res, 'pages/response', {response});
+    this.redirectToResponse(res, response);
 }
 
 /**
@@ -57,4 +57,23 @@ exports.success = function(req, res, reason, title = 'Success')
 exports.fail = function(req, res, reason, title = 'Fail')
 {
     exports.failResponse(req, res, {title: title, description: reason});
+}
+
+exports.redirectToResponse = function(res, response)
+{
+    res.cookie('response-info', response, {httpOnly: true});
+    res.redirect('/response');
+}
+
+exports.renderResponse = function(req, res)
+{
+    let response = req.cookies['response-info'];
+    if (!response) response = {};
+    if (!response.title || !response.description) 
+    {
+        response.success = false;
+        response.title = "Error!";
+        response.description = "Something went really wrong :(";
+    }
+    baseView.renderWithAddons(req, res, 'pages/response', {response});
 }
