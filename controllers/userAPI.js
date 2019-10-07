@@ -48,10 +48,22 @@ router.post('/login', (req, res) =>
 
 router.get('/profile', (req, res) => 
 {
-	userModel.GetUserProfile(
-		(result) => {
-			res.render('userProfileView', { profile: result });
-		});
+	console.log("getting profile")
+	auth.getSessionFromCookie(req, 
+	{
+		found: (session) =>
+		{
+			userModel.GetUserProfile(session,
+			{
+				success: (result) => 
+				{
+					res.render('userProfileView', { profile: result });
+				},
+				fail: () => console.log("User not found")
+			});
+		},
+		notFound: () => console.log("Session not found")
+	})
 });
 
 router.get('/logout', (req, res) =>
