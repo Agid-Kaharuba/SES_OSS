@@ -330,11 +330,8 @@ exports.getUserInfo = function(req, callback = (user, isAdmin) => {})
 }
 
 
-exports.GetUserProfile = function (sessionPk, callback = {
-    success: (result) => {
-    }, fail: () => {
-    }
-}) {
+exports.GetUserProfile = function (sessionPk, callback = { success: () => { }, fail: () => { } })
+{
 	var db = database.connectDatabase();
     var query = `
     SELECT
@@ -364,11 +361,8 @@ exports.GetUserProfile = function (sessionPk, callback = {
     })
 };
 
-exports.editUserProfile = function (editData, callback = {
-    success: () => {
-    }, fail: () => {
-    }
-}) {
+exports.editUserProfile = function (editData, callback = { success: () => {}, fail: () => { }})
+{
 	var db = database.connectDatabase();
     var query = `
     UPDATE User
@@ -395,11 +389,8 @@ exports.editUserProfile = function (editData, callback = {
     })
 };
 
-exports.editUserAddress = function (editData, callback = {
-    success: () => {
-    }, fail: () => {
-    }
-}) {
+exports.editUserAddress = function (editData, callback = { success: () => { }, fail: () => {} })
+{
 	var db = database.connectDatabase();
     var query = `
     UPDATE Address
@@ -429,11 +420,8 @@ exports.editUserAddress = function (editData, callback = {
     })
 };
 
-exports.editUserPayment = function (editData, callback = {
-    success: () => {
-    }, fail: () => {
-    }
-}) {
+exports.editUserPayment = function (editData, callback = { success: () => {}, fail: () => {}})
+{
 	var db = database.connectDatabase();
     var query = `
     UPDATE Payment
