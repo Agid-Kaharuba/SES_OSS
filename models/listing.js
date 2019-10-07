@@ -29,12 +29,12 @@ SELECT
 	LS_Description as listingDescription,
 	LS_Price as listingPrice,
 	LS_RemainingStock as remainingStock,
+	LS_IsActive as isActive,
 	AT_PK as imgName
 FROM Listing
 	INNER JOIN User ON LS_US_Seller = US_PK
 	LEFT JOIN Attachment ON LS_PK = AT_ParentPK AND AT_ParentID = 'LS' AND AT_Type = 'IMG'
 WHERE
-	LS_IsActive = 1 AND
 	LS_PK = ?
 ORDER BY AT_Description ASC
 LIMIT 1
@@ -46,6 +46,7 @@ LIMIT 1
 			if (err) throw err;
 			if (results.length == 1)
 			{
+				results[0].isActive = results[0].isActive.readInt8() == 1;
 				callback.found(results);
 			}
 			else
@@ -207,7 +208,12 @@ exports.modifyListingByID = function(listingid, listing, callback = { success: (
 	else
 		var userid = user.userid;
 
-	let inputs = [userid, listing.title, listing.description, listing.price, listing.isActive, listing.remainingStock, listingid]
+	if (listing.isActive == 'true')
+		var isActive = 1;
+	else if (listing.isActive == 'false')
+		var isActive = 0;
+
+	let inputs = [userid, listing.title, listing.description, listing.price, isActive, listing.remainingStock, listingid]
 	db.query(query, inputs, (err, results) => 
 	{
 		if (err)

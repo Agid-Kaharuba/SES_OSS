@@ -9,13 +9,16 @@ function replaceWithTextInput(id)
 
 $().ready(() =>
 {
-    $('#modifyListing').click(() =>
+    const idIndex = location.pathname.indexOf('=') + 1;
+    const listingID = location.pathname.substring(idIndex, location.pathname.length);
+
+    $('#modifyListingBtn').click(() =>
     {
-        const btn = $('#modifyListing');
+        const btn = $('#modifyListingBtn');
+        $('#closeListingBtn').remove();
+        $('#purchaseBtn').remove();
         if (btn.text() == ModifyText)
         {
-            let idIndex = location.pathname.indexOf('=') + 1;
-            let listingID = location.pathname.substring(idIndex, location.pathname.length);
             let listing = {
                 id: listingID,
                 price: $('#priceInput').val(),
@@ -46,5 +49,35 @@ $().ready(() =>
             const descPara = $('#descriptionParagraph');
             descPara.replaceWith("<textarea id='descriptionArea' rows='40' class='p-4' style='border: none;'>" + descPara.text() + "</textarea>")
         }
+    })
+
+    $('#closeListingBtn').click(() =>
+    {
+        $.post('modify', {id: listingID, isActive: false}, (response) =>
+        {
+            if (response.status == 'success')
+            {
+                location.reload();
+            } 
+            else 
+            {
+                alert("Failed To modify listing!\n" + response.reason);
+            }
+        })
+    })
+
+    $('#openListingBtn').click(() =>
+    {
+        $.post('modify', {id: listingID, isActive: true}, (response) =>
+        {
+            if (response.status == 'success')
+            {
+                location.reload();
+            } 
+            else 
+            {
+                alert("Failed To modify listing!\n" + response.reason);
+            }
+        })
     })
 })

@@ -11,9 +11,14 @@
     <div class="container card-body">
 
       <div class="card container justify-content-center bg-light mb-3">
-        <div class="card-header text-center">
+        <div class="card-header text-center text-primary">
             <h3 id="titleId"><%= result.listingTitle%></h3> 
         </div>
+        <% if (result.isActive == false) { %>
+          <div class="my-4 text-danger text-center jumbotron">
+              <h1 class="warning">This listing is closed!</h1> 
+          </div>
+        <% } %>
         <div class="col">
 
           <div class="row container">
@@ -47,23 +52,35 @@
 
                     </div>
 
-                    <% if (user != null) { %>
 
-                      <% if (user.id != result.sellerID) { %>
-                      <div class="row my-3 mx-auto">
-                        <button class="btn btn-dark btn-lg" onclick="window.location.href='/listing/confirmPurchase'">Purchase</button>
-                      </div>
+                    <% if (result.isActive) { %>
+
+                      <% if (user != null) { %>
+
+                        <% if (isAdmin || user.id == result.sellerID) { %>
+                          <div class="row my-3 mx-auto">
+                              <button id="modifyListingBtn" class="btn btn-dark btn-lg">Modify</button>
+                          </div>
+  
+                          <div class="row my-3 mx-auto">
+                            <button id="closeListingBtn" class="btn btn-dark btn-lg">Close Listing</button>
+                          </div>
+                        <% } %>
+
+                        <% if (user.id != result.sellerID) { %>
+                          <div class="row my-3 mx-auto">
+                            <button id="purchaseBtn" class="btn btn-dark btn-lg" onclick="window.location.href='/listing/confirmPurchase'">Purchase</button>
+                          </div>
+                        <% } %>
+                      <% } else { %>
+                        <div class="row my-3 mx-auto">
+                          <button disabled class="btn btn-dark btn-lg">Sign in to Purchase</button>
+                        </div>
                       <% } %>
+
                     <% } else { %>
                       <div class="row my-3 mx-auto">
-                        <button disabled class="btn btn-dark btn-lg">Sign in to Purchase</button>
-                      </div>
-                    <% } %>
-
-
-                    <% if (isAdmin || (user != null && user.id == result.sellerID)) { %>
-                      <div class="row my-3 mx-auto">
-                          <button id="modifyListing" class="btn btn-dark btn-lg">Modify</button>
+                          <button id="openListingBtn" class="btn btn-dark btn-lg">Reopen Listing</button>
                       </div>
                     <% } %>
 
@@ -85,7 +102,7 @@
 </div>
 
 <% if (isAdmin || (user != null && user.id == result.sellerID)) { %>
-  <script src="/public/listing/modify.js" type="text/javascript"></script>
+  <script src="/public/listing/listingResult.js" type="text/javascript"></script>
 <% } %>
 
 <% include ../partials/foot %>
