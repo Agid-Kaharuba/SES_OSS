@@ -74,12 +74,27 @@ exports.tryAuthorizeUser = function(req, callback = {success: (rawSession) => {}
     });
 }
 
+/**
+ * Try to authorize an user session, returns a html response if failed.
+ */
 exports.authorizeUser = function(req, res, next)
 {
     exports.tryAuthorizeUser(req, 
     {
         success: () => next(),
         fail: () => htmlResponse.fail(req, res, 'Invalid authentication credentials!', 'Authentication Failure!')
+    })
+}
+
+/**
+ * Try to authorize an user session, returns a json response if failed.
+ */
+exports.authorizeUserJson = function(req, res, next)
+{
+    exports.tryAuthorizeUser(req, 
+    {
+        success: () => next(),
+        fail: () => res.send(jsonResponse.fail('Invalid authentication credentials!'))
     })
 }
 
@@ -117,6 +132,9 @@ exports.tryAdminAction = function(userID, callback = {success: () => {}, fail: (
     })
 }
 
+/**
+ * Try to authorize an admin, returns a html response if failed.
+ */
 exports.authorizeAdmin = function(req, res, next) 
 {
     exports.tryAuthorizeUser(req,
@@ -130,6 +148,25 @@ exports.authorizeAdmin = function(req, res, next)
             })
         },
         fail: () => htmlResponse.fail(req, res, 'Invalid authentication credentials!', 'Authentication Failure!')
+    })
+}
+
+/**
+ * Like #authorizeAdmin but returns a json when failed.
+ */
+exports.authorizeAdminJson = function(req, res, next) 
+{
+    exports.tryAuthorizeUser(req,
+    {
+        success: (rawSession) => 
+        {
+            exports.tryAdminAction(rawSession.SS_US,
+            {
+                success: next,
+                fail: () => res.send(jsonResponse.fail('Access is not allowed for the user'))
+            })
+        },
+        fail: () => res.send(jsonResponse.fail('Invalid authentication credentials!'))
     })
 }
 
