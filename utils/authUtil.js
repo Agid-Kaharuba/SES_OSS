@@ -135,7 +135,7 @@ exports.authorizeAdmin = function(req, res, next)
 
 let attachSessionOnCookie = function(res, payload)
 {
-    res.cookie(SessionCookieProp, payload, {httpOnly: true, expiresIn: SessionHoursExpiry + 'h'});
+    res.cookie(SessionCookieProp, payload, {httpOnly: true, maxAge: 1000 * 60 * 60 * SessionHoursExpiry});
 }
 
 let attachSessionForUser = function(res, user, callback = {success: () => {}, fail: () => {}}) 
