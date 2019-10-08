@@ -50,6 +50,7 @@ router.get('/profile', (req, res) =>
 	baseView.renderWithAddons(req, res, 'userProfileView');
 });
 
+
 router.get('/logout', (req, res) =>
 {
 	auth.invalidateSession(req, 
@@ -64,7 +65,7 @@ router.get('/logout', (req, res) =>
 });
 
 router.get('/profile/editProfile', function(req, res) {
-    res.render('editProfileView');
+    res.render('pages/editProfileView');
 });
 
 router.post('/profile/editProfileDone', auth.authorizeUser, (req, res) =>
@@ -84,7 +85,7 @@ router.post('/profile/editProfileDone', auth.authorizeUser, (req, res) =>
 
             userModel.editUserProfile((editData, result) => 
             {
-                res.redirect('/user/profile')
+                res.redirect('/profile')
             });
         },
         notFound: () => {} 
@@ -93,7 +94,7 @@ router.post('/profile/editProfileDone', auth.authorizeUser, (req, res) =>
 });
 
 router.get('/profile/editAddress', function(req, res) {
-    res.render('editAddressView');
+    res.render('pages/editAddressView');
 });
 
 router.post('/profile/editAddressDone', auth.authorizeUser, (req, res) =>
@@ -115,7 +116,7 @@ router.post('/profile/editAddressDone', auth.authorizeUser, (req, res) =>
 
             userModel.editUserAddress((editData, result) => 
             {
-                res.redirect('/user/profile')
+                res.redirect('/profile')
             });
         },
         notFound: () => {} 
@@ -124,10 +125,10 @@ router.post('/profile/editAddressDone', auth.authorizeUser, (req, res) =>
 });
 
 router.get('/profile/editPayment', function(req, res) {
-    res.render('editPaymentView');
+    res.render('pages/editPaymentView');
 });
 
-router.post('/profile/editAddressDone', auth.authorizeUser, (req, res) =>
+router.post('/profile/editPaymentDone', auth.authorizeUser, (req, res) =>
 {                   
     auth.getSessionFromCookie(req,
     {
@@ -145,7 +146,7 @@ router.post('/profile/editAddressDone', auth.authorizeUser, (req, res) =>
 
             userModel.editUserAddress((editData, result) => 
             {
-                res.redirect('/user/profile')
+                res.redirect('/profile')
             });
         },
         notFound: () => {} 
