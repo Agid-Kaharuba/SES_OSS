@@ -330,11 +330,8 @@ exports.getUserInfo = function(req, callback = (user, isAdmin) => {})
 }
 
 
-exports.GetUserProfile = function (sessionPk, callback = {
-    success: () => {
-    }, fail: () => {
-    }
-}) {
+exports.GetUserProfile = function (sessionPk, callback = { success: () => {}, fail: () => {} })
+{
 	var db = database.connectDatabase();
     var query = `
     SELECT
@@ -364,11 +361,8 @@ exports.GetUserProfile = function (sessionPk, callback = {
     })
 };
 
-exports.editUserProfile = function (editData, callback = {
-    success: () => {
-    }, fail: () => {
-    }
-}) {
+exports.editUserProfile = function (editData, callback = { success: () => {}, fail: () => {} }) 
+{
 	var db = database.connectDatabase();
     var query = `
     UPDATE User

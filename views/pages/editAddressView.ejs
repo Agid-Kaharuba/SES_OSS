@@ -67,7 +67,7 @@
 			<nav>
 				<ul>
 					<li>
-						<a href="userProfile.html" >
+						<a href="/user/profile" >
 							<span><i class="fa fa-user"></i></span>
 							<span>User Profile</span>
 						</a>
@@ -90,19 +90,21 @@
 		</div>
 		<div class="main-content">
 			<div class="title">
-				Change Your Payment Details
+				Update Your Address
             </div>
-			<form action="/user/profile/editPaymentDone" method="POST">
-				Nickname:<br>
-                <input type="text" name="editPayment_nickname"><br>
-                Cardholder Name:<br>
-                <input type="text" name="editPayment_cardholderName"><br>
-                Card Number:<br>
-                <input type="text" name="editPayment_number"><br>
-                Expiry:<br>
-                <input type="text" name="editPayment_Expiry"><br>
-                CVV:<br>
-                <input type="text" name="editPayment_CVV"><br>
+			<form action="/user/profile/editAddress" method="POST">
+				Address Line 1:<br>
+                <input type="text" name="editAddress_line1"><br>
+                Address Line 2:<br>
+                <input type="text" name="editAddress_line2"><br>
+                City:<br>
+                <input type="text" name="editAddress_city"><br>
+                State:<br>
+                <input type="text" name="editAddress_state"><br>
+                Country:<br>
+                <input type="text" name="editAddress_country"><br>
+                Post Code:<br>
+                <input type="text" name="editAddress_postcode"><br>
                 <input type="submit" value="Submit">
               </form>
 		</div>

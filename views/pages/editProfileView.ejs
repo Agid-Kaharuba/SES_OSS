@@ -13,7 +13,8 @@
 		<script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
 		<script src="https://code.highcharts.com/highcharts.js"></script>
 		<script src="https://code.highcharts.com/modules/data.js"></script>
-		<script src="../userDashboard/dashboard.js"></script>
+        <script src="../public/userDashboard/dashboard.js"></script>
+        <script src="../controllers/userAPI.js"></script>
 
 		<style>
 			.ad {
@@ -67,20 +68,20 @@
 			<nav>
 				<ul>
 					<li>
-						<a href="userProfile.html" >
+						<a href="/user/profile" >
 							<span><i class="fa fa-user"></i></span>
 							<span>User Profile</span>
 						</a>
 					</li>
 					<li>
-						<a href="createAd.html">
+						<a href="/createAd">
 
 							<span><i class="fa fa-envelope"></i></span>
 							<span>Create An Ad</span>
 						</a>
 					</li>
 					<li class="active">
-						<a href="manageAds.html">
+						<a href="/manageAds">
 							<span><i class="fa fa-bar-chart"></i></span>
 							<span>Manage Your Ads</span>
 						</a>
@@ -89,24 +90,21 @@
 			</nav>
 		</div>
 		<div class="main-content">
-			<div class="title">
-				Update Your Address
+			<div class="main-content">
+                <div class="title">
+                    Change Your Details
+                </div>
+                <form action="/user/profile/editProfile" method="POST">
+                    First Name:<br>
+                    <input type="text" name="editProfile_firstName"><br>
+                    Last Name:<br>
+                    <input type="text" name="editProfile_lastName"><br>
+                    Date Of Birth:<br>
+                    <input type="text" name="editProfile_DOB"><br>
+                    Phone Number:<br>
+                    <input type="text" name="editProfile_phoneNumber"><br>
+                    <input type="submit" value="Submit">
+                  </form>
             </div>
-			<form action="/user/editAddressDone" method="POST">
-				Address Line 1:<br>
-                <input type="text" name="editAddress_line1"><br>
-                Address Line 2:<br>
-                <input type="text" name="editAddress_line2"><br>
-                City:<br>
-                <input type="text" name="editAddress_city"><br>
-                State:<br>
-                <input type="text" name="editAddress_state"><br>
-                Country:<br>
-                <input type="text" name="editAddress_country"><br>
-                Post Code:<br>
-                <input type="text" name="editAddress_postcode"><br>
-                <input type="submit" value="Submit">
-              </form>
-		</div>
-	</body>
+        </body>
 </html>

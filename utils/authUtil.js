@@ -26,12 +26,13 @@ exports.getSessionFromUser = function(user, callback = (err, results, fields) =>
 
 exports.getSessionFromCookie = function(obj, callback = {found: (session) => {}, notFound: () => {}})
 {
-    if (!obj.cookies.hasOwnProperty(SessionCookieProp))
+    let sessionID = obj.cookies[SessionCookieProp];
+    if (sessionID == null)
     {
         callback.notFound();
         return;
     }
-    let sessionID = obj.cookies[SessionCookieProp]; 
+
     let db = database.connectDatabase();
     
     let query = `SELECT * FROM Session Where SS_PK = ? LIMIT 1`;

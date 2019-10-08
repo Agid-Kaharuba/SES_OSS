@@ -47,7 +47,7 @@ router.post('/login', (req, res) =>
 
 router.get('/profile', (req, res) => 
 {
-	baseView.renderWithAddons(req, res, 'userProfileView');
+	baseView.renderWithAddons(req, res, 'pages/userProfileView');
 });
 
 
@@ -68,7 +68,7 @@ router.get('/profile/editProfile', function(req, res) {
     res.render('pages/editProfileView');
 });
 
-router.post('/profile/editProfileDone', auth.authorizeUser, (req, res) =>
+router.post('/profile/editProfile', auth.authorizeUser, (req, res) =>
 {                   
     auth.getSessionFromCookie(req,
     {
@@ -83,10 +83,14 @@ router.post('/profile/editProfileDone', auth.authorizeUser, (req, res) =>
                 sessionPK
             ];
 
-            userModel.editUserProfile((editData, result) => 
-            {
-                res.redirect('/profile')
-            });
+            userModel.editUserProfile(editData,
+                {
+                    success: () =>
+                    {
+                        res.redirect('/profile');
+                    }
+
+                });
         },
         notFound: () => {} 
     });
@@ -97,7 +101,7 @@ router.get('/profile/editAddress', function(req, res) {
     res.render('pages/editAddressView');
 });
 
-router.post('/profile/editAddressDone', auth.authorizeUser, (req, res) =>
+router.post('/profile/editAddress', auth.authorizeUser, (req, res) =>
 {                   
     auth.getSessionFromCookie(req,
     {
@@ -128,7 +132,7 @@ router.get('/profile/editPayment', function(req, res) {
     res.render('pages/editPaymentView');
 });
 
-router.post('/profile/editPaymentDone', auth.authorizeUser, (req, res) =>
+router.post('/profile/editPayment', auth.authorizeUser, (req, res) =>
 {                   
     auth.getSessionFromCookie(req,
     {
