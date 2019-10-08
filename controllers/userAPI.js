@@ -47,7 +47,7 @@ router.post('/login', (req, res) =>
 
 router.get('/profile', (req, res) => 
 {
-	baseView.renderWithAddons(req, res, 'pages/userProfileView');
+	baseView.renderWithAddons(req, res, 'pages/userDashboard/userProfileView');
 });
 
 
@@ -65,40 +65,23 @@ router.get('/logout', (req, res) =>
 });
 
 router.get('/profile/editProfile', function(req, res) {
-    res.render('pages/editProfileView');
+    res.render('pages/userDashboard/editProfileView');
 });
 
-router.post('/profile/editProfile', auth.authorizeUser, (req, res) =>
-{                   
-    auth.getSessionFromCookie(req,
-    {
-        found: (sessionPK) => 
-        {
-            var editData = 
-            [
-                req.body.editProfile_firstName, 
-                req.body.editProfile_lastName,
-                req.body.editProfile_DOB,
-                req.body.editProfile_phoneNumber,
-                sessionPK
-            ];
-
-            userModel.editUserProfile(editData,
-                {
-                    success: () =>
-                    {
-                        res.redirect('/profile');
-                    }
-
-                });
-        },
-        notFound: () => {} 
-    });
-
+router.post('/profile/editProfile', (req, res) =>
+{  
+    var editData = 
+    [
+        req.body.editProfile_firstName, 
+        req.body.editProfile_lastName,
+        req.body.editProfile_DOB,
+        req.body.editProfile_phoneNumber
+    ];
+    userModel.editUserProfile(editData);
 });
 
 router.get('/profile/editAddress', function(req, res) {
-    res.render('pages/editAddressView');
+    res.render('pages/userDashboard/editAddressView');
 });
 
 router.post('/profile/editAddress', auth.authorizeUser, (req, res) =>
@@ -133,7 +116,7 @@ router.post('/profile/editAddress', auth.authorizeUser, (req, res) =>
 });
 
 router.get('/profile/editPayment', function(req, res) {
-    res.render('pages/editPaymentView');
+    res.render('pages/userDashboard/editPaymentView');
 });
 
 router.post('/profile/editPayment', auth.authorizeUser, (req, res) =>
@@ -164,6 +147,10 @@ router.post('/profile/editPayment', auth.authorizeUser, (req, res) =>
         notFound: () => {} 
     });
 
+});
+
+router.get('/profile/createAd', function(req, res) {
+    res.render('pages/userDashboard/createAd');
 });
 
 router.put('/modify', (req, res) =>

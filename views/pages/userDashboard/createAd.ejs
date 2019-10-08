@@ -13,8 +13,8 @@
 		<script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
 		<script src="https://code.highcharts.com/highcharts.js"></script>
 		<script src="https://code.highcharts.com/modules/data.js"></script>
-        <script src="../public/userDashboard/dashboard.js"></script>
-        <script src="../controllers/userAPI.js"></script>
+		<script src="../styles/dashboard.css"></script>
+		<script src="../userDashboard/dashboard.js"></script>
 
 		<style>
 			.ad {
@@ -74,14 +74,14 @@
 						</a>
 					</li>
 					<li>
-						<a href="/createAd">
+						<a href="/profile/createAd">
 
 							<span><i class="fa fa-envelope"></i></span>
 							<span>Create An Ad</span>
 						</a>
 					</li>
 					<li class="active">
-						<a href="/manageAds">
+						<a href="manageAds.html">
 							<span><i class="fa fa-bar-chart"></i></span>
 							<span>Manage Your Ads</span>
 						</a>
@@ -90,21 +90,26 @@
 			</nav>
 		</div>
 		<div class="main-content">
-			<div class="main-content">
-                <div class="title">
-                    Change Your Details
-                </div>
-                <form action="/user/profile/editProfile" method="POST">
-                    First Name:<br>
-                    <input type="text" name="editProfile_firstName"><br>
-                    Last Name:<br>
-                    <input type="text" name="editProfile_lastName"><br>
-                    Date Of Birth:<br>
-                    <input type="text" name="editProfile_DOB"><br>
-                    Phone Number:<br>
-                    <input type="text" name="editProfile_phoneNumber"><br>
-                    <input type="submit" value="Submit">
-                  </form>
+			<div class="title">
+				Manage Your Ads
+			</div>
+			<div class="main">
+				<div class="widget">
+					<div class="title">List of Active Ads</div>
+					<div class="chart"></div>
+				</div>
+			</div>
+				Create Your Ad
             </div>
-        </body>
+            <form>
+                Product Name:<br>
+                <input type="text" name="productName"><br>
+                Product Type:<br>
+                <input type="text" name="productType"><br>
+                Price:<br>
+                <input type="number" price="productPrice"><br><br>
+                <input type="submit" value="Submit">
+              </form>
+		</div>
+	</body>
 </html>

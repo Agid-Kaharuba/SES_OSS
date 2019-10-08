@@ -361,7 +361,7 @@ exports.GetUserProfile = function (sessionPk, callback = { success: () => {}, fa
     })
 };
 
-exports.editUserProfile = function (editData, callback = { success: () => {}, fail: () => {} }) 
+exports.editUserProfile = function (editData) 
 {
 	var db = database.connectDatabase();
     var query = `
@@ -371,20 +371,19 @@ exports.editUserProfile = function (editData, callback = { success: () => {}, fa
 	    SET US_BirthDate = ?,
 	    SET US_PhoneNumber = ?,
     FROM User 
-        LEFT JOIN Session ON SS_PK = ? AND SS_US = US_PK
+        LEFT JOIN Session ON SS_US = US_PK
     LIMIT 1
 	;`;
 	
-    db.query(query, editData, (err, results) => 
+    db.query(query, editData, (err) => 
     {
         if (err)
         {
-            console.error('user.js | editUserProfile | editing user profile error: ' + err);
-            callback.fail('Failed to edit profile from database');
+            console.log('user.js | editUserProfile | failed editing user profile error: ');
         }
         else
         {
-            callback.success('Edit Profile Success');
+            console.log('user.js | editUserProfile | success editing user profile error: ');
         }
     })
 };
