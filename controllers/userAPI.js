@@ -51,13 +51,13 @@ router.get('/profile', (req, res) =>
     {
         userModel.getUserProfileInfo(user.id, 
         {
-            found: () =>
+            found: (userProfile) =>
             {
-                res.render('pages/userDashboard/userProfileView');
+                res.render('pages/userDashboard/userProfileView', userProfile);
             },
             notFound: () =>
             {
-                
+
             }
         });
     });

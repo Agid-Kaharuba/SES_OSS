@@ -31,29 +31,6 @@ let convertToUserObject = function (rawUser)
 	};
 };
 
-let convertToUserProfileObject = function (rawUser)
-{
-	return {
-		username: rawUser.US_Username || null,
-		email: rawUser.US_Email || null,
-		firstName: rawUser.US_FirstName || null,
-		lastName: rawUser.US_LastName || null,
-		phoneNumber: rawUser.US_PhoneNumber || null,
-		birthDate: rawUser.US_BirthDate || null,
-		addressLine1 :rawUser.AD_Line1 || null,
-		addressLine2 :rawUser.AD_Line2 || null,
-		addressCity :rawUser.AD_City || null,
-		addressState :rawUser.AD_State || null,
-		addressCountry :rawUser.AD_Country || null,
-		addressPostcode :rawUser.AD_PostCode || null,
-		paymentNickname :rawUser.PM_Nickname || null,
-		paymentName :rawUser.PM_Name || null,
-		paymentCardNumber :rawUser.PM_CardNumber || null,
-		paymentExp :rawUser.PM_Expiry || null,
-		paymentCVV :rawUser.PM_CVV || null,
-	};
-};
-
 /**
  * Retrieves the user from the database by id.
  * @param {string} id - The id of the user, this is the primary key in the database.
@@ -373,22 +350,41 @@ exports.getUserProfileInfo = function (userid, callback = { found: () => { }, no
 		PM_Name,
 		PM_CardNumber,
 		PM_Expiry,
-		PM_CVV
+		PM_CVC
 	FROM User
 	INNER JOIN Address ON US_PK = AD_US
-	INNER JOIN Payment ON US_PK = PM_US
+	INNER JOIN PaymentMethod ON US_PK = PM_US
 	WHERE US_PK = ?
 	`;
 	db.query(query, [userid], (err, results) =>
 	{
 		if (err)
 		{
-			console.log('Failed to get user info')
+			console.log('Failed to get user info ' + err);
 			callback.notFound();
 		}
 		else
 		{
-			callback.found(convertToUserProfileObject(results[0]));
+			var userProfile = 
+			{
+				username : US_Username,
+				email : US_Email,
+				firstName : US_FirstName,
+				lastName : US_LastName,
+				phoneNumber : US_PhoneNumber,
+				birthDate : US_BirthDate,
+				addressLine1 : AD_Line1,
+				addressLine2 : AD_Line2,
+				addressCity : AD_City,
+				addressState : AD_State,
+				addressPostcode : AD_PostCode,
+				paymentNickname : PM_Nickname,
+				paymentName : PM_Name,
+				paymentCardNumber : PM_CardNumber,
+				paymentExp : PM_Expiry,
+				paymentCVC : PM_CVC,
+			};
+			callback.found(userProfile);
 		}
 	});
 }

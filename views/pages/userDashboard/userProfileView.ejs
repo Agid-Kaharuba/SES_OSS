@@ -106,16 +106,17 @@
 							<th>Phone Number</th>
                         </tr>
                         <tr id="userInfo">
-                            <th id="displayUsername"><%= results[0].user_userName %></th>
-                            <th id="displayFirstName"><%= results[0].user_firstName %></th>
-							<th id="displayLastName"><%= results[0].user_lastName %></th>
-							<th id="displayEmail"><%= results[0].user_email %></th>
-							<th id="displayPhone"><%= results[0].user_phoneNumber %></th>
+                            <th id="displayUsername"><%= userProfile.username %></th>
+                            <th id="displayFirstName"><%= userProfile.firstName %></th>
+							<th id="displayLastName"><%= userProfile.lastName %></th>
+							<th id="displayDOB"><%= userProfile.birthDate %></th>
+							<th id="displayEmail"><%= userProfile.email %></th>
+							<th id="displayPhone"><%= userProfile.phoneNumber %></th>
 						</tr>
 					</table>
 					<form action="./profile/editProfile">
 						<input type="submit" value="Edit Profile Information" />
-					</form>1
+					</form>
 					<div class="title">Current User Address</div>
                     <table class="userAddressTable">
                         <tr>
@@ -127,12 +128,12 @@
 							<th>Post Code</th>
                         </tr>
                         <tr id="userInfo">
-                            <th id="displayLine1"><%= results[0].line1 %></th>
-                            <th id="displayLine2"><%= results[0].line2 %></th>
-							<th id="displayCity"><%= results[0].city %></th>
-							<th id="displayState"><%= results[0].state %></th>
-							<th id="diplayCountry"><%= results[0].country %></th>
-							<th id="displayPostcode"><%= results[0].postCode %></th>
+                            <th id="displayLine1"><%= userProfile.addressLine1 %></th>
+                            <th id="displayLine2"><%= userProfile.addressLine2 %></th>
+							<th id="displayCity"><%= userProfile.addressCity %></th>
+							<th id="displayState"><%= userProfile.addressState %></th>
+							<th id="diplayCountry"><%= userProfile.addressCountry %></th>
+							<th id="displayPostcode"><%= userProfile.addressPostcode %></th>
 						</tr>
 					</table>
 					<form action="./profile/editAddress">
@@ -148,11 +149,11 @@
 							<th>CVV</th>
                         </tr>
                         <tr id="userInfo">
-                            <th id="displayLine1"><%= results[0].nickname %></th>
-                            <th id="displayLine2"><%= results[0].name %></th>
-							<th id="displayCity"><%= results[0].number %></th>
-							<th id="displayState"><%= results[0].expiry %></th>
-							<th id="diplayCountry"><%= results[0].cvv %></th>
+                            <th id="displayLine1"><%= userProfile].paymentNickname %></th>
+                            <th id="displayLine2"><%= userProfile.paymentName %></th>
+							<th id="displayCity"><%= userProfile.paymentCardNumber %></th>
+							<th id="displayState"><%= userProfile.paymentExp %></th>
+							<th id="diplayCountry"><%= userProfile.paymentCVC %></th>
 						</tr>
 					</table>
 					<form action="./profile/editPayment">
