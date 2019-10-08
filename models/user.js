@@ -384,7 +384,7 @@ exports.editUserProfile = function (editData, callback = { success: () => {}, fa
         }
         else
         {
-            callback.success(results);
+            callback.success('Edit Profile Success');
         }
     })
 };
