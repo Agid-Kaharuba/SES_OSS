@@ -203,6 +203,26 @@ router.get('/userListings', (req, res) =>
     })
 })
 
+router.get('/public/profile/id=:id', (req, res) =>
+{
+    baseView.renderWithCallback(req, res, 'pages/user/publicProfile', (user, isAdmin, next) =>
+    {
+        userModel.getUserFromID(req.params.id, 
+        {
+            found: (user) =>
+            {
+                let targetUser = user;
+                listingModel.getListingsForUserByID(req.params.id, 
+                {
+                    success: (results) => next({targetUser, results}),
+                    fail: (reason) => htmlResponse.fail(req, res, reason, 'Failed to get user listings')
+                })
+            },
+            notFound: () => htmlResponse.fail(req, res, reason, 'Failed to find user')
+        })
+    })
+})
+
 router.get('/contact', function(req, res) {
 	baseView.renderWithAddons(req, res, 'pages/contact');
 });

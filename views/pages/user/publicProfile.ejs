@@ -14,8 +14,23 @@
 
     <body>
         <%- include ../../partials/topBar -%>
-        
-        <%- include ../../partials/user/listings %>
+
+        <div class="container">
+            
+            <div class="justify-content-center card card-body">
+                <div class="text-center text-primary jumbotron">
+                    <h1><%= targetUser.username %></h1>
+                </div>
+
+                <div class="my-3">
+                    <label>Joined at <%=targetUser.joinDate.toISOString().slice(0, 10)%></label>
+                </div>
+
+                <h4>Listings </h4>
+                <hr>
+                <%- include ../../partials/user/listings %>
+            </div>
+        </div>
 
         <%- include ../../partials/bottomBar -%>
     </body>

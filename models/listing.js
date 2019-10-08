@@ -415,8 +415,6 @@ exports.getListingsForUserByID = function(userID, callback = {success: (results)
 				obj.user = userModel.convertToUserObject(rawResult);
 				newResults.push(obj);
 			}
-			console.log("Sending ");
-			console.log(newResults);
 			callback.success(newResults);
 		}
 	})
