@@ -94,7 +94,7 @@ CREATE TABLE PaymentMethod
   PM_Name		 	varchar(64) NULL,
   PM_CardNumber		varchar(16) NULL,
   PM_Expiry			varchar(5) NULL,
-  PM_CVC		 	varchar(3) NULL,
+  PM_CVV		 	varchar(3) NULL,
   PM_IsPrimary		BIT NOT NULL DEFAULT 0,
   PRIMARY KEY (PM_PK),
   FOREIGN KEY (PM_US) REFERENCES User(US_PK),

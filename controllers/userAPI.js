@@ -47,7 +47,20 @@ router.post('/login', (req, res) =>
 
 router.get('/profile', (req, res) => 
 {
-	baseView.renderWithAddons(req, res, 'pages/userDashboard/userProfileView');
+    userModel.getUserInfo(req, (user, isAdmin) =>
+    {
+        userModel.getUserProfileInfo(user.id, 
+        {
+            found: () =>
+            {
+                res.render('pages/userDashboard/userProfileView');
+            },
+            notFound: () =>
+            {
+                
+            }
+        });
+    });
 });
 
 
@@ -68,30 +81,26 @@ router.get('/profile/editProfile', function(req, res) {
     res.render('pages/userDashboard/editProfileView');
 });
 
-router.post('/profile/editProfile', auth.authorizeUser, (req, res) =>
+router.post('/profile/editProfile', (req, res) =>
 {                   
-    auth.getSessionFromCookie(req,
-    {
-        found: (sessionPK) => 
-        {
-            var editData = 
-            [
-                req.body.editProfile_firstName, 
-                req.body.editProfile_lastName,
-                req.body.editProfile_DOB,
-                req.body.editProfile_phoneNumber,
-                sessionPK
-            ];
+    var editData = 
+            {
+                firstName : req.body.editProfile_firstName,
+                lastName : req.body.editProfile_lastName,
+                phoneNumber : req.body.editProfile_phoneNumber
+            };
 
-            userModel.editUserProfile(editData,{
-                success: () => 
-                {
-                    res.redirect('/profile')
-                },
-                fail: () => res.send(jsonResponse.fail('Failed to update user'))
-            });
-        },
-        notFound: () => {} 
+    userModel.getUserInfo(req, (user, isAdmin) =>
+    {
+        userModel.modifyUserByID(user.id, editData,
+        {
+            success: () => 
+            {
+                res.redirect('/user/profile');
+            }, 
+            fail: () => {}, 
+            done: () => {}
+        });
     });
 
 });
@@ -100,33 +109,29 @@ router.get('/profile/editAddress', function(req, res) {
     res.render('pages/userDashboard/editAddressView');
 });
 
-router.post('/profile/editAddress', auth.authorizeUser, (req, res) =>
+router.post('/profile/editAddress', (req, res) =>
 {                   
-    auth.getSessionFromCookie(req,
-    {
-        found: (sessionPK) => 
-        {
-            var editData = 
-            [
-                req.body.editAddress_line1, 
-				req.body.editAddress_line2, 
-				req.body.editAddress_city,
-				req.body.editAddress_state,
-                req.body.editAddress_country,
-                req.body.editAddress_postcode,
-                sessionPK
-            ];
-
-            userModel.editUserAddress((editData, result) => 
+    var editData = 
             {
-                success: () =>
-                {
-                    res.redirect('/profile');
-                }
+                addressLine1 : req.body.editAddress_line1,
+                addressLine2 : req.body.editAddress_line2,
+                city : req.body.editAddress_city,
+                state : req.body.editAddress_state,
+                country : req.body.editAddress_country,
+                postcode : req.body.editAddress_postcode
+            }; 
 
-            });
-        },
-        notFound: () => {} 
+    userModel.getUserInfo(req, (user, isAdmin) =>
+    {
+        userModel.modifyUserAddressByID(user.id, editData,
+        {
+            success: () => 
+            {
+                res.redirect('/user/profile');
+            }, 
+            fail: () => {}, 
+            done: () => {}
+        });
     });
 
 });
@@ -135,32 +140,28 @@ router.get('/profile/editPayment', function(req, res) {
     res.render('pages/userDashboard/editPaymentView');
 });
 
-router.post('/profile/editPayment', auth.authorizeUser, (req, res) =>
+router.post('/profile/editPayment', (req, res) =>
 {                   
-    auth.getSessionFromCookie(req,
-    {
-        found: (sessionPK) => 
-        {
-            var editData = 
-            [
-                req.body.editPayment_nickname, 
-				req.body.editPayment_cardholderName, 
-				req.body.editPayment_number,
-				req.body.editPayment_Expiry,
-				req.body.editPayment_CVV,
-                sessionPK
-            ];
-
-            userModel.editUserAddress((editData, result) => 
+    var editData = 
             {
-                success: () =>
-                {
-                    res.redirect('/profile');
-                }
+                nickName : req.body.editPayment_nickname,
+                name : req.body.editPayment_cardholderName,
+                number : req.body.editPayment_number,
+                exp : req.body.editPayment_Expiry,
+                cvv : req.body.editPayment_CVV,
+            }; 
 
-            });
-        },
-        notFound: () => {} 
+    userModel.getUserInfo(req, (user, isAdmin) =>
+    {
+        userModel.modifyUserAddressByID(user.id, editData,
+        {
+            success: () => 
+            {
+                res.redirect('/user/profile');
+            }, 
+            fail: () => {}, 
+            done: () => {}
+        });
     });
 
 });

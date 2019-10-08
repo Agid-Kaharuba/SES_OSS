@@ -31,6 +31,29 @@ let convertToUserObject = function (rawUser)
 	};
 };
 
+let convertToUserProfileObject = function (rawUser)
+{
+	return {
+		username: rawUser.US_Username || null,
+		email: rawUser.US_Email || null,
+		firstName: rawUser.US_FirstName || null,
+		lastName: rawUser.US_LastName || null,
+		phoneNumber: rawUser.US_PhoneNumber || null,
+		birthDate: rawUser.US_BirthDate || null,
+		addressLine1 :rawUser.AD_Line1 || null,
+		addressLine2 :rawUser.AD_Line2 || null,
+		addressCity :rawUser.AD_City || null,
+		addressState :rawUser.AD_State || null,
+		addressCountry :rawUser.AD_Country || null,
+		addressPostcode :rawUser.AD_PostCode || null,
+		paymentNickname :rawUser.PM_Nickname || null,
+		paymentName :rawUser.PM_Name || null,
+		paymentCardNumber :rawUser.PM_CardNumber || null,
+		paymentExp :rawUser.PM_Expiry || null,
+		paymentCVV :rawUser.PM_CVV || null,
+	};
+};
+
 /**
  * Retrieves the user from the database by id.
  * @param {string} id - The id of the user, this is the primary key in the database.
@@ -168,7 +191,7 @@ LIMIT 1
  * @param  {string} id - id of user.
  * @param {userObject} callback - found() and notFound() expected
  */
-exports.checkUserExistsByID = function (id, callback = { found: () => { }, notFound: () => { }})
+exports.checkUserExistsByID = function (id, callback = { found: () => { }, notFound: () => {} })
 {
 	var db = database.connectDatabase();
 	var query = `
@@ -329,88 +352,46 @@ exports.getUserInfo = function(req, callback = (user, isAdmin) => {})
 	})
 }
 
-
-exports.GetUserProfile = function (sessionPk, callback = { success: () => {}, fail: () => {} })
+exports.getUserProfileInfo = function (userid, callback = { found: () => { }, notFound: () => {} })
 {
 	var db = database.connectDatabase();
-    var query = `
-    SELECT
-        US_PK AS id,
-        US_Username AS username,
-        US_Email AS email,
-        US_FirstName AS firstName,
-        US_LastName AS lastName,
-        US_PhoneNumber AS phoneNumber,
-        US_BirthDate AS birthDate,
-        US_JoinDate AS joinDate
-    FROM Session 
-    LEFT JOIN User ON Session.SS_US = User.US_Username
-    LIMIT 1
-    `
-    db.query(query, (err, results) => 
-    {
-        if (err)
-        {
-            console.error('user.js | getUserProfile | getting user profile error: ' + err);
-            callback.fail('Failed to get profile from database');
-        }
-        else
-        {
-            callback.success(results);
-        }
-    })
-};
-
-exports.editUserProfile = function (editData, callback = { success: () => {}, fail: () => {} }) 
-{
-	var db = database.connectDatabase();
-	var query = 'UPDATE User SET US_FirstName = ?, US_LastName = ?, US_BirthDate = ?, US_PhoneNumber = ? WHERE US_PK = ?';
-	
-    db.query(query, editData, (err,results) => 
-    {
-        if (err)
-        {
-			console.log('user.js | editUserProfile | failed editing user profile error: ');
-			callback.fail('Failed to get profile from database');
-        }
-        else
-        {
-			console.log('user.js | editUserProfile | success editing user profile error: ');
-        }
-    })
-};
-
-exports.editUserAddress = function (editData, callback = {
-    success: () => {
-    }, fail: () => {
-    }
-}) {
-	var db = database.connectDatabase();
-    var query = `
-    UPDATE Address
-        SET AD_Line1 = ?,
-        SET AD_Line2 = ?,
-        SET AD_City = ?,
-        SET AD_State = ?,
-        SET AD_Country = ?,
-        SET AD_PostCode = ?
-    WHERE AD_US = ?
-    LIMIT 1
-	`
-	
-    db.query(query, editData, (err, results) => 
-    {
-        if (err)
-        {
-            console.error('user.js | editUserAddress | editing user address error: ' + err);
-            callback.fail('Failed to edit address from database');
-        }
-        else
-        {
-            callback.success();
-        }
-    })
-};
+	var query = `
+	SELECT 
+		US_Username,
+		US_Email,
+		US_FirstName,
+		US_LastName,
+		US_PhoneNumber,
+		US_BirthDate,
+		AD_Line1,
+		AD_Line2,
+		AD_City,
+		AD_State,
+		AD_Country,
+		AD_PostCode,
+		PM_Nickname,
+		PM_Name,
+		PM_CardNumber,
+		PM_Expiry,
+		PM_CVV
+	FROM User
+	INNER JOIN Address ON US_PK = AD_US
+	INNER JOIN Payment ON US_PK = PM_US
+	WHERE US_PK = ?
+	`;
+	db.query(query, [userid], (err, results) =>
+	{
+		if (err)
+		{
+			console.log('Failed to get user info')
+			callback.notFound();
+		}
+		else
+		{
+			callback.found(convertToUserProfileObject(results[0]));
+		}
+	});
+}
 
 exports.editUserPayment = function (editData, callback = {
     success: () => {
@@ -545,12 +526,9 @@ const modifyUserByCheck = function(check, user, callback = { success: () => {}, 
 	const db = database.connectDatabase();
 	let query = `
 		UPDATE User SET 
-		US_Username = COALESCE(?, US_Username),
-		US_Email = COALESCE(?, US_Email),
 		US_FirstName = COALESCE(?, US_FirstName),
 		US_LastName = COALESCE(?, US_LastName),
-		US_PhoneNumber = COALESCE(?, US_PhoneNumber),
-		US_BirthDate = COALESCE(?, US_BirthDate)
+		US_PhoneNumber = COALESCE(?, US_PhoneNumber)
 	`
 	if (check != null)
 	{
@@ -563,11 +541,86 @@ const modifyUserByCheck = function(check, user, callback = { success: () => {}, 
 		return;
 	}
 
-	db.query(query, [user.username, user.email, user.firstName, user.lastName, user.phoneNumber, user.birthDate], (err, results) => 
+	db.query(query, [user.firstName, user.lastName, user.phoneNumber], (err, results) => 
 	{
 		if (err)
 		{
 			console.trace("Failed to update User: " + err);
+			if (callback.hasOwnProperty('fail')) callback.fail();
+		}
+		else
+		{
+			if (callback.hasOwnProperty('success')) callback.success();
+		}
+		if (callback.hasOwnProperty('done')) callback.done();
+	})
+}
+
+const modifyUserAddressByCheck = function(check, address, callback = { success: () => {}, fail: () => {}, done: () => {} })
+{
+	const db = database.connectDatabase();
+	let query = `
+		UPDATE Address SET 
+		AD_Line1 = COALESCE(?, AD_Line1),
+		AD_Line2 = COALESCE(?, AD_Line2),
+		AD_City = COALESCE(?, AD_City),
+		AD_State = COALESCE(?, AD_State),
+		AD_Country = COALESCE(?, AD_Country),
+		AD_PostCode = COALESCE(?, AD_PostCode)
+	`
+	if (check != null)
+	{
+		query += ` WHERE ` + check;
+	}
+	else 
+	{
+		if (callback.hasOwnProperty('fail')) callback.fail();
+		if (callback.hasOwnProperty('done')) callback.done();
+		return;
+	}
+
+	db.query(query, [address.addressLine1, address.addressLine2, address.city, address.state, address.country, address.postcode], (err, results) => 
+	{
+		if (err)
+		{
+			console.trace("Failed to update Address: " + err);
+			if (callback.hasOwnProperty('fail')) callback.fail();
+		}
+		else
+		{
+			if (callback.hasOwnProperty('success')) callback.success();
+		}
+		if (callback.hasOwnProperty('done')) callback.done();
+	})
+}
+
+const modifyUserPaymentByCheck = function(check, payment, callback = { success: () => {}, fail: () => {}, done: () => {} })
+{
+	const db = database.connectDatabase();
+	let query = `
+		UPDATE Payment SET 
+		PM_Nickname = COALESCE(?, PM_Nickname),
+		PM_Name = COALESCE(?, PM_Name),
+		PM_CardNumber = COALESCE(?, PM_CardNumber),
+		PM_Expiry = COALESCE(?, PM_Expiry),
+		PM_CVV = COALESCE(?, PM_CVV)
+	`
+	if (check != null)
+	{
+		query += ` WHERE ` + check;
+	}
+	else 
+	{
+		if (callback.hasOwnProperty('fail')) callback.fail();
+		if (callback.hasOwnProperty('done')) callback.done();
+		return;
+	}
+
+	db.query(query, [payment.nickName, payment.name, payment.number, payment.exp, payment.cvv], (err, results) => 
+	{
+		if (err)
+		{
+			console.trace("Failed to update Address: " + err);
 			if (callback.hasOwnProperty('fail')) callback.fail();
 		}
 		else
@@ -605,4 +658,16 @@ exports.modifyUserByID = function (userid, user, callback = { success: () => {},
 {
 	const db = database.connectDatabase();
 	return modifyUserByCheck(`US_PK = ` + db.escape(userid), user, callback);
+}
+
+exports.modifyUserAddressByID = function (userid, address, callback = { success: () => {}, fail: () => {}, done: () => {} })
+{
+	const db = database.connectDatabase();
+	return modifyUserAddressByCheck(`AD_US = ` + db.escape(userid), address, callback);
+}
+
+exports.modifyUserPaymentByID = function (userid, address, callback = { success: () => {}, fail: () => {}, done: () => {} })
+{
+	const db = database.connectDatabase();
+	return modifyUserPaymentByCheck(`PM_US = ` + db.escape(userid), address, callback);
 }
