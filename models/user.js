@@ -361,29 +361,21 @@ exports.GetUserProfile = function (sessionPk, callback = { success: () => {}, fa
     })
 };
 
-exports.editUserProfile = function (editData) 
+exports.editUserProfile = function (editData, callback = { success: () => {}, fail: () => {} }) 
 {
 	var db = database.connectDatabase();
-    var query = `
-    UPDATE User
-	    SET US_FirstName = ?,
-	    SET US_LastName = ?,
-	    SET US_BirthDate = ?,
-	    SET US_PhoneNumber = ?,
-    FROM User 
-        LEFT JOIN Session ON SS_US = US_PK
-    LIMIT 1
-	;`;
+	var query = 'UPDATE User SET US_FirstName = ?, US_LastName = ?, US_BirthDate = ?, US_PhoneNumber = ? WHERE US_PK = ?';
 	
-    db.query(query, editData, (err) => 
+    db.query(query, editData, (err,results) => 
     {
         if (err)
         {
-            console.log('user.js | editUserProfile | failed editing user profile error: ');
+			console.log('user.js | editUserProfile | failed editing user profile error: ');
+			callback.fail('Failed to get profile from database');
         }
         else
         {
-            console.log('user.js | editUserProfile | success editing user profile error: ');
+			console.log('user.js | editUserProfile | success editing user profile error: ');
         }
     })
 };
@@ -401,10 +393,8 @@ exports.editUserAddress = function (editData, callback = {
         SET AD_City = ?,
         SET AD_State = ?,
         SET AD_Country = ?,
-        SET AD_PostCode = ?,
-    FROM User 
-        LEFT JOIN Session ON SS_PK = ? AND SS_US = US_PK
-    WHERE AD_US = SS_US1
+        SET AD_PostCode = ?
+    WHERE AD_US = ?
     LIMIT 1
 	`
 	
@@ -417,7 +407,7 @@ exports.editUserAddress = function (editData, callback = {
         }
         else
         {
-            callback.success(results);
+            callback.success();
         }
     })
 };
@@ -435,7 +425,6 @@ exports.editUserPayment = function (editData, callback = {
         SET PM_CardNumber = ?,
         SET PM_Expiry = ?,
         SET PM_CVC = ?,
-    FROM User 
     LEFT JOIN Session ON SS_PK = ? AND SS_US = US_PK
     LIMIT 1
 	`

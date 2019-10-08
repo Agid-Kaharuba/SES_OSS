@@ -68,16 +68,32 @@ router.get('/profile/editProfile', function(req, res) {
     res.render('pages/userDashboard/editProfileView');
 });
 
-router.post('/profile/editProfile', (req, res) =>
-{  
-    var editData = 
-    [
-        req.body.editProfile_firstName, 
-        req.body.editProfile_lastName,
-        req.body.editProfile_DOB,
-        req.body.editProfile_phoneNumber
-    ];
-    userModel.editUserProfile(editData);
+router.post('/profile/editProfile', auth.authorizeUser, (req, res) =>
+{                   
+    auth.getSessionFromCookie(req,
+    {
+        found: (sessionPK) => 
+        {
+            var editData = 
+            [
+                req.body.editProfile_firstName, 
+                req.body.editProfile_lastName,
+                req.body.editProfile_DOB,
+                req.body.editProfile_phoneNumber,
+                sessionPK
+            ];
+
+            userModel.editUserProfile(editData,{
+                success: () => 
+                {
+                    res.redirect('/profile')
+                },
+                fail: () => res.send(jsonResponse.fail('Failed to update user'))
+            });
+        },
+        notFound: () => {} 
+    });
+
 });
 
 router.get('/profile/editAddress', function(req, res) {
