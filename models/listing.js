@@ -11,7 +11,7 @@ exports.convertToListingObject = function(rawListing)
 		price: rawListing.LS_Price,
 		remainingStock: rawListing.LS_RemainingStock,
 		imgName: rawListing.AT_PK,
-		isActive: rawListing.LS_IsActive,
+		isActive: rawListing.LS_IsActive.readInt8() == 1,
 		postedDate: rawListing.LS_PostedDate,
 	}
 }
@@ -65,6 +65,7 @@ SELECT
 	US_Username as sellerUsername,
 	LS_Title as listingTitle,
 	LS_Price as listingPrice,
+	LS_IsActive as isActive,
 	LS_PK as listingID,
 	AT_PK as imgName
 FROM Listing
@@ -81,6 +82,7 @@ WHERE
 	db.query(query, [searchTerm, searchTerm], 
 		(err, results) =>
 		{ 
+			results[0].isActive = results[0].isActive.readInt8() == 1;
 			if (err) throw err;
 			callback(results);
 		});
