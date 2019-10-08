@@ -61,6 +61,7 @@ exports.SearchListings = function (searchTerm, callback = (result) => { })
 	var db = database.connectDatabase();
 	var query = `
 SELECT
+	US_PK as sellerID,
 	US_Username as sellerUsername,
 	LS_Title as listingTitle,
 	LS_Price as listingPrice,

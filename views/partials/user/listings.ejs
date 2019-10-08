@@ -22,7 +22,7 @@
                 </tr>
             </thead>		
             <% for (result of results) { %>
-            <tr class="inboxText" onclick="window.location.href = '../listing/id=<%= result.id%>'">
+            <tr class="inboxText" onclick="window.location.href = '/listing/id=<%= result.id%>'">
                 <td width="10%"><%= result.postedDate.toLocaleDateString()%></td>
                 <td><%= result.title%></td>
                 <% if (result.description == null) { %>
