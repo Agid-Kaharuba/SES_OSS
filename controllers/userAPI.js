@@ -6,6 +6,7 @@ const htmlResponse = require('../utils/HTMLResponse');
 const auth = require('../utils/authUtil');
 const baseView = require('../views/base');
 const router = express.Router();
+const listingModel = require('../models/listing');
 
 // Every method is prepended with "/user" see app.js
 
@@ -190,6 +191,38 @@ router.get('/', (req, res) =>
 
 });
 
+router.get('/userListings', (req, res) =>
+{
+    baseView.renderWithCallback(req, res, 'pages/user/userListings', (user, isAdmin, next) =>
+    {
+        listingModel.getListingsForUser(user, 
+        {
+            success: (results) => next({results}),
+            fail: (reason) => htmlResponse.fail(req, res, reason, 'Failed to get user listings')
+        })
+    })
+})
+
+router.get('/public/profile/id=:id', (req, res) =>
+{
+    baseView.renderWithCallback(req, res, 'pages/user/publicProfile', (user, isAdmin, next) =>
+    {
+        userModel.getUserFromID(req.params.id, 
+        {
+            found: (user) =>
+            {
+                let targetUser = user;
+                listingModel.getListingsForUserByID(req.params.id, 
+                {
+                    success: (results) => next({targetUser, results}),
+                    fail: (reason) => htmlResponse.fail(req, res, reason, 'Failed to get user listings')
+                })
+            },
+            notFound: () => htmlResponse.fail(req, res, reason, 'Failed to find user')
+        })
+    })
+})
+
 router.get('/contact', function(req, res) {
 	baseView.renderWithAddons(req, res, 'pages/contact');
 });
@@ -201,4 +234,5 @@ router.get('/inbox', function(req, res) {
 router.get('/email', function(req, res) {
 	baseView.renderWithAddons(req, res, 'pages/adminDashboard/email');
 });
+
 module.exports = { router };

@@ -31,7 +31,7 @@ app.use('/dev', devAPI.router);
 app.use('/images', express.static('public/images'));
 app.use('/styles', express.static('public/styles'));
 app.use('/js', express.static('public/js'));
-app.use(express.static('js'));
+app.use('/public', express.static('public'));
 
 app.set('view engine','ejs');
 

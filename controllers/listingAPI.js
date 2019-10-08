@@ -17,16 +17,22 @@ router.get('/id=:id', (req, res) => // e.g. listing/id=4bb8590e-ce26-11e9-a859-2
 
 	listingModel.GetListing(req.params.id,
 	{
-		found: (result) => 
+		found: (results) => 
 		{
-			result[0].imgName = attachmentUtil.getImgPath(result[0].imgName);
-			baseView.renderWithAddons(req, res, 'pages/listingResult', {result});
+			if (results.length < 1) 
+			{
+				htmlResponse.fail(req, res, "Could not find the listing that you were looking for :(", "Listing not found");
+			}
+			else 
+			{
+				let result = results[0];
+				result.imgName = attachmentUtil.getImgPath(result.imgName);
+				baseView.renderWithAddons(req, res, 'pages/listingResult', {result});
+			}
 		},
-		notFound: () => { htmlResponse.fail(req, res, "Could not find the listing that you were looking for :(", "Listing not found"); }
+		notFound: () => { htmlResponse.fail(req, res, "Failed to get the listing that you were looking for :(", "Listing Fetch Failure"); }
   });
 });
-
-
 
 router.get('/search=:query', (req, res) => 
 {
@@ -119,6 +125,29 @@ router.get('/paymentSummary', auth.authorizeUser, (req, res) =>
 	baseView.renderWithAddons(req, res, 'pages/paymentSummary');
 });
 
-router.get('/listing/');
+router.post('/modify', auth.authorizeUserJson, (req, res) =>
+{
+	console.log("modifying listing!")
+	console.log(req.body);
+	userModel.getUserInfo(req, (user, isAdmin) =>
+	{
+		let listing = req.body;
+
+		if (!listing.hasOwnProperty('id'))
+		{
+			res.send(jsonResponse.fail("Failed to modify a listing with no id property!"));
+			return;
+		}
+
+		if (isAdmin || user.id == listing.id)
+		{
+			listingModel.modifyListing(listing, 
+			{
+				success: () => res.send(jsonResponse.success()),
+				fail: (reason) => res.send(jsonResponse.fail(reason))
+			})
+		}
+	})
+})
 
 module.exports = { router };

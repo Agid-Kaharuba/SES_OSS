@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+
+        <!-- Bootstrap CSS -->
+        <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+            integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" rel="stylesheet">
+        <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <link href="/styles/js2.css" rel="stylesheet" type="text/css">
+        <title>Public Profile</title>
+    </head>
+
+    <body>
+        <%- include ../../partials/topBar -%>
+
+        <div class="container">
+            
+            <div class="justify-content-center card card-body">
+                <div class="text-center text-primary jumbotron">
+                    <h1><%= targetUser.username %></h1>
+                </div>
+
+                <div class="my-3">
+                    <label>Joined at <%=targetUser.joinDate.toISOString().slice(0, 10)%></label>
+                </div>
+
+                <% var showActive = true; //Variable state used for the listings partial %>
+                <h4>Listings </h4>
+                <hr>
+                <%- include ../../partials/user/listingsTable %>
+
+
+                <h4>Past Listings </h4>
+                <hr>
+                <% if (user.id = targetUser.id || isAdmin) { %>
+                    <%- include('../../partials/user/listingsTable', {showActive: false}) %>
+                <% } %>
+            </div>
+        </div>
+
+        <%- include ../../partials/bottomBar -%>
+    </body>
+</html>
