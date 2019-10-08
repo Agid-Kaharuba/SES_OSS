@@ -120,7 +120,11 @@ router.post('/profile/editAddress', auth.authorizeUser, (req, res) =>
 
             userModel.editUserAddress((editData, result) => 
             {
-                res.redirect('/profile')
+                success: () =>
+                {
+                    res.redirect('/profile');
+                }
+
             });
         },
         notFound: () => {} 
@@ -150,7 +154,11 @@ router.post('/profile/editPayment', auth.authorizeUser, (req, res) =>
 
             userModel.editUserAddress((editData, result) => 
             {
-                res.redirect('/profile')
+                success: () =>
+                {
+                    res.redirect('/profile');
+                }
+
             });
         },
         notFound: () => {} 
