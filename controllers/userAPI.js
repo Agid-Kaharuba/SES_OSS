@@ -57,33 +57,15 @@ router.get('/profile', (req, res) =>
         {
             found: (userProfile) =>
             {
-                res.render('pages/userDashboard/userProfileView', {userProfile});
+                baseView.renderWithAddons(req, res, 'pages/userDashboard/userProfileView', {userProfile});
             },
             notFound: () =>
             {
 
             }
         });
-	});
-	
-	console.log("getting profile")
-	auth.getSessionFromCookie(req, 
-	{
-		found: (session) =>
-		{
-			userModel.GetUserProfile(session,
-			{
-				success: (result) => 
-				{
-					res.render('userProfileView', { profile: result });
-				},
-				fail: () => console.log("User not found")
-			});
-		},
-		notFound: () => console.log("Session not found")
-	})
+    });
 });
-
 
 router.get('/logout', (req, res) =>
 {
