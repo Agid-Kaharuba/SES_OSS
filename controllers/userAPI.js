@@ -90,6 +90,7 @@ router.post('/profile/editProfile', (req, res) =>
             {
                 firstName : req.body.editProfile_firstName,
                 lastName : req.body.editProfile_lastName,
+                DOB: req.body.editProfile_DOB,
                 phoneNumber : req.body.editProfile_phoneNumber
             };
 

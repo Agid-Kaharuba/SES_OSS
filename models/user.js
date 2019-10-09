@@ -501,6 +501,7 @@ const modifyUserByCheck = function(check, user, callback = { success: () => {}, 
 		UPDATE User SET 
 		US_FirstName = COALESCE(?, US_FirstName),
 		US_LastName = COALESCE(?, US_LastName),
+		US_BirthDate = COALESCE(?, US_BirthDate),
 		US_PhoneNumber = COALESCE(?, US_PhoneNumber)
 	`
 	if (check != null)
@@ -514,7 +515,7 @@ const modifyUserByCheck = function(check, user, callback = { success: () => {}, 
 		return;
 	}
 
-	db.query(query, [user.firstName, user.lastName, user.phoneNumber], (err, results) => 
+	db.query(query, [user.firstName, user.lastName, user.DOB, user.phoneNumber], (err, results) => 
 	{
 		if (err)
 		{
