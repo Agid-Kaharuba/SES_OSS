@@ -117,7 +117,7 @@ WHERE US_Username = ?
 LIMIT 1
 ;`;
 	var sanitsedInputs = [username];
-	db.query(query, sanitsedInputs,
+	db.query(query, sanitsedInputs,		
 		(err, results) =>
 		{
 			if (err) console.trace("Could not get user! ERROR: " + err.message);
@@ -531,6 +531,29 @@ const modifyUserByCheck = function(check, user, callback = { success: () => {}, 
 	})
 }
 
+exports.createUserAddress = function(userid, address,callback = { success: () => {}, fail: () => {} } )
+{
+	const db = database.connectDatabase();
+	let query = `INSERT INTO Address (AD_US, AD_Line1, AD_Line2, AD_City, AD_State, AD_Country, AD_Postcode)
+	VALUES (? ,? , ?, ?, ?, ?, ?)`;
+	console.log("beep");
+	console.log(userid);
+	console.log(address);
+	console.log("boop");
+
+	db.query(query,[userid, address.addressLine1, address.addressLine2, address.city, address.state, address.country, address.postcode], (err,results) =>
+	{
+		if (err)
+		{
+			callback.fail('Failed to insert new address');
+		}
+		else
+		{
+			callback.success();
+		}
+	});
+}
+
 const modifyUserAddressByCheck = function(check, address, callback = { success: () => {}, fail: () => {}, done: () => {} })
 {
 	const db = database.connectDatabase();
@@ -569,11 +592,34 @@ const modifyUserAddressByCheck = function(check, address, callback = { success: 
 	})
 }
 
+exports.createUserPayment = function(userid, payment,callback = { success: () => {}, fail: () => {} } )
+{
+	const db = database.connectDatabase();
+	let query = `INSERT INTO PaymentMethod (PM_US, PM_Nickname, PM_Name, PM_CardNumber, PM,Expiry, PM_CVC)
+	VALUES (? ,? ,? , ?, ?, ?)`;
+	console.log("beep");
+	console.log(userid);
+	console.log(payment);
+	console.log("boop");
+
+	db.query(query,[userid, payment.nickName, payment.name, payment.number, payment.exp, payment.cvv], (err,results) =>
+	{
+		if (err)
+		{
+			callback.fail('Failed to insert new payment');
+		}
+		else
+		{
+			callback.success();
+		}
+	});
+}
+
 const modifyUserPaymentByCheck = function(check, payment, callback = { success: () => {}, fail: () => {}, done: () => {} })
 {
 	const db = database.connectDatabase();
 	let query = `
-		UPDATE Payment SET 
+		UPDATE PaymentMethod SET 
 		PM_Nickname = COALESCE(?, PM_Nickname),
 		PM_Name = COALESCE(?, PM_Name),
 		PM_CardNumber = COALESCE(?, PM_CardNumber),

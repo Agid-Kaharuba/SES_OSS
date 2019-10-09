@@ -113,6 +113,38 @@ router.get('/profile/editAddress', (req, res) => {
     res.render('pages/userDashboard/editAddressView');
 });
 
+router.get('/profile/addAddress', (req, res) => {
+    res.render('pages/userDashboard/addAddressView');
+});
+
+router.post('/profile/addAddress', (req, res) =>
+{                   
+    var editData = 
+            {
+                addressLine1 : req.body.editAddress_line1,
+                addressLine2 : req.body.editAddress_line2,
+                city : req.body.editAddress_city,
+                state : req.body.editAddress_state,
+                country : req.body.editAddress_country,
+                postcode : req.body.editAddress_postcode
+            }; 
+
+    console.log('were atlaest getting here');
+    userModel.getUserInfo(req, (user, isAdmin) =>
+    {
+        userModel.createUserAddress(user.id, editData,
+        {
+            success: () => 
+            {
+                res.redirect('/user/profile');
+            }, 
+            fail: () => {}, 
+            done: () => {}
+        });
+    }); 
+
+});
+
 router.post('/profile/editAddress', (req, res) =>
 {                   
     var editData = 
@@ -136,12 +168,41 @@ router.post('/profile/editAddress', (req, res) =>
             fail: () => {}, 
             done: () => {}
         });
-    });
+    }); 
 
 });
 
 router.get('/profile/editPayment', (req, res) => {
     res.render('pages/userDashboard/editPaymentView');
+});
+router.get('/profile/addPayment', (req, res) => {
+    res.render('pages/userDashboard/addPaymentView');
+});
+
+router.post('/profile/addPayment', (req, res) =>
+{                   
+    var editData = 
+            {
+                nickName : req.body.editPayment_nickname,
+                name : req.body.editPayment_cardholderName,
+                number : req.body.editPayment_number,
+                exp : req.body.editPayment_Expiry,
+                cvv : req.body.editPayment_CVV,
+            }; 
+
+    userModel.getUserInfo(req, (user, isAdmin) =>
+    {
+        userModel.createUserPayment(user.id, editData,
+        {
+            success: () => 
+            {
+                res.redirect('/profile');
+            }, 
+            fail: () => {}, 
+            done: () => {}
+        });
+    });
+
 });
 
 router.post('/profile/editPayment', (req, res) =>
