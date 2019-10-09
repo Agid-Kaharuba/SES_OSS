@@ -31,6 +31,30 @@ let convertToUserObject = function (rawUser)
 	};
 };
 
+let convertToUserProfileObject = function (rawUser)
+{
+	return {
+		username: rawUser.US_Username || null,
+		email: rawUser.US_Email || null,
+		firstName: rawUser.US_FirstName || null,
+		lastName: rawUser.US_LastName || null,
+		phoneNumber: rawUser.US_PhoneNumber || null,
+		birthDate: rawUser.US_BirthDate || null,
+		addressLine1: rawUser.AD_Line1 || null,
+		addressLine2: rawUser.AD_Line2 || null,
+		addressCity: rawUser.AD_City || null,
+		addressState: rawUser.AD_State || null,
+		addressCountry: rawUser.AD_Country || null,
+		addressPostcode: rawUser.AD_PostCode || null,
+		paymentNickname: rawUser.PM_Nickname || null,
+		paymentName: rawUser.PM_Name || null,
+		paymentCardNumber: rawUser.PM_CardNumber || null,
+		paymentExp: rawUser.PM_Expiry || null,
+		paymentCVC: rawUser.PM_CVC || null
+		
+	};
+};
+
 /**
  * Retrieves the user from the database by id.
  * @param {string} id - The id of the user, this is the primary key in the database.
@@ -365,25 +389,7 @@ exports.getUserProfileInfo = function (userid, callback = { found: () => { }, no
 		}
 		else
 		{
-			var userProfile = 
-			{
-				username : US_Username,
-				email : US_Email,
-				firstName : US_FirstName,
-				lastName : US_LastName,
-				phoneNumber : US_PhoneNumber,
-				birthDate : US_BirthDate,
-				addressLine1 : AD_Line1,
-				addressLine2 : AD_Line2,
-				addressCity : AD_City,
-				addressState : AD_State,
-				addressPostcode : AD_PostCode,
-				paymentNickname : PM_Nickname,
-				paymentName : PM_Name,
-				paymentCardNumber : PM_CardNumber,
-				paymentExp : PM_Expiry,
-				paymentCVC : PM_CVC,
-			};
+			var userProfile = convertToUserProfileObject(results)
 			callback.found(userProfile);
 		}
 	});

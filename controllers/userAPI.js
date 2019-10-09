@@ -6,37 +6,7 @@ const jsonResponse = require('../utils/JSONResponse');
 const auth = require('../utils/authUtil');
 const router = express.Router();
 const multer = require('multer');
-const multerConfig = 
-{
-    storage : multer.diskStorage
-    ({
-        destination : function(req, file, next) 
-        {
-            next(null,'/attachment/IMG');
-        },
-        filename: function(req, file, next)
-        {
-            const ext = file.mimetype.split('/')[1];
-            next(null, file.fieldname + '-' + Date.now() + '-' +ext);
-        }
-    }),
-    fileFilter: function(req, file, next)
-    {
-        if(!file)
-        {
-            next();
-        }
-        const image = file.mimetype.startsWith('image/');
-        if(image) 
-        {
-            next(null, true);
-        }
-        else
-        {
-            next({message: "FILE TYPE NOT SUPPORTED"}, false)
-        }
-    }
-}
+const upload = multer({dest : 'attachment/IMG/'});
 
 // Every method is prepended with "/user" see app.js
 
@@ -86,7 +56,7 @@ router.get('/profile', (req, res) =>
         {
             found: (userProfile) =>
             {
-                res.render('pages/userDashboard/userProfileView', userProfile);
+                res.render('pages/userDashboard/userProfileView', {userProfile});
             },
             notFound: () =>
             {
@@ -204,7 +174,7 @@ router.get('/profile/createAd', (req, res) =>
     res.render('pages/userDashboard/createAd');
 });
 
-router.post('/profile/createAd', multer(multerConfig).single('photo'), (req, res) =>
+router.post('/profile/createAd', upload.single('productImage'), (req, res) =>
 {
     var listing = 
     {
@@ -221,7 +191,7 @@ router.post('/profile/createAd', multer(multerConfig).single('photo'), (req, res
             {
                 success: () =>
                 {
-                    res.redirect('/user/profile/createAd/imageupload');
+                    res.redirect('/user/profile/createAd');
                 },
                 fail: () => {},
                 done: () => {}

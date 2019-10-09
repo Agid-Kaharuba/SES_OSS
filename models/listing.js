@@ -115,15 +115,17 @@ exports.createListingForUserID = function(userid, listing, callback = { success:
 	const db = database.connectDatabase();
 	let query = `
 		INSERT INTO Listing (LS_US_Seller, LS_Title, LS_Description, LS_Price, LS_RemainingStock, LS_IsActive)
-		VALUES (?, ?, ?, ?, ?, 1);
+		VALUES (?, ?, ?, ?, ?, 1)
+		INSERT INTO Attachment (AT_ParentPk, AT_ParentID, AT_Type)
+		VALUES( (SELECT LS_PK FROM Listing WHERE LS_Title = ? ), 'ID', 'IMG')
 	`
 
-	let inputs = [userid, listing.title, listing.description, listing.price, listing.remainingStock, 1];
+	let inputs = [userid, listing.title, listing.description, listing.price, listing.remainingStock, 1, listing.title];
 	db.query(query, inputs, (err, results) =>
 	{
 		if (err)
 		{
-			console.trace('Failed to create listing: ' + err);
+			console.log('Failed to create listing: ' + err);
 			if (callback.hasOwnProperty('fail')) callback.fail();
 		}
 		else
@@ -132,10 +134,6 @@ exports.createListingForUserID = function(userid, listing, callback = { success:
 		}
 		if (callback.hasOwnProperty('done')) callback.done();
 	})
-
-	let query2 = `
-		
-	`
 }
 /**
  * Create a new listing from a full model.
