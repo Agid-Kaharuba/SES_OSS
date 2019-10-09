@@ -68,20 +68,20 @@
 			<nav>
 				<ul>
 					<li>
-						<a href="userProfile.html" >
+						<a href="/user/profile" >
 							<span><i class="fa fa-user"></i></span>
 							<span>User Profile</span>
 						</a>
 					</li>
 					<li>
-						<a href="createAd.html">
+						<a href="/user/profile/createAd">
 
 							<span><i class="fa fa-envelope"></i></span>
 							<span>Create An Ad</span>
 						</a>
 					</li>
 					<li class="active">
-						<a href="manageAds.html">
+						<a href="/user/userListings">
 							<span><i class="fa fa-bar-chart"></i></span>
 							<span>Manage Your Ads</span>
 						</a>
@@ -106,15 +106,15 @@
 							<th>Phone Number</th>
                         </tr>
                         <tr id="userInfo">
-                            <th id="displayUsername"><%= profile.username %></th>
-                            <th id="displayFirstName"><%= profile.firstName %></th>
-							<th id="displayLastName"><%= profile.lastName %></th>
-							<th id="displayDOB"><%= profile.DOB %></th>
-							<th id="displayEmail"><%= profile.email %></th>
-							<th id="displayPhone"><%= profile.phoneNumber %></th>
+                            <th id="displayUsername"> <%= userProfile.username %></th>
+                            <th id="displayFirstName"> <%= userProfile.firstName %></th>
+							<th id="displayLastName"> <%= userProfile.lastName %></th>
+							<th id="displayDOB"> <%= userProfile.birthDate %></th>
+							<th id="displayEmail"> <%= userProfile.email %></th>
+							<th id="displayPhone"> <%= userProfile.phoneNumber %></th>
 						</tr>
 					</table>
-					<form action="user/profile/editProfile">
+					<form action="./profile/editProfile">
 						<input type="submit" value="Edit Profile Information" />
 					</form>
 					<div class="title">Current User Address</div>
@@ -128,16 +128,19 @@
 							<th>Post Code</th>
                         </tr>
                         <tr id="userInfo">
-                            <th id="displayLine1"><%= profile.line1 %></th>
-                            <th id="displayLine2"><%= profile.line2 %></th>
-							<th id="displayCity"><%= profile.city %></th>
-							<th id="displayState"><%= profile.state %></th>
-							<th id="diplayCountry"><%= profile.country %></th>
-							<th id="displayPostcode"><%= profile.postCode %></th>
+                            <th id="displayLine1"><%= userProfile.addressLine1 %></th>
+                            <th id="displayLine2"><%= userProfile.addressLine2 %></th>
+							<th id="displayCity"><%= userProfile.addressCity %></th>
+							<th id="displayState"><%= userProfile.addressState %></th>
+							<th id="diplayCountry"><%= userProfile.addressCountry %></th>
+							<th id="displayPostcode"><%= userProfile.addressPostcode %></th>
 						</tr>
 					</table>
-					<form action="editProfile">
-						<input type="submit" value="Edit Profile Information" />
+					<form action="./profile/editAddress">
+						<input type="submit" value="Edit Address" />
+					</form>
+					<form action="./profile/addAddress">
+						<input type="submit" value="Add Address" />
 					</form>
 					<div class="title">Current User Payment Details</div>
                     <table class="userAddressTable">
@@ -149,15 +152,18 @@
 							<th>CVV</th>
                         </tr>
                         <tr id="userInfo">
-                            <th id="displayLine1"><%= profile.nickname %></th>
-                            <th id="displayLine2"><%= profile.name %></th>
-							<th id="displayCity"><%= profile.number %></th>
-							<th id="displayState"><%= profile.expiry %></th>
-							<th id="diplayCountry"><%= profile.cvv %></th>
+                            <th id="displayNickname"><%= userProfile.paymentNickname %></th>
+                            <th id="displayName"><%= userProfile.paymentName %></th>
+							<th id="displayNumber"><%= userProfile.paymentCardNumber %></th>
+							<th id="displayExp"><%= userProfile.paymentExp %></th>
+							<th id="displayCVC"><%= userProfile.paymentCVC %></th>
 						</tr>
 					</table>
-					<form action="user/profile/editPayment">
-						<input type="submit" value="Edit Profile Information" />
+					<form action="./profile/editPayment">
+						<input type="submit" value="Edit Payment Methods" />
+					</form>
+					<form action="./profile/addPayment">
+						<input type="submit" value="Add Payment Method" />
 					</form>
 					<div class="chart"></div>
 				</div>

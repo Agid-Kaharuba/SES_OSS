@@ -8,7 +8,7 @@
 		<link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:700, 600,500,400,300' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 		<link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-		<link rel="stylesheet" href="../styles/dashboard.css">
+		<link rel="stylesheet" href="/public/styles/dashboard.css">
 
 		<script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
 		<script src="https://code.highcharts.com/highcharts.js"></script>
@@ -67,20 +67,20 @@
 			<nav>
 				<ul>
 					<li>
-						<a href="userProfile.html" >
+						<a href="/user/profile" >
 							<span><i class="fa fa-user"></i></span>
 							<span>User Profile</span>
 						</a>
 					</li>
 					<li>
-						<a href="createAd.html">
+						<a href="/user/profile/createAd">
 
 							<span><i class="fa fa-envelope"></i></span>
 							<span>Create An Ad</span>
 						</a>
 					</li>
 					<li class="active">
-						<a href="manageAds.html">
+						<a href="/user/userListings">
 							<span><i class="fa fa-bar-chart"></i></span>
 							<span>Manage Your Ads</span>
 						</a>
@@ -92,7 +92,7 @@
 			<div class="title">
 				Update Your Address
             </div>
-			<form action="/user/editAddressDone" method="POST">
+			<form action="/user/profile/editAddress" method="POST">
 				Address Line 1:<br>
                 <input type="text" name="editAddress_line1"><br>
                 Address Line 2:<br>

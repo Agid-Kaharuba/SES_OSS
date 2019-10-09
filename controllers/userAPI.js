@@ -1,11 +1,14 @@
 const express = require('express');
-
+const baseView = require('../views/base')
 const userModel = require('../models/user');
+const listingModel = require('../models/listing');
 const jsonResponse = require('../utils/JSONResponse');
 const htmlResponse = require('../utils/HTMLResponse');
 const auth = require('../utils/authUtil');
 const baseView = require('../views/base');
 const router = express.Router();
+const multer = require('multer');
+const upload = multer({dest : 'attachment/IMG/'});\
 const listingModel = require('../models/listing');
 
 // Every method is prepended with "/user" see app.js
@@ -49,7 +52,20 @@ router.post('/login', (req, res) =>
 });
 
 router.get('/profile', (req, res) => 
-{
+    userModel.getUserInfo(req, (user, isAdmin) =>
+    {
+        userModel.getUserProfileInfo(user.id, 
+        {
+            found: (userProfile) =>
+            {
+                res.render('pages/userDashboard/userProfileView', {userProfile});
+            },
+            notFound: () =>
+            {
+
+            }
+        });
+    });
 	console.log("getting profile")
 	auth.getSessionFromCookie(req, 
 	{
@@ -68,6 +84,7 @@ router.get('/profile', (req, res) =>
 	})
 });
 
+
 router.get('/logout', (req, res) =>
 {
 	auth.invalidateSession(req, 
@@ -81,92 +98,183 @@ router.get('/logout', (req, res) =>
 		});
 });
 
-router.get('/profile/editProfile', function(req, res) {
-    res.render('editProfileView');
+router.get('/profile/editProfile', (req, res) => {
+    res.render('pages/userDashboard/editProfileView');
 });
 
-router.post('/profile/editProfileDone', auth.authorizeUser, (req, res) =>
+router.post('/profile/editProfile', (req, res) =>
 {                   
-    auth.getSessionFromCookie(req,
-    {
-        found: (sessionPK) => 
-        {
-            var editData = 
-            [
-                req.body.editProfile_firstName, 
-                req.body.editProfile_lastName,
-                req.body.editProfile_DOB,
-                req.body.editProfile_phoneNumber,
-                sessionPK
-            ];
-
-            userModel.editUserProfile((editData, result) => 
+    var editData = 
             {
-                res.redirect('/user/profile')
-            });
-        },
-        notFound: () => {} 
+                firstName : req.body.editProfile_firstName,
+                lastName : req.body.editProfile_lastName,
+                DOB: req.body.editProfile_DOB,
+                phoneNumber : req.body.editProfile_phoneNumber
+            };
+
+    userModel.getUserInfo(req, (user, isAdmin) =>
+    {
+        userModel.modifyUserByID(user.id, editData,
+        {
+            success: () => 
+            {
+                res.redirect('/user/profile');
+            }, 
+            fail: () => {}, 
+            done: () => {}
+        });
     });
 
 });
 
-router.get('/profile/editAddress', function(req, res) {
-    res.render('editAddressView');
+router.get('/profile/editAddress', (req, res) => {
+    res.render('pages/userDashboard/editAddressView');
 });
 
-router.post('/profile/editAddressDone', auth.authorizeUser, (req, res) =>
-{                   
-    auth.getSessionFromCookie(req,
-    {
-        found: (sessionPK) => 
-        {
-            var editData = 
-            [
-                req.body.editAddress_line1, 
-				req.body.editAddress_line2, 
-				req.body.editAddress_city,
-				req.body.editAddress_state,
-                req.body.editAddress_country,
-                req.body.editAddress_postcode,
-                sessionPK
-            ];
+router.get('/profile/addAddress', (req, res) => {
+    res.render('pages/userDashboard/addAddressView');
+});
 
-            userModel.editUserAddress((editData, result) => 
+router.post('/profile/addAddress', (req, res) =>
+{                   
+    var editData = 
             {
-                res.redirect('/user/profile')
-            });
-        },
-        notFound: () => {} 
+                addressLine1 : req.body.editAddress_line1,
+                addressLine2 : req.body.editAddress_line2,
+                city : req.body.editAddress_city,
+                state : req.body.editAddress_state,
+                country : req.body.editAddress_country,
+                postcode : req.body.editAddress_postcode
+            }; 
+
+    console.log('were atlaest getting here');
+    userModel.getUserInfo(req, (user, isAdmin) =>
+    {
+        userModel.createUserAddress(user.id, editData,
+        {
+            success: () => 
+            {
+                res.redirect('/user/profile');
+            }, 
+            fail: () => {}, 
+            done: () => {}
+        });
+    }); 
+
+});
+
+router.post('/profile/editAddress', (req, res) =>
+{                   
+    var editData = 
+            {
+                addressLine1 : req.body.editAddress_line1,
+                addressLine2 : req.body.editAddress_line2,
+                city : req.body.editAddress_city,
+                state : req.body.editAddress_state,
+                country : req.body.editAddress_country,
+                postcode : req.body.editAddress_postcode
+            }; 
+
+    userModel.getUserInfo(req, (user, isAdmin) =>
+    {
+        userModel.modifyUserAddressByID(user.id, editData,
+        {
+            success: () => 
+            {
+                res.redirect('/user/profile');
+            }, 
+            fail: () => {}, 
+            done: () => {}
+        });
+    }); 
+
+});
+
+router.get('/profile/editPayment', (req, res) => {
+    res.render('pages/userDashboard/editPaymentView');
+});
+router.get('/profile/addPayment', (req, res) => {
+    res.render('pages/userDashboard/addPaymentView');
+});
+
+router.post('/profile/addPayment', (req, res) =>
+{                   
+    var editData = 
+            {
+                nickName : req.body.editPayment_nickname,
+                name : req.body.editPayment_cardholderName,
+                number : req.body.editPayment_number,
+                exp : req.body.editPayment_Expiry,
+                cvc : req.body.editPayment_CVC,
+            }; 
+
+    userModel.getUserInfo(req, (user, isAdmin) =>
+    {
+        userModel.createUserPayment(user.id, editData,
+        {
+            success: () => 
+            {
+                res.redirect('/user/profile');
+            }, 
+            fail: () => {}
+        });
     });
 
 });
 
-router.get('/profile/editPayment', function(req, res) {
-    res.render('editPaymentView');
+router.post('/profile/editPayment', (req, res) =>
+{                   
+    var editData = 
+            {
+                nickName : req.body.editPayment_nickname,
+                name : req.body.editPayment_cardholderName,
+                number : req.body.editPayment_number,
+                exp : req.body.editPayment_Expiry,
+                cvv : req.body.editPayment_CVV,
+            }; 
+
+    userModel.getUserInfo(req, (user, isAdmin) =>
+    {
+        userModel.modifyUserPaymentByID(user.id, editData,
+        {
+            success: () => 
+            {
+                res.redirect('/profile');
+            }, 
+            fail: () => {}, 
+            done: () => {}
+        });
+    });
+
 });
 
-router.post('/profile/editAddressDone', auth.authorizeUser, (req, res) =>
-{                   
-    auth.getSessionFromCooksie(req,
-    {
-        found: (sessionPK) => 
-        {
-            var editData = 
-            [
-                req.body.editPayment_nickname, 
-				req.body.editPayment_cardholderName, 
-				req.body.editPayment_number,
-				req.body.editPayment_Expiry,
-				req.body.editPayment_CVV,
-                sessionPK
-            ];
+router.get('/profile/createAd', (req, res) =>
+{
+    res.render('pages/userDashboard/createAd');
+});
 
-            userModel.editUserAddress((editData, result) => 
+router.post('/profile/createAd', upload.single('productImage'), (req, res) =>
+{
+    var listing = 
+    {
+        title : req.body.productName,
+        description : req.body.productDescription,
+        price : req.body.productPrice,
+        remainingStock : req.body.productStock,
+        fileName : req.file.productImage
+    }
+
+    userModel.getUserInfo(req, (user, isAdmin) =>
+    {
+        listingModel.createListingForUserID(user.id, listing,
             {
-                res.redirect('/user/profile')
+                success: () =>
+                {
+                    res.redirect('/user/profile');
+                },
+                fail: () => {},
+                done: () => {}
             });
-        },
-        notFound: () => {} 
     });
 
 });
