@@ -117,12 +117,8 @@ exports.createListingForUserID = function(userid, listing, callback = { success:
 		INSERT INTO Listing (LS_US_Seller, LS_Title, LS_Description, LS_Price, LS_RemainingStock, LS_IsActive)
 		VALUES (?, ?, ?, ?, ?, 1);
 	`
-	if (listing.remainingStock == null)
-		var remainingStock = 1;
-	else
-		var remainingStock = listing.remainingStock;
 
-	let inputs = [userid, listing.title, listing.description, listing.price, remainingStock, 1];
+	let inputs = [userid, listing.title, listing.description, listing.price, listing.remainingStock, 1];
 	db.query(query, inputs, (err, results) =>
 	{
 		if (err)
@@ -136,8 +132,11 @@ exports.createListingForUserID = function(userid, listing, callback = { success:
 		}
 		if (callback.hasOwnProperty('done')) callback.done();
 	})
-}
 
+	let query2 = `
+		
+	`
+}
 /**
  * Create a new listing from a full model.
  * @param {} listing The listing model.

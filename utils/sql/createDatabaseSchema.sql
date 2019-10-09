@@ -27,7 +27,7 @@ CREATE TABLE User
   US_FirstName		varchar(64) DEFAULT NULL,
   US_LastName		varchar(64) DEFAULT NULL,
   US_PhoneNumber	varchar(32) DEFAULT NULL,
-  US_BirthDate		datetime DEFAULT NULL,
+  US_BirthDate		varchar(10) DEFAULT NULL,
   US_JoinDate		datetime NOT NULL DEFAULT NOW(),
   PRIMARY KEY (US_PK),
   UNIQUE KEY US_PK_UNIQUE (US_PK),
@@ -191,5 +191,3 @@ CREATE TABLE Attachment
   PRIMARY KEY (AT_PK),
   UNIQUE KEY AT_PK_UNIQUE (AT_PK)
 );
-
-CREATE TRIGGER GenerateAttachmentPK BEFORE INSERT ON Attachment FOR EACH ROW SET new.AT_PK = uuid();

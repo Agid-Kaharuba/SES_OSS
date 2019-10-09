@@ -389,36 +389,7 @@ exports.getUserProfileInfo = function (userid, callback = { found: () => { }, no
 	});
 }
 
-exports.editUserPayment = function (editData, callback = {
-    success: () => {
-    }, fail: () => {
-    }
-}) {
-	var db = database.connectDatabase();
-    var query = `
-    UPDATE Payment
-        SET PM_Nickname = ?,
-        SET PM_Name = ?,
-        SET PM_CardNumber = ?,
-        SET PM_Expiry = ?,
-        SET PM_CVC = ?,
-    LEFT JOIN Session ON SS_PK = ? AND SS_US = US_PK
-    LIMIT 1
-	`
-	
-    db.query(query, editData, (err, results) => 
-    {
-        if (err)
-        {
-            console.error('user.js | editUserPayment | editing user payment error: ' + err);
-            callback.fail('Failed to edit address from database');
-        }
-        else
-        {
-            callback.success(results);
-        }
-    })
-};
+
 
 /**
  * Function for internal use!

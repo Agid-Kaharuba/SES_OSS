@@ -97,17 +97,17 @@
 			</div>
 				Create Your Ad
             </div>
-            <form action="/profile/createAd" method="POST">
+            <form action="/user/profile/createAd" method="POST", enctype="multipart/form-data">
                 Product Name:<br>
                 <input type="text" name="productName"><br>
-                Product Type:<br>
-                <input type="text" name="productType"><br>
+                Product Description:<br>
+                <input type="text" name="productDescription"><br>
                 Price:<br>
                 <input type="number" name="productPrice"><br>
                 Stock:<br>
-                <input type="number" name="productStock"><br>
-                Pciture:<br>
-                <input type="file" price="productPic"><br>
+				<input type="number" name="productStock"><br>
+				Photo:<br>
+                <input type="file" name="productImage"><br>
                 <input type="submit" value="Submit">
             </form>
 		</div>

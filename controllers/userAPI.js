@@ -1,9 +1,42 @@
 const express = require('express');
 const baseView = require('../views/base')
 const userModel = require('../models/user');
+const listingModel = require('../models/listing');
 const jsonResponse = require('../utils/JSONResponse');
 const auth = require('../utils/authUtil');
 const router = express.Router();
+const multer = require('multer');
+const multerConfig = 
+{
+    storage : multer.diskStorage
+    ({
+        destination : function(req, file, next) 
+        {
+            next(null,'/attachment/IMG');
+        },
+        filename: function(req, file, next)
+        {
+            const ext = file.mimetype.split('/')[1];
+            next(null, file.fieldname + '-' + Date.now() + '-' +ext);
+        }
+    }),
+    fileFilter: function(req, file, next)
+    {
+        if(!file)
+        {
+            next();
+        }
+        const image = file.mimetype.startsWith('image/');
+        if(image) 
+        {
+            next(null, true);
+        }
+        else
+        {
+            next({message: "FILE TYPE NOT SUPPORTED"}, false)
+        }
+    }
+}
 
 // Every method is prepended with "/user" see app.js
 
@@ -77,7 +110,7 @@ router.get('/logout', (req, res) =>
 		});
 });
 
-router.get('/profile/editProfile', function(req, res) {
+router.get('/profile/editProfile', (req, res) => {
     res.render('pages/userDashboard/editProfileView');
 });
 
@@ -105,7 +138,7 @@ router.post('/profile/editProfile', (req, res) =>
 
 });
 
-router.get('/profile/editAddress', function(req, res) {
+router.get('/profile/editAddress', (req, res) => {
     res.render('pages/userDashboard/editAddressView');
 });
 
@@ -136,7 +169,7 @@ router.post('/profile/editAddress', (req, res) =>
 
 });
 
-router.get('/profile/editPayment', function(req, res) {
+router.get('/profile/editPayment', (req, res) => {
     res.render('pages/userDashboard/editPaymentView');
 });
 
@@ -153,11 +186,11 @@ router.post('/profile/editPayment', (req, res) =>
 
     userModel.getUserInfo(req, (user, isAdmin) =>
     {
-        userModel.modifyUserAddressByID(user.id, editData,
+        userModel.modifyUserPaymentByID(user.id, editData,
         {
             success: () => 
             {
-                res.redirect('/user/profile');
+                res.redirect('/profile');
             }, 
             fail: () => {}, 
             done: () => {}
@@ -166,8 +199,35 @@ router.post('/profile/editPayment', (req, res) =>
 
 });
 
-router.get('/profile/createAd', function(req, res) {
+router.get('/profile/createAd', (req, res) =>
+{
     res.render('pages/userDashboard/createAd');
+});
+
+router.post('/profile/createAd', multer(multerConfig).single('photo'), (req, res) =>
+{
+    var listing = 
+    {
+        title : req.body.productName,
+        description : req.body.productDescription,
+        price : req.body.productPrice,
+        remainingStock : req.body.productStock,
+        fileName : req.file.productImage
+    }
+
+    userModel.getUserInfo(req, (user, isAdmin) =>
+    {
+        listingModel.createListingForUserID(user.id, listing,
+            {
+                success: () =>
+                {
+                    res.redirect('/user/profile/createAd/imageupload');
+                },
+                fail: () => {},
+                done: () => {}
+            });
+    });
+
 });
 
 router.put('/modify', (req, res) =>
