@@ -157,7 +157,7 @@ exports.getAdminWithLowestMessage = function(callback = {success: (userid) => {}
     const db = database.connectDatabase();
     let query = `
     SELECT 
-        Admin.AD_PK AS userid,
+        Admin.AD_US AS userid,
         COUNT(Admin.AD_PK) AS msg_count 
     FROM Message 
         INNER JOIN Admin ON Admin.AD_US = Message.MS_US_From
