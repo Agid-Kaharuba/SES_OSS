@@ -374,8 +374,6 @@ exports.openListing = function(listingID, callback = { success: () => {}, fail: 
  */
 exports.closeListing = function(listingID, callback = { success: () => {}, fail: () => {}, done: () => {} })
 {
-	modifyListingByID(listingID, {isActive: false}, callback);
-}
 	this.modifyListingByID(listingID, {isActive: false}, callback);
 }
 
