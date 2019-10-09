@@ -612,3 +612,17 @@ exports.modifyUserByID = function (userid, user, callback = { success: () => {},
 	const db = database.connectDatabase();
 	return modifyUserByCheck(`US_PK = ` + db.escape(userid), user, callback);
 }
+
+exports.fillUserModel = function(obj, keyfrom, keyTo) 
+{
+	this.getUserFromID(obj[keyfrom], 
+	{
+		found: (user) => obj[keyTo] = user,
+		notFound: () => obj[keyTo] = {}
+	})
+}
+
+exports.fillUserModels = function(arr, keyfrom, keyTo) 
+{
+	
+}

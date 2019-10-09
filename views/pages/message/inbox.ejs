@@ -13,7 +13,7 @@
 <table class="table table-hover" >
     <thead>
     <tr>
-        <th scope="col">Send To</th>
+        <th scope="col">Send From</th>
         <th scope="col">Title</th>
         <th scope="col">Date</th>
     </tr>
@@ -21,7 +21,7 @@
     <tbody>
         <% for (message of messages) { %>
             <tr onclick="window.location.href = '/message/id=<%= message.id%>'">
-                <td><%=message.userIDFrom%></td>
+                <td><%=message.usernameFrom%></td>
                 <td><%=message.header%></td>
                 <td><%=message.date.toLocaleString()%></td>
             </tr>

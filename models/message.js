@@ -68,10 +68,12 @@ const getMessageByCheck = function(check, callback = { success: (results) => {},
         MS_PK AS id,
         MS_US_To AS userIDTo,
         MS_US_From AS userIDFrom,
+        US_Username AS usernameFrom,
         MS_Header AS header,
         MS_Body AS body,
         MS_Date AS date
     FROM Message
+    INNER JOIN User ON MS_US_From = US_PK
     `
 
     if (check != null)
@@ -108,7 +110,7 @@ exports.getMessageByID = function(id, callback = { success: (message) => {}, fai
 exports.getMessagesForUserID = function(userid, callback = { success: (messages) => {}, fail: (reason) => {} })
 {
     const db = database.connectDatabase();
-    getMessageByCheck('MS_US_FROM = ' + db.escape(userid), callback)
+    getMessageByCheck('MS_US_To = ' + db.escape(userid), callback)
 }
 
 exports.getMessagesForUser = function(user, callback = { success: (message) => {}, fail: (reason) => {} })
