@@ -34,23 +34,23 @@ let convertToUserObject = function (rawUser)
 let convertToUserProfileObject = function (rawUser)
 {
 	return {
-		username: rawUser.US_Username || null,
-		email: rawUser.US_Email || null,
-		firstName: rawUser.US_FirstName || null,
-		lastName: rawUser.US_LastName || null,
-		phoneNumber: rawUser.US_PhoneNumber || null,
-		birthDate: rawUser.US_BirthDate || null,
-		addressLine1: rawUser.AD_Line1 || null,
-		addressLine2: rawUser.AD_Line2 || null,
-		addressCity: rawUser.AD_City || null,
-		addressState: rawUser.AD_State || null,
-		addressCountry: rawUser.AD_Country || null,
-		addressPostcode: rawUser.AD_PostCode || null,
-		paymentNickname: rawUser.PM_Nickname || null,
-		paymentName: rawUser.PM_Name || null,
-		paymentCardNumber: rawUser.PM_CardNumber || null,
-		paymentExp: rawUser.PM_Expiry || null,
-		paymentCVC: rawUser.PM_CVC || null
+		username: rawUser.US_Username,
+		email: rawUser.US_Email,
+		firstName: rawUser.US_FirstName,
+		lastName: rawUser.US_LastName,
+		phoneNumber: rawUser.US_PhoneNumber,
+		birthDate: rawUser.US_BirthDate,
+		addressLine1: rawUser.AD_Line1,
+		addressLine2: rawUser.AD_Line2,
+		addressCity: rawUser.AD_City,
+		addressState: rawUser.AD_State,
+		addressCountry: rawUser.AD_Country,
+		addressPostcode: rawUser.AD_PostCode,
+		paymentNickname: rawUser.PM_Nickname,
+		paymentName: rawUser.PM_Name,
+		paymentCardNumber: rawUser.PM_CardNumber,
+		paymentExp: rawUser.PM_Expiry,
+		paymentCVC: rawUser.PM_CVC
 		
 	};
 };
@@ -389,8 +389,8 @@ exports.getUserProfileInfo = function (userid, callback = { found: () => { }, no
 		}
 		else
 		{
-			console.log(results);
-			var userProfile = convertToUserProfileObject(results)
+			console.log(results[0]);
+			var userProfile = convertToUserProfileObject(results[0]);
 			callback.found(userProfile);
 		}
 	});
