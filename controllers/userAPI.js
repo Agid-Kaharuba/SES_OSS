@@ -187,7 +187,7 @@ router.post('/profile/addPayment', (req, res) =>
                 name : req.body.editPayment_cardholderName,
                 number : req.body.editPayment_number,
                 exp : req.body.editPayment_Expiry,
-                cvv : req.body.editPayment_CVV,
+                cvc : req.body.editPayment_CVC,
             }; 
 
     userModel.getUserInfo(req, (user, isAdmin) =>
@@ -196,10 +196,9 @@ router.post('/profile/addPayment', (req, res) =>
         {
             success: () => 
             {
-                res.redirect('/profile');
+                res.redirect('/user/profile');
             }, 
-            fail: () => {}, 
-            done: () => {}
+            fail: () => {}
         });
     });
 

@@ -592,24 +592,26 @@ const modifyUserAddressByCheck = function(check, address, callback = { success: 
 	})
 }
 
-exports.createUserPayment = function(userid, payment,callback = { success: () => {}, fail: () => {} } )
+exports.createUserPayment = function(userid, payment, callback = { success: () => {}, fail: () => {} } )
 {
 	const db = database.connectDatabase();
-	let query = `INSERT INTO PaymentMethod (PM_US, PM_Nickname, PM_Name, PM_CardNumber, PM,Expiry, PM_CVC)
-	VALUES (? ,? ,? , ?, ?, ?)`;
+	let query = `INSERT INTO PaymentMethod (PM_US, PM_Nickname, PM_Name, PM_CardNumber, PM_Expiry, PM_CVC)
+	VALUES (? ,? ,? ,? , ?, ?)`;
 	console.log("beep");
 	console.log(userid);
 	console.log(payment);
 	console.log("boop");
 
-	db.query(query,[userid, payment.nickName, payment.name, payment.number, payment.exp, payment.cvv], (err,results) =>
+	db.query(query,[userid, payment.nickName, payment.name, payment.number, payment.exp, payment.cvc], (err,results) =>
 	{
 		if (err)
 		{
+			console.log("failed");
 			callback.fail('Failed to insert new payment');
 		}
 		else
 		{
+			console.log("NOT failed");
 			callback.success();
 		}
 	});
@@ -624,7 +626,7 @@ const modifyUserPaymentByCheck = function(check, payment, callback = { success: 
 		PM_Name = COALESCE(?, PM_Name),
 		PM_CardNumber = COALESCE(?, PM_CardNumber),
 		PM_Expiry = COALESCE(?, PM_Expiry),
-		PM_CVC = COALESCE(?, PM_CVV)
+		PM_CVC = COALESCE(?, PM_CVC)
 	`
 	if (check != null)
 	{
