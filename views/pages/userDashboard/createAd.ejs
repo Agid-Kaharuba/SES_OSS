@@ -8,12 +8,11 @@
 		<link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:700, 600,500,400,300' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 		<link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-		<link rel="stylesheet" href">
+		<link rel="stylesheet" href="/public/styles/dashboard.css">
 
 		<script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
 		<script src="https://code.highcharts.com/highcharts.js"></script>
 		<script src="https://code.highcharts.com/modules/data.js"></script>
-		<script src="/public/styles/dashboard.css"></script>
 		<script src="../userDashboard/dashboard.js"></script>
 
 		<style>
@@ -90,15 +89,11 @@
 			</nav>
 		</div>
 		<div class="main-content">
-			<div class="main">
-				<div class="widget">
-					<div class="chart"></div>
-				</div>
-			</div>
+			<div class="title">
 				Create Your Ad
             </div>
-            <form action="/user/profile/createAd" method="POST", enctype="multipart/form-data">
-                Product Name:<br>
+			<form action="/user/profile/createAd" method="POST", enctype="multipart/form-data">
+				Product Name:<br>
                 <input type="text" name="productName"><br>
                 Product Description:<br>
                 <input type="text" name="productDescription"><br>
@@ -109,7 +104,7 @@
 				Photo:<br>
                 <input type="file" name="productImage"><br>
                 <input type="submit" value="Submit">
-            </form>
+              </form>
 		</div>
 	</body>
 </html>
