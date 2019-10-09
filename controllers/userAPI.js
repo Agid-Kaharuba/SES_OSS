@@ -5,11 +5,9 @@ const listingModel = require('../models/listing');
 const jsonResponse = require('../utils/JSONResponse');
 const htmlResponse = require('../utils/HTMLResponse');
 const auth = require('../utils/authUtil');
-const baseView = require('../views/base');
 const router = express.Router();
 const multer = require('multer');
-const upload = multer({dest : 'attachment/IMG/'});\
-const listingModel = require('../models/listing');
+const upload = multer({dest : 'attachment/IMG/'});
 
 // Every method is prepended with "/user" see app.js
 
@@ -52,6 +50,7 @@ router.post('/login', (req, res) =>
 });
 
 router.get('/profile', (req, res) => 
+{
     userModel.getUserInfo(req, (user, isAdmin) =>
     {
         userModel.getUserProfileInfo(user.id, 
@@ -65,7 +64,8 @@ router.get('/profile', (req, res) =>
 
             }
         });
-    });
+	});
+	
 	console.log("getting profile")
 	auth.getSessionFromCookie(req, 
 	{
