@@ -72,7 +72,7 @@
 
                   <h4 id="id01"> <%var list = listing.listingID %> </h4>
                   <h2><a href='/listing/id=<%= listing.listingID%>' style="position: absolute;  left: 320px; color: black;"><%= listing.listingTitle %></a></h2>
-                  <h3 class="text-muted"><a href="/user/profile" style="position: absolute; left: 320px; top: 30%;" ><%= listing.sellerUsername %></a></h3>
+                  <h3 class="text-muted"><a href="/user/public/profile/id=<%=listing.sellerID%>" style="position: absolute; left: 320px; top: 30%;" ><%= listing.sellerUsername %></a></h3>
                   <h5 id="priceID" style="position: absolute; left:320px; top: 50%;">$<%= listing.listingPrice %></h5>
                 </div>
               </li>

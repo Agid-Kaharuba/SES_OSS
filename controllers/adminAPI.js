@@ -36,12 +36,12 @@ router.get('/adminPrivileges', auth.authorizeAdmin, (req, res) =>
     })
 })
 
-router.post('/add_user=:id', auth.authorizeAdmin, (req, res) => 
+router.post('/add_user=:id', auth.authorizeAdminJson, (req, res) => 
 {
 
 })
 
-router.post('/delete_user=:id', auth.authorizeAdmin, (req, res) => 
+router.post('/delete_user=:id', auth.authorizeAdminJson, (req, res) => 
 {
     adminModel.deleteUser(req.params.id,
     {
@@ -50,12 +50,12 @@ router.post('/delete_user=:id', auth.authorizeAdmin, (req, res) =>
     });
 })
 
-router.post('/add_listing/', auth.authorizeAdmin, (req, res) => 
+router.post('/add_listing/', auth.authorizeAdminJson, (req, res) => 
 {
 
 })
 
-router.post('/delete_listing=:id', auth.authorizeAdmin, (req, res) => 
+router.post('/delete_listing=:id', auth.authorizeAdminJson, (req, res) => 
 {
     adminModel.deleteListing(req.params.id, 
     {
@@ -64,7 +64,7 @@ router.post('/delete_listing=:id', auth.authorizeAdmin, (req, res) =>
     });
 })
 
-router.post('/give_admin_userid=:id', auth.authorizeAdmin, (req, res) =>
+router.post('/give_admin_userid=:id', auth.authorizeAdminJson, (req, res) =>
 {
     userModel.checkUserExistsByID(req.params.id, 
     {
@@ -77,7 +77,7 @@ router.post('/give_admin_userid=:id', auth.authorizeAdmin, (req, res) =>
     });
 })
 
-router.post('/revoke_admin_userid=:id', auth.authorizeAdmin, (req, res) =>
+router.post('/revoke_admin_userid=:id', auth.authorizeAdminJson, (req, res) =>
 {
     userModel.checkUserExistsByID(req.params.id, 
     {
@@ -89,5 +89,7 @@ router.post('/revoke_admin_userid=:id', auth.authorizeAdmin, (req, res) =>
         notFound: () => res.send(jsonResponse.fail('User does not exist!'))
     });
 })
+
+
 
 module.exports = { router };

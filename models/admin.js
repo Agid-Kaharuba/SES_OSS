@@ -3,11 +3,9 @@ const userModel = require('./user');
 const auth = require('../utils/authUtil');
 const listingModel = require('./listing');
 
-exports.getAllAdmins = function(callback = {success: (results) => { }, fail: (reason) => { }})
+const getColumns = function() 
 {
-    const db = database.connectDatabase();
-    let query = `
-    SELECT
+    return ` 
         US_PK AS id,
         US_Username AS username,
         US_Email AS email,
@@ -16,7 +14,16 @@ exports.getAllAdmins = function(callback = {success: (results) => { }, fail: (re
         US_PhoneNumber AS phoneNumber,
         US_BirthDate AS birthDate,
         US_JoinDate AS joinDate
-    FROM Admin 
+
+    `
+}
+
+exports.getAllAdmins = function(callback = {success: (results) => { }, fail: (reason) => { }})
+{
+    const db = database.connectDatabase();
+    let query = `SELECT`
+    + getColumns() 
+    + `FROM Admin
     LEFT JOIN User ON Admin.AD_US = User.US_PK
     `
     db.query(query, (err, results) => 
@@ -142,5 +149,34 @@ exports.deleteUser = function(id, callback = {success: () => {}, fail: (reason) 
             })
         },
         notFound: () => callback.fail('Failed to admin delete a user that does not exist!')
+    })
+}
+
+exports.getAdminWithLowestMessage = function(callback = {success: (userid) => {}, fail: (reason) => {} })
+{
+    const db = database.connectDatabase();
+    let query = `
+    SELECT 
+        Admin.AD_PK AS userid,
+        COUNT(Admin.AD_PK) AS msg_count 
+    FROM Message 
+        INNER JOIN Admin ON Admin.AD_US = Message.MS_US_From
+    GROUP BY Message.MS_US_From
+    ORDER BY COUNT(Admin.AD_PK)
+    LIMIT 1
+    `
+    db.query(query, (err, results) => {
+        if (err) 
+        {
+            console.trace('Failed to get admin with the lowest messages ' + err);
+            callback.fail('Failed to get admin!');
+        }
+        else 
+        {
+            if (results < 1)
+                callback.fail('Failed to get admin!');
+            else
+                callback.success(results[0].userid);
+        }
     })
 }

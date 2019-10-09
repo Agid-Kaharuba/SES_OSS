@@ -1,0 +1,134 @@
+<!-- Modal -->
+<div>
+    <div>
+        <div aria-hidden="true" aria-labelledby="exampleModalScrollableTitle" class="modal fade"
+             id="exampleModalScrollable"
+             role="dialog" tabindex="-1">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title text-info" id="exampleModalScrollableTitle">Register</h5>
+                        <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/user/register" class="needs-validation" id="signupForm" method="post" novalidate>
+                            <div class="form-group">
+                                <label for="usernameRegister">Username</label>
+                                <input class="form-control" id="usernameRegister" name="username" placeholder="Enter username"
+                                       required type="text">
+                                <div class="invalid-feedback">
+                                    Please choose a username.
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="emailRegister">Email address</label>
+                                <input class="form-control" id="emailRegister" name="email" placeholder="Enter email"
+                                       required type="email">
+                                <div class="invalid-feedback">
+                                    Please choose a email.
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="firstNameRegister">First Name</label>
+                                <input class="form-control" id="firstNameRegister" name="firstName" placeholder="First Name"
+                                       required type="text">
+                            </div>
+                            <div class="form-group">
+                                <label for="lastNameRegister">Last Name</label>
+                                <input class="form-control" id="lastNameRegister" name="lastName" placeholder="Last Name"
+                                       required type="text">
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                <input class="form-control" id="password" name="password" placeholder="Password"
+                                       required type="password">
+                            </div>
+                            <div class="form-group">
+                                <label for="confirm_password">Confirm Password</label>
+                                <input class="form-control" id="confirm_password"
+                                       placeholder="Password" required type="password">
+                            </div>
+                            <div class="form-group form-check">
+                                <input class="form-check-input" id="agree" type="checkbox">
+                                <label class="form-check-label" for="agree">Please agree to our statement</label>
+                            </div>
+                            <div class="form-group form-check">
+                                <input class="form-check-input" id="newsletter" type="checkbox">
+                                <label class="form-check-label" for="newsletter">I am happy to receive new
+                                    information</label>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                        <button class="btn btn-primary" onclick="$('#signupForm').submit()" type="button">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div>
+            <div aria-hidden="true" aria-labelledby="signinTitle" class="modal fade" id="Signin"
+                 role="dialog" tabindex="-1">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title text-info" id="signinTitle">Sign In</h5>
+                            <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="/user/login" id="loginForm" class="needs-validation" method="post" novalidate>
+                                <div class="form-group">
+                                    <label for="signinemail">Username</label>
+                                    <input class="form-control" id="signinemail" name="username" placeholder="Enter Username"
+                                           required type="text">
+                                    <div class="invalid-feedback">
+                                        Please enter a username.
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="signinpassword">Password</label>
+                                        <input class="form-control" id="signinpassword" name="password"
+                                               placeholder="Password"
+                                               required type="password">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                            <button class="btn btn-primary " onclick="$('#loginForm').submit()" type="button">
+                                Submit
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer ">
+        <div class="container">
+            <div class="row footer-bottom">
+                <ul class="list-inline text-center">
+                    <li>Copyright &copy;2019. n Team Software All Rights Reserved.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script crossorigin="anonymous"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script crossorigin="anonymous"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="http://libs.cdnjs.net/jquery/2.2.1/jquery.js"></script>
+<script src="http://libs.cdnjs.net/jquery-validate/1.14.0/jquery.validate.min.js"></script>
+<script src="/js/registerValidate.js"></script>
+<script src="/js/signInValidate.js"></script>

@@ -1,28 +1,58 @@
 const database = require('../utils/database');
+const userModel = require('./user');
 
+exports.convertToListingObject = function(rawListing)
+{
+	return {
+		id: rawListing.LS_PK,
+		sellerID: rawListing.LS_US_Seller,
+		title: rawListing.LS_Title,
+		description: rawListing.LS_Description,
+		price: rawListing.LS_Price,
+		remainingStock: rawListing.LS_RemainingStock,
+		imgName: rawListing.AT_PK,
+		isActive: rawListing.LS_IsActive.readInt8() == 1,
+		postedDate: rawListing.LS_PostedDate,
+	}
+}
 
-exports.GetListing = function (listingPK, callback = (result) => { }) 
+exports.GetListing = function (listingPK, callback = { found: (result) => { }, notFound: () => { } })
 {
 	var db = database.connectDatabase();
 	var query = `
 SELECT
+	LS_PK as id,
+	LS_US_Seller as sellerID,
+	LS_PostedDate as postedDate,
 	US_Username as sellerUsername,
     LS_Title as listingTitle,
 	LS_Description as listingDescription,
 	LS_Price as listingPrice,
-	LS_RemainingStock as remainingStock
+	LS_RemainingStock as remainingStock,
+	LS_IsActive as isActive,
+	AT_PK as imgName
 FROM Listing
 	INNER JOIN User ON LS_US_Seller = US_PK
+	LEFT JOIN Attachment ON LS_PK = AT_ParentPK AND AT_ParentID = 'LS' AND AT_Type = 'IMG'
 WHERE
-	LS_IsActive = 1 AND 
-    LS_PK = ?
+	LS_PK = ?
+ORDER BY AT_Description ASC
+LIMIT 1
 ;`;
 
 	db.query(query, [listingPK], 
 		(err, results) =>
 		{ 
 			if (err) throw err;
-			callback(results);
+			if (results.length == 1)
+			{
+				results[0].isActive = results[0].isActive.readInt8() == 1;
+				callback.found(results);
+			}
+			else
+			{
+				callback.notFound();
+			}
 		});
 }
 
@@ -31,20 +61,28 @@ exports.SearchListings = function (searchTerm, callback = (result) => { })
 	var db = database.connectDatabase();
 	var query = `
 SELECT
+	US_PK as sellerID,
 	US_Username as sellerUsername,
 	LS_Title as listingTitle,
 	LS_Price as listingPrice,
-	LS_PK as listingID
+	LS_IsActive as isActive,
+	LS_PK as listingID,
+	AT_PK as imgName
 FROM Listing
 	INNER JOIN User ON LS_US_Seller = US_PK
+	LEFT JOIN Attachment ON LS_PK = AT_ParentPK AND AT_ParentID = 'LS' AND AT_Type = 'IMG'
 WHERE
 	LS_IsActive = 1 AND 
-    INSTR(LS_Title, ?)
+	(
+		INSTR(LS_Title, ?)
+		OR LS_PK = ?
+	)
 ;`;
 
-	db.query(query, [searchTerm], 
+	db.query(query, [searchTerm, searchTerm], 
 		(err, results) =>
 		{ 
+			results[0].isActive = results[0].isActive.readInt8() == 1;
 			if (err) throw err;
 			callback(results);
 		});
@@ -131,16 +169,16 @@ exports.createListingForUserID = function(userid, listing, callback = { success:
  */
 exports.createListing = function(listing, callback = { success: () => {}, fail: () => {}, done: () => {} })
 {
-	createListingForUserID(listing.user.id, listing, callback);
+	this.createListingForUserID(listing.user.id, listing, callback);
 }
 
 /**
  * Modify a listing defined by its id.
  * @param {} listingid The id or primary key of the listing.
  * @param {} listing The updated listing model.
- * @param {} callback callbacks with success() if successful, fail() if failed, and done() when done. Note that done() is called after fail() or success().
+ * @param {} callback callbacks with success() if successful, fail(reason) if failed, and done() when done. Note that done() is called after fail() or success().
  */
-exports.modifyListingByID = function(listingid, listing, callback = { success: () => {}, fail: () => {}, done: () => {} })
+exports.modifyListingByID = function(listingid, listing, callback = { success: () => {}, fail: (reason) => {}, done: () => {} })
 {
 	const db = database.connectDatabase();
 	let query = `
@@ -159,13 +197,18 @@ exports.modifyListingByID = function(listingid, listing, callback = { success: (
 	else
 		var userid = user.userid;
 
-	let inputs = [userid, listing.title, listing.description, listing.price, listing.isActive, listing.remainingStock, listingid]
+	if (listing.isActive == 'true')
+		var isActive = 1;
+	else if (listing.isActive == 'false')
+		var isActive = 0;
+
+	let inputs = [userid, listing.title, listing.description, listing.price, isActive, listing.remainingStock, listingid]
 	db.query(query, inputs, (err, results) => 
 	{
 		if (err)
 		{
-			console.trace('Failed to modify listing by id: ' + err);
-			if (callback.hasOwnProperty('fail')) callback.fail();
+			console.trace('Failed to modify listing in the database! ' + err);
+			if (callback.hasOwnProperty('fail')) callback.fail('Failed to modify listing in the database');
 		}
 		else
 		{
@@ -175,6 +218,135 @@ exports.modifyListingByID = function(listingid, listing, callback = { success: (
 	})
 }
 
+exports.purchaseItem = function(listingPK, buyerPK, paymentMethodPK, deliveryAddressPK, totalPrice, quantity, callback = { success: (purchasePK) => {}, fail: (reason) => {} })
+{
+	const db = database.connectDatabase();
+	let query = `
+	SELECT 
+		LS_RemainingStock as remainingStock
+		LS_IsActive as isActive
+	FROM Listing
+	WHERE LS_PK = ?
+;`
+	let sanitisedInputs = [listingPK];
+	db.query(query, sanitisedInputs, (err, results) =>
+	{
+		if (err)
+		{
+			var reason = "Failed to check remaining stock of item";
+			console.trace(reason + " - " + err);
+			return callback.fail(reason);
+		}
+		
+		if (results.length == 0)
+		{
+			return callback.fail("No listing found with the provided ID.");
+		}
+		else
+		{
+			if (!results[0].isActive)
+			{
+				return callback.fail("Tried to purchase an item which is no longer available.")
+			}
+			else if (results[0].remainingStock < quantity)
+			{
+				return callback.fail("Tried to purchase more stock than what is available.")
+			}
+			else
+			{
+				let query2 = `
+INSERT INTO Purchase (PC_LS, PC_PM, PC_US_Buyer, PC_AD_Delivery, PC_Price, PC_Quantity)
+	VALUES (?, ?, ?, ?, ?, ?);`;
+				let sanitisedInputs2 = [listingPK, paymentMethodPK, buyerPK, deliveryAddressPK, totalPrice, quantity];
+				db.query(query2, sanitisedInputs2, (err) => { if (err) console.trace(err) });
+
+				let query3 = `
+UPDATE Listing
+	SET LS_RemainingStock = LS_RemainingStock - ?
+WHERE LS_PK = ?
+LIMIT 1
+;`;
+				let sanitisedInputs3 = [quantity, listingPK];
+				db.query(query3, sanitisedInputs3, (err) => { if (err) console.trace(err) });
+
+				let query4 = `
+SELECT PC_PK as purchasePK
+FROM Purchase
+WHERE PC_US_Buyer = ?
+ORDER BY PC_Date DESC
+LIMIT 1
+				;`;
+
+				let sanitisedInputs4 = [buyerPK];
+				db.query(query4, sanitisedInputs4, (err, results) => 
+				{ 
+					let errorMsg = "Error retrieving purchase summary.";
+					if (err)
+					{
+						console.trace(err);
+						return callback.fail(errorMsg);
+					}
+					
+					if (results.length == 0 || results[0].purchasePK == null)
+					{
+						return callback.fail(errorMsg);
+					}
+					else
+					{
+						return callback.success(results[0].purchasePK);
+					}
+				});
+			}
+		}
+	});
+}
+
+exports.getPrePurchaseInformation = function(userPK, listingPK, amount, callback = { success: () => { }, fail: () => { } })
+{
+	const db = database.connectDatabase();
+	let paymentMethodsQuery = `
+SELECT 
+	PM_Nickname as paymentNickName,
+	PM_Name as paymentName,
+	CASE WHEN PM_CardNumber IS NOT NULL AND LENGTH(PM_CardNumber) > 4 
+		THEN LPAD(SUBSTR(PM_CardNumber,-4),LENGTH(PM_CardNumber),'*') 
+	ELSE PM_CardNumber 
+END as paymentNumber
+FROM PaymentMethod
+WHERE PM_US = ?
+;`;
+	let sanitisedInputs = [userPK];
+	db.query(paymentMethodsQuery, sanitisedInputs, (err, payments) =>
+	{
+		if (err)
+		{
+			console.trace(err);
+			callback.fail("Failed to retrieve payment options");
+		}
+
+		let addressQuery = `
+SELECT 
+	AD_Line1 as addressLine1,
+	AD_Line2 as addressLine2,
+	AD_City as addressCity,
+	AD_State as addressState,
+	AD_PostCode as addressPostCode,
+	AD_Country as addressCountry
+FROM Address
+WHERE AD_US = ?
+;`;
+		let sanitisedInputs2 = [userPK];
+		db.query(addressQuery, sanitisedInputs2, (err, addresses) =>
+		{
+			if (err)
+			{
+				console.trace(err);
+				callback.fail("Failed to retrieve address options");
+			}
+		});
+	});
+}
+
 /**
  * Modify a listing.
  * @param {} listing The updated listing model.
@@ -182,7 +354,7 @@ exports.modifyListingByID = function(listingid, listing, callback = { success: (
  */
 exports.modifyListing = function(listing, callback = { success: () => {}, fail: () => {}, done: () => {} })
 {
-	modifyListingByID(listing.id, listing, callback);
+	this.modifyListingByID(listing.id, listing, callback);
 }
 
 /**
@@ -192,7 +364,7 @@ exports.modifyListing = function(listing, callback = { success: () => {}, fail: 
  */
 exports.openListing = function(listingID, callback = { success: () => {}, fail: () => {}, done: () => {} })
 {
-	modifyListingByID(listingID, {isActive: true}, callback);
+	this.modifyListingByID(listingID, {isActive: true}, callback);
 }
 
 /**
@@ -204,4 +376,42 @@ exports.closeListing = function(listingID, callback = { success: () => {}, fail:
 {
 	modifyListingByID(listingID, {isActive: false}, callback);
 }
+	this.modifyListingByID(listingID, {isActive: false}, callback);
+}
 
+exports.getListingsForUserByID = function(userID, callback = {success: (results) => {}, fail: (reason) => {}}) 
+{
+	const db = database.connectDatabase();
+	let query = `
+		SELECT * FROM Listing
+		INNER JOIN User ON Listing.LS_US_Seller = User.US_PK
+		LEFT JOIN Attachment ON LS_PK = AT_ParentPK AND AT_ParentID = 'LS' AND AT_Type = 'IMG'
+		WHERE Listing.LS_US_Seller = ?
+	`
+	db.query(query, [userID], (err, results) =>
+	{
+		if (err) 
+		{
+			let reason = 'Failed to get listings for user';
+			console.trace(reason + ' ' + err);
+			callback.fail(reason);
+		}
+		else 
+		{
+			let newResults = [];
+
+			for (rawResult of results) 
+			{
+				let obj = this.convertToListingObject(rawResult);
+				obj.user = userModel.convertToUserObject(rawResult);
+				newResults.push(obj);
+			}
+			callback.success(newResults);
+		}
+	})
+}
+
+exports.getListingsForUser = function(user, callback = {success: (results) => {}, fail: (reason) => {}})
+{
+	this.getListingsForUserByID(user.id, callback);
+}

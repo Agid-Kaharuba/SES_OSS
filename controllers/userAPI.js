@@ -3,10 +3,13 @@ const baseView = require('../views/base')
 const userModel = require('../models/user');
 const listingModel = require('../models/listing');
 const jsonResponse = require('../utils/JSONResponse');
+const htmlResponse = require('../utils/HTMLResponse');
 const auth = require('../utils/authUtil');
+const baseView = require('../views/base');
 const router = express.Router();
 const multer = require('multer');
-const upload = multer({dest : 'attachment/IMG/'});
+const upload = multer({dest : 'attachment/IMG/'});\
+const listingModel = require('../models/listing');
 
 // Every method is prepended with "/user" see app.js
 
@@ -16,14 +19,14 @@ router.post('/register', (req, res) =>
 	userModel.checkUserExists(user.username,
 		{
 			found: 
-				() => res.send(jsonResponse.fail("Could not register an already existing user")),
+                () => htmlResponse.fail(req, res, 'Could not register an already existing user', 'Registration Failure'),
 			notFound: 
 				() => userModel.registerUser(user,
 				{
 					success:
 						() => res.redirect("/?register=success"),
 					fail:
-						(reason) => res.send(jsonResponse.fail(reason))
+						(reason) => htmlResponse.fail(req, res, reason)
 				})
 		});
 });
@@ -41,15 +44,14 @@ router.post('/login', (req, res) =>
 						res.cookie("currentUser", user.username);
 						res.redirect("/?login=success");
 					},
-					fail: () => res.send(jsonResponse.fail('Failed to create a new session'))
+					fail: () => htmlResponse.fail(req, res, 'Failed to create a new session', 'Failed to login')
 				}),
 			fail:
-				(reason) => res.send(jsonResponse.fail(reason)),
+				(reason) => htmlResponse.fail(req, res, reason, 'Failed to login')
 		});
 });
 
 router.get('/profile', (req, res) => 
-{
     userModel.getUserInfo(req, (user, isAdmin) =>
     {
         userModel.getUserProfileInfo(user.id, 
@@ -64,6 +66,22 @@ router.get('/profile', (req, res) =>
             }
         });
     });
+	console.log("getting profile")
+	auth.getSessionFromCookie(req, 
+	{
+		found: (session) =>
+		{
+			userModel.GetUserProfile(session,
+			{
+				success: (result) => 
+				{
+					res.render('userProfileView', { profile: result });
+				},
+				fail: () => console.log("User not found")
+			});
+		},
+		notFound: () => console.log("Session not found")
+	})
 });
 
 
@@ -76,7 +94,7 @@ router.get('/logout', (req, res) =>
 				res.cookie('currentUser', "", {maxAge: Date.now()});
 				res.redirect("/?logout=success");
 			},
-			fail: () => res.send(jsonResponse.fail('Failed to logout'))
+			fail: () => htmlResponse.fail(req, res, 'Failed to logout', 'Logout failure')
 		});
 });
 
@@ -279,6 +297,50 @@ router.post('/confirm_purchase/:listingID', (req, res) =>
 router.get('/', (req, res) =>
 {
 
+});
+
+router.get('/userListings', (req, res) =>
+{
+    baseView.renderWithCallback(req, res, 'pages/user/userListings', (user, isAdmin, next) =>
+    {
+        listingModel.getListingsForUser(user, 
+        {
+            success: (results) => next({results}),
+            fail: (reason) => htmlResponse.fail(req, res, reason, 'Failed to get user listings')
+        })
+    })
+})
+
+router.get('/public/profile/id=:id', (req, res) =>
+{
+    baseView.renderWithCallback(req, res, 'pages/user/publicProfile', (user, isAdmin, next) =>
+    {
+        userModel.getUserFromID(req.params.id, 
+        {
+            found: (user) =>
+            {
+                let targetUser = user;
+                listingModel.getListingsForUserByID(req.params.id, 
+                {
+                    success: (results) => next({targetUser, results}),
+                    fail: (reason) => htmlResponse.fail(req, res, reason, 'Failed to get user listings')
+                })
+            },
+            notFound: () => htmlResponse.fail(req, res, reason, 'Failed to find user')
+        })
+    })
+})
+
+router.get('/contact', function(req, res) {
+	baseView.renderWithAddons(req, res, 'pages/contact');
+});
+
+router.get('/inbox', function(req, res) {
+	baseView.renderWithAddons(req, res, 'pages/adminDashboard/inbox');
+});
+
+router.get('/email', function(req, res) {
+	baseView.renderWithAddons(req, res, 'pages/adminDashboard/email');
 });
 
 module.exports = { router };
