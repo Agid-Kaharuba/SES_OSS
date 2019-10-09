@@ -10,19 +10,19 @@ exports.createMessage = function(message, callback = { success: () => {}, fail: 
 {
     if (message == null) 
     {
-        callback.trace('Received null message!');
+        console.trace('Received null message!');
         if (callback.hasOwnProperty('fail')) callback.fail('Message cannot be null!');
         if (callback.hasOwnProperty('done')) callback.done();
     } 
-    else if (!message.hasOwnProperty('useridFrom'))
+    else if (!message.hasOwnProperty('userIDFrom'))
     {
-        callback.trace('Received a message without useridFrom');
+        console.trace('Received a message without userIDFrom');
         if (callback.hasOwnProperty('fail')) callback.fail('Message does not have a sender!');
         if (callback.hasOwnProperty('done')) callback.done();
     } 
-    else if (!message.hasOwnProperty('useridTo'))
+    else if (!message.hasOwnProperty('userIDTo'))
     {
-        callback.trace('Received a message without useridTo');
+        console.trace('Received a message without userIDTo');
         if (callback.hasOwnProperty('fail')) callback.fail('Message does not have a recipient');
         if (callback.hasOwnProperty('done')) callback.done();
     }
@@ -39,7 +39,7 @@ exports.createMessage = function(message, callback = { success: () => {}, fail: 
         INSERT INTO Message (MS_US_From, MS_US_To, MS_Header, MS_Body)
         VALUES (?, ?, ?, ?)
         `
-        let inputs = [message.useridFrom, message.useridTo, message.header, message.body]
+        let inputs = [message.userIDFrom, message.userIDTo, message.header, message.body]
         db.query(query, inputs, (err, results) =>
         {
             if (err)
@@ -66,12 +66,14 @@ const getMessageByCheck = function(check, callback = { success: (results) => {},
     let query = `
     SELECT
         MS_PK AS id,
-        MS_US_To AS useridTo,
-        MS_US_From AS useridFrom,
+        MS_US_To AS userIDTo,
+        MS_US_From AS userIDFrom,
+        US_Username AS usernameFrom,
         MS_Header AS header,
         MS_Body AS body,
         MS_Date AS date
     FROM Message
+    INNER JOIN User ON MS_US_From = US_PK
     `
 
     if (check != null)
@@ -108,7 +110,7 @@ exports.getMessageByID = function(id, callback = { success: (message) => {}, fai
 exports.getMessagesForUserID = function(userid, callback = { success: (messages) => {}, fail: (reason) => {} })
 {
     const db = database.connectDatabase();
-    getMessageByCheck('MS_US_FROM = ' + db.escape(userid), callback)
+    getMessageByCheck('MS_US_To = ' + db.escape(userid), callback)
 }
 
 exports.getMessagesForUser = function(user, callback = { success: (message) => {}, fail: (reason) => {} })

@@ -681,6 +681,15 @@ exports.modifyUserByID = function (userid, user, callback = { success: () => {},
 	return modifyUserByCheck(`US_PK = ` + db.escape(userid), user, callback);
 }
 
+exports.fillUserModel = function(obj, keyfrom, keyTo) 
+{
+	this.getUserFromID(obj[keyfrom], 
+	{
+		found: (user) => obj[keyTo] = user,
+		notFound: () => obj[keyTo] = {}
+	})
+}
+
 exports.modifyUserAddressByID = function (userid, address, callback = { success: () => {}, fail: () => {}, done: () => {} })
 {
 	const db = database.connectDatabase();
