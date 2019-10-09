@@ -376,8 +376,8 @@ exports.getUserProfileInfo = function (userid, callback = { found: () => { }, no
 		PM_Expiry,
 		PM_CVC
 	FROM User
-	INNER JOIN Address ON US_PK = AD_US
-	INNER JOIN PaymentMethod ON US_PK = PM_US
+	LEFT JOIN Address ON US_PK = AD_US
+	LEFT JOIN PaymentMethod ON US_PK = PM_US
 	WHERE US_PK = ?
 	`;
 	db.query(query, [userid], (err, results) =>
@@ -389,6 +389,7 @@ exports.getUserProfileInfo = function (userid, callback = { found: () => { }, no
 		}
 		else
 		{
+			console.log(results);
 			var userProfile = convertToUserProfileObject(results)
 			callback.found(userProfile);
 		}
