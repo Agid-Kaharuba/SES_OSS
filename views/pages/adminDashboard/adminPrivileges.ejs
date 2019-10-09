@@ -179,7 +179,8 @@
 				{
 					if (data.status == "success")
 					{
-						alert("Successful!");
+						if (alert("Successful!"))
+							location.reload();
 					} 
 					else
 					{
