@@ -113,27 +113,16 @@ LIMIT 1
 exports.createListingForUserID = function(userid, listing, callback = { success: () => {}, fail: () => {}, done: () => {} })
 {
 	const db = database.connectDatabase();
-	let query = `
-		INSERT INTO Listing (LS_US_Seller, LS_Title, LS_Description, LS_Price, LS_RemainingStock, LS_IsActive)
-		VALUES (?, ?, ?, ?, ?, 1)
-		INSERT INTO Attachment (AT_ParentPk, AT_ParentID, AT_Type)
-		VALUES( (SELECT LS_PK FROM Listing WHERE LS_Title = ? ), 'ID', 'IMG')
-	`
+		let insertListingQuery = `INSERT INTO Listing (LS_US_Seller, LS_Title, LS_Description, LS_Price, LS_RemainingStock) VALUES (?, ?, ?, ?, ?);`;
+		let inputs = [userid, listing.title, listing.description, listing.price, listing.remainingStock];
+		db.query(insertListingQuery, inputs, (err) =>
+		{
+			if (err) throw err;
 
-	let inputs = [userid, listing.title, listing.description, listing.price, listing.remainingStock, 1, listing.title];
-	db.query(query, inputs, (err, results) =>
-	{
-		if (err)
-		{
-			console.log('Failed to create listing: ' + err);
-			if (callback.hasOwnProperty('fail')) callback.fail();
-		}
-		else
-		{
-			if (callback.hasOwnProperty('success')) callback.success();
-		}
-		if (callback.hasOwnProperty('done')) callback.done();
-	})
+			callback.success();
+		});
+
+	callback.fail();
 }
 /**
  * Create a new listing from a full model.
@@ -215,3 +204,4 @@ exports.closeListing = function(listingID, callback = { success: () => {}, fail:
 {
 	modifyListingByID(listingID, {isActive: false}, callback);
 }
+

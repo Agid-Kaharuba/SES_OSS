@@ -253,7 +253,7 @@ router.post('/profile/createAd', upload.single('productImage'), (req, res) =>
             {
                 success: () =>
                 {
-                    res.redirect('/user/profile/createAd');
+                    res.redirect('/user/profile');
                 },
                 fail: () => {},
                 done: () => {}

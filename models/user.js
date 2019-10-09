@@ -624,7 +624,7 @@ const modifyUserPaymentByCheck = function(check, payment, callback = { success: 
 		PM_Name = COALESCE(?, PM_Name),
 		PM_CardNumber = COALESCE(?, PM_CardNumber),
 		PM_Expiry = COALESCE(?, PM_Expiry),
-		PM_CVV = COALESCE(?, PM_CVV)
+		PM_CVC = COALESCE(?, PM_CVV)
 	`
 	if (check != null)
 	{
