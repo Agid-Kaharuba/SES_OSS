@@ -17,9 +17,13 @@ router.get('/id=:id', auth.authorizeUser, (req, res) =>
         {
             userModel.getUserInfo(req, (user, isAdmin) =>
             {
-                if (message.userIDFrom == user.id)
+                if (message.userIDFrom == user.id || message.userIDTo == user.id)
                 {
                     baseView.renderWithAddons(req, res, 'pages/message/message', {message});
+                }
+                else 
+                {
+                    htmlResponse.fail(req, res, 'Access is not allowed for the user for this message', 'Access not allowed');
                 }
             })
         },
