@@ -67,13 +67,15 @@ const getMessageByCheck = function(check, callback = { success: (results) => {},
     SELECT
         MS_PK AS id,
         MS_US_To AS userIDTo,
+        US_To.US_Username AS usernameTo,
         MS_US_From AS userIDFrom,
-        US_Username AS usernameFrom,
+        US_From.US_Username AS usernameFrom,
         MS_Header AS header,
         MS_Body AS body,
         MS_Date AS date
     FROM Message
-    INNER JOIN User ON MS_US_From = US_PK
+    INNER JOIN User US_From ON MS_US_From = US_From.US_PK
+    INNER JOIN User US_To ON MS_US_To = US_To.US_PK
     `
 
     if (check != null)
@@ -107,15 +109,46 @@ exports.getMessageByID = function(id, callback = { success: (message) => {}, fai
     })
 }
 
-exports.getMessagesForUserID = function(userid, callback = { success: (messages) => {}, fail: (reason) => {} })
+/**
+ * Get all messages that is sent for a particular user.
+ * @param {} userID The user id of the user.
+ * @param {} callback Callbacks with success(messages) if successful, fail(reason) if failed.
+ */
+exports.getMessagesForUserID = function(userID, callback = { success: (messages) => {}, fail: (reason) => {} })
 {
     const db = database.connectDatabase();
-    getMessageByCheck('MS_US_To = ' + db.escape(userid), callback)
+    getMessageByCheck('MS_US_To = ' + db.escape(userID), callback)
 }
 
-exports.getMessagesForUser = function(user, callback = { success: (message) => {}, fail: (reason) => {} })
+/**
+ * Get all messages that is sent for a particular user.
+ * @param {} user User model object.
+ * @param {} callback Callbacks with success(messages) if successful, fail(reason) if failed.
+ */
+exports.getMessagesForUser = function(user, callback = { success: (messages) => {}, fail: (reason) => {} })
 {
     this.getMessageByUserID(user.id, callback);
+}
+
+/**
+ * Get all messages that is by a particular user.
+ * @param {} userID The user id of the user.
+ * @param {} callback Callbacks with success(messages) if successful, fail(reason) if failed.
+ */
+exports.getMessagesByUserID = function(userID, callback = { success: (messages) => {}, fail: (reason) => {} })
+{
+    const db = database.connectDatabase();
+    getMessageByCheck('MS_US_From = ' + db.escape(userID), callback);
+}
+
+/**
+ * Get all messages that is by a particular user.
+ * @param {} user User model object.
+ * @param {} callback Callbacks with success(messages) if successful, fail(reason) if failed.
+ */
+exports.getMessagesByUser = function(user, callback = { success: (messages) => {}, fail: (reason) => {} })
+{
+    this.getMessagesByUserID(user.id, callback);
 }
 
 /**
