@@ -60,7 +60,7 @@ exports.createMessage = function(message, callback = { success: () => {}, fail: 
  * Internal function!
  * @param {} callback - Optional callbacks with success(results) and fail(reason) 
  */
-const getMessageByCheck = function(check, callback = { success: (results) => {}, fail: (reason) => {} })
+const getMessagesByCheck = function(check, callback = { success: (results) => {}, fail: (reason) => {} })
 {
     const db = database.connectDatabase();
     let query = `
@@ -96,7 +96,7 @@ const getMessageByCheck = function(check, callback = { success: (results) => {},
 exports.getMessageByID = function(id, callback = { success: (message) => {}, fail: (reason) => {} })
 {
     const db = database.connectDatabase();
-    getMessageByCheck('MS_PK = ' + db.escape(id), 
+    getMessagesByCheck('MS_PK = ' + db.escape(id), 
     {
         success: (results) => 
         {
@@ -117,7 +117,7 @@ exports.getMessageByID = function(id, callback = { success: (message) => {}, fai
 exports.getMessagesForUserID = function(userID, callback = { success: (messages) => {}, fail: (reason) => {} })
 {
     const db = database.connectDatabase();
-    getMessageByCheck('MS_US_To = ' + db.escape(userID), callback)
+    getMessagesByCheck('MS_US_To = ' + db.escape(userID), callback)
 }
 
 /**
@@ -127,7 +127,7 @@ exports.getMessagesForUserID = function(userID, callback = { success: (messages)
  */
 exports.getMessagesForUser = function(user, callback = { success: (messages) => {}, fail: (reason) => {} })
 {
-    this.getMessageByUserID(user.id, callback);
+    this.getMessagesForUserID(user.id, callback);
 }
 
 /**
@@ -138,7 +138,7 @@ exports.getMessagesForUser = function(user, callback = { success: (messages) => 
 exports.getMessagesByUserID = function(userID, callback = { success: (messages) => {}, fail: (reason) => {} })
 {
     const db = database.connectDatabase();
-    getMessageByCheck('MS_US_From = ' + db.escape(userID), callback);
+    getMessagesByCheck('MS_US_From = ' + db.escape(userID), callback);
 }
 
 /**
