@@ -1,0 +1,81 @@
+<% include ../partials/head %>
+<div style="margin: 20px auto; width:70%; " class="container pt-3">
+    <div class="row mb-5">
+        <div class="col-12">
+            <table class="table">
+                <tr class="bg-info text-light">
+                    <th scope="col">Purchase Name</th>
+                    <th scope="col">Purchase Quantity</th>
+                    <th scope="col">Total</th>
+                </tr>
+                <tr>
+                    <td><%= result.listingTitle %></td>
+                    <td><%= result.purchaseQuantity %></td>
+                    <td>$<%= result.purchasePrice %></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6">
+            <table class="table table-bordered table-white">
+                <tr class="bg-warning text-muted">
+                    <th colspan="2">
+                        Payment Information
+                    </th>
+                </tr>
+                <tr>
+                    <th scope="row">Payment Nick Name: </th>
+                    <td><%= result.paymentNickname %></td>
+                </tr>
+                <tr>
+                    <th scope="row">Payment Name: </th>
+                    <td><%= result.paymentName %></td>
+                </tr>
+                <tr>
+                    <th scope="row">Payment Number: </th>
+                    <td><%= result.paymentNumber %></td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-6">
+            <table class="table table-bordered table-white">
+                <tr class="bg-warning text-muted">
+                    <th colspan="2">
+                        Delivery Information
+                    </th>
+                </tr>
+                <tr>
+                    <th scope="row">Delivery Line 1:</th>
+                    <td><%= result.deliveryLine1 %></td>
+                </tr>
+                <tr>
+                    <th scope="row">Delivery Line 2:</th>
+                    <td><%= result.deliveryLine2 %></td>
+                </tr>
+                <tr>
+                    <th scope="row">Delivery City:</th>
+                    <td><%= result.deliveryCity %></td>
+                </tr>
+                <tr>
+                    <th scope="row">Delivery State:</th>
+                    <td><%= result.deliveryState %></td>
+                </tr>
+                <tr>
+                    <th scope="row">Delivery Postcode:</th>
+                    <td><%= result.deliveryPostCode %></td>
+                </tr>
+                <tr>
+                    <th scope="row">Delivery Country:</th>
+                    <td><%= result.deliveryCountry %></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-12 text-right">
+            <button class="btn btn-primary">Confirm and Pay</button>
+        </div>
+    </div>
+</div>
+<% include ../partials/foot %>
