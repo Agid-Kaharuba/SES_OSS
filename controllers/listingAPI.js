@@ -57,13 +57,15 @@ router.get('/summary=:purchaseID', auth.authorizeUser, (req, res) =>
 		found: (session) =>
 		{
 			var userPK = session.SS_US;
-			listingModel.GetPurchaseSummary(req.params.purchaseID, userPK, 		
+			console.log(req.params.purchaseID);
+			console.log(userPK);
+			listingModel.GetPurchaseSummary(req.params.purchaseID, userPK,
 			{
 				found: 
 					(result) => 
 					{
 						console.log(result);
-						res.render(view.viewPurchaseSummary(result));
+						baseView.renderWithAddons(req, res, 'pages/purchaseSummary', {result});
 					},
 				notFound: 
 					() => htmlResponse.fail(req, res, 'Could not get your purchase summary :(', 'Payment Summary Not Found'),
