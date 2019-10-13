@@ -268,68 +268,88 @@ LIMIT 1
     });
 }
 
-exports.getPrePurchaseInformation  =   function(userPK,  listingPK,  amount,  callback  =   {  success:  ()  =>  { },  fail:  ()  =>  { }  }) {    
-        const  db  =  database.connectDatabase();    
-        let  paymentMethodsQuery  =  `
-SELECT 
-    PM_Nickname as paymentNickName,
-    PM_Name as paymentName,
-    CASE WHEN PM_CardNumber IS NOT NULL AND LENGTH(PM_CardNumber) > 4 
-        THEN LPAD(SUBSTR(PM_CardNumber,-4),LENGTH(PM_CardNumber),'*') 
-    ELSE PM_CardNumber 
-END as paymentNumber
-FROM PaymentMethod
-WHERE PM_US = ?
-;`;    
-        let  sanitisedInputs  =   [userPK];    
-        db.query(paymentMethodsQuery,  sanitisedInputs, (err,  payments) => {        
-            if  (err) {            
-                console.trace(err);            
-                callback.fail("Failed to retrieve payment options");        
-            }        
-            let  addressQuery  =  `
-SELECT 
-    AD_Line1 as addressLine1,
-    AD_Line2 as addressLine2,
-    AD_City as addressCity,
-    AD_State as addressState,
-    AD_PostCode as addressPostCode,
-    AD_Country as addressCountry
-FROM Address
-WHERE AD_US = ?
-;`;        
-            let  sanitisedInputs2  = [userPK];        
-            db.query(addressQuery, sanitisedInputs2, (err,  addresses)  => {            
-                if  (err) {                
-                    console.trace(err);                
-                    callback.fail("Failed to retrieve address options");            
-                }            
-                let  listingQuery  =  `
+exports.getPrePurchaseInformation = function(userPK, listingPK, amount, callback = { success: () => { }, fail: () => { } }) 
+{
+	console.log("@getPrePurchaseInformation");
+	console.log("userPK=" + userPK);
+	console.log("listingPK=" + listingPK);
+	console.log("amount=" + amount);
+	const db = database.connectDatabase();    
+	let paymentMethodsQuery = `
 SELECT
-    LS_Title as itemName
-    LS_Price as itemPrice
-    LS_RemainingStock as itemStockLeft
-WHERE 
-    LS_PK = ? AND
-    LS_IsActive = 1
-LIMIT 1
+	PM_Nickname as paymentNickName,
+	PM_Name as paymentName,
+    CASE WHEN PM_CardNumber IS NOT NULL AND LENGTH(PM_CardNumber) > 4
+		THEN LPAD(SUBSTR(PM_CardNumber, -4), LENGTH(PM_CardNumber), '*') 
+		ELSE PM_CardNumber
+	END AS paymentNumber
+FROM PaymentMethod
+WHERE PM_US = 'f0575c90-e4af-11e9-a859-256794b0b57d'
+;`;
+	let sanitisedInputs = [userPK];    
+	db.query(paymentMethodsQuery, sanitisedInputs, (err, payments) => 
+	{
+		console.log("GOT THE PAYMENT INFO");
+		console.log(payments);
+
+		if (err) 
+		{            
+			console.trace(err);            
+			callback.fail("Failed to retrieve payment options");        
+		}        
+		let addressQuery = `
+SELECT
+	AD_Line1 as addressLine1,
+	AD_Line2 as addressLine2,
+	AD_City as addressCity,
+	AD_State as addressState,
+	AD_PostCode as addressPostCode,
+	AD_Country as addressCountry
+FROM Address
+WHERE AD_US = ?
+;`;        
+		let sanitisedInputs2 = [userPK];        
+		db.query(addressQuery, sanitisedInputs2, (err, addresses) => 
+		{
+			console.log("GOT THE address INFO");
+			console.log(addresses);
+
+			if (err) 
+			{
+				console.trace(err);                
+				callback.fail("Failed to retrieve address options");            
+			}            
+			let listingQuery = `
+SELECT
+	LS_Title AS itemName,
+	LS_Price AS itemPrice,
+	LS_RemainingStock AS itemStockLeft
+FROM Listing
+WHERE
+	LS_PK = ? AND
+	LS_IsActive = 1
+LIMIT 1
 ;`;            
-                let  sanitisedInputs3 = [listingPK];            
-                db.query(listingQuery, sanitisedInputs3, (err,  listing)  =>  {                
-                    if  (err) {                    
-                        console.trace(err);                    
-                        callback.fail("Failed to retrieve listing");         
-                    }
-                    var  result;                                 
-                    result.listing  = listing;                                  
-                    listing[0].addresses  = addresses;                                
-                    listing[0].payments = payments;                              
-                    listing[0].requestQuantity = amount;        
-                    callback.success(listing[0]);    
-                })        
-            });    
-        });
-    }
+			let sanitisedInputs3 = [listingPK];            
+			db.query(listingQuery, sanitisedInputs3, (err, listing) =>
+			{
+				console.log("GOT THE listing INFO");
+				console.log(listing);
+
+				if (err)
+				{
+					console.trace(err);                    
+					callback.fail("Failed to retrieve listing");         
+				}
+
+				listing[0].addresses = addresses;                                
+				listing[0].payments = payments;                              
+				listing[0].requestQuantity = amount;        
+				callback.success(listing[0]);    
+			});     
+		});    
+	});
+}
     /**
      * Modify a listing.
      * @param {} listing The updated listing model.
