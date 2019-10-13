@@ -1,0 +1,152 @@
+<% include ../partials/head %>
+    <style>
+        th,
+        td {
+            padding: 15px;
+        }
+    </style>
+    <div class="container mt-5 my-2" role="purchase-body">
+        <div class="row mb-3">
+            <div class="col m-4">
+                <h4>Payment Information</h4>
+
+                <!-- <div class="field--half field field--optional" data-address-field="nickName">
+                    <label class="field__label" for="paymentNickName">Payment Account Name:</label>
+                    <div class="field__input-wrapper">
+                        <input placeholder="Payment NickName" class="field input" size="50" type="text" id="paymentNickName" />
+                    </div>
+                </div> -->
+
+
+                <!-- <div class="field--half field field--optional">
+                    <label class="field__label" for="checkout_shipping_address_first_name">Payment Name:</label>
+                    <div class="field-input-wrapper">
+                        <input placeholder="Username" class="field input" size="50" type="text" id="checkout_shipping_address_first_name" />
+                    </div>
+                </div> -->
+
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="inputGroupSelect01">Options</label>
+                    </div>
+                    <select class="custom-select" id="inputGroupSelect01">
+                        <option selected>Choose Payment Selction</option>
+                        <option>
+                        </option>
+                        <option selected>Choose...</option>    
+                        </select>
+                </div>
+
+                <!-- <div class="field--half field field--optional">
+                    <label class="field-label" for="checkout_shipping_address_first_name">Payment Number:</label>
+                    <div class="field-input-wrapper">
+                        <input placeholder="Account Number" class="field__input" size="50" type="text" id="checkout_shipping_address_first_name" />
+                    </div>
+                </div> -->
+
+                <!-- <div class="field--half field field--optional">
+                    <label class="field__label" for="checkout_shipping_address_first_name">Payment Number:</label>
+                    <div class="field__input-wrapper">
+                        <input placeholder="Account Number" class="field__input" size="50" type="text" id="checkout_shipping_address_first_name" />
+                    </div>
+                </div>-->
+
+            </div>
+
+            <div class="row">
+                <div class="col m-4">
+                    <table class="table-white" id=>
+                        <tr class="bg-white">
+                            <th colspan="3">
+                                <h4>Summary:</h4>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th scope="row">
+                                <h4>Quantity x ItemName:</h4>
+                            </th>
+                            <td>
+                                <h4>Quantity x Price</h4>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">
+                                <h4> Total: </h4>
+                            </th>
+                            <td>
+                                <h4> AUD$total</h4>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="row my-3">
+            <div class="col m-4">
+                <h4>Delivery Information</h4>
+
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="DeliverySelection">Options</label>
+                    </div>
+                    <select class="custom-select" id="DeliverySelection">
+                              <option selected>Choose...</option>
+                              <option value="1">One</option>
+                              <option value="2">Two</option>
+                              <option value="3">Three</option>
+                            </select>
+                </div>
+
+                <!-- <div data-address-field="address1">
+                    <label class="field__label" for="checkout_shipping_address_address1">Address 1</label>
+                    <div class="field__input-wrapper">
+                        <input placeholder="Address1" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-required="true" class="field__input" size="50" type="text" id="checkout_shipping_address_address1" />
+                    </div>
+                </div> -->
+
+                <!-- <div data-address-field="address1">
+                    <label class="field__label" for="checkout_shipping_address_address1">Address 2</label>
+                    <div class="field-input-wrapper">
+                        <input placeholder="Address2" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-required="true" class="field__input" size="50" type="text" id="checkout_shipping_address_address1" />
+                    </div>
+                </div> -->
+                <!-- 
+                <div class="field field--optional">
+                    <label class="field__label" for="deliveryPostCode">Delivery Postcode:</label>
+                    <div class="field__input-wrapper">
+                        <input placeholder="2166" class="field__input" size="50" type="text" id="DeliveryPostCode" />
+                    </div>
+                </div> -->
+                <!-- <div>
+                    <label class="field__label" for="cityName">Delivery City:</label>
+                    <div class="field__input-wrapper">
+                        <input placeholder="City" class="field input" aria-required="true" size="50" type="text" id="cityName" />
+                    </div>
+                </div> -->
+
+                <!-- <div>
+                    <label class="field__label" for="countryName">Delivery Country:</label>
+                    <div class="field__input-wrapper">
+                        <input placeholder="Country" class="field input" aria-required="true" size="50" type="text" id="countryName" />
+                    </div> 
+            </div> -->
+            </div>
+        </div>
+
+        <div class="row  my-3">
+            <div class="col my-3 mx-auto">
+                <a href="/listing/id=''"> Return to listing </a>
+            </div>
+
+            <button type="button" class="btn btn-lg btn-primary" onclick="window.location.href='/listing/summary='"> Confirm Purchase</button>
+
+        </div>
+
+
+    </div>
+
+    <% include ../partials/foot %>
+
+
+        <!--<% // purchaseInfo.purchasePK %> -->
