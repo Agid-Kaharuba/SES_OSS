@@ -10,47 +10,20 @@
             <div class="col m-4">
                 <h4>Payment Information</h4>
 
-                <!-- <div class="field--half field field--optional" data-address-field="nickName">
-                    <label class="field__label" for="paymentNickName">Payment Account Name:</label>
-                    <div class="field__input-wrapper">
-                        <input placeholder="Payment NickName" class="field input" size="50" type="text" id="paymentNickName" />
-                    </div>
-                </div> -->
-
-
-                <!-- <div class="field--half field field--optional">
-                    <label class="field__label" for="checkout_shipping_address_first_name">Payment Name:</label>
-                    <div class="field-input-wrapper">
-                        <input placeholder="Username" class="field input" size="50" type="text" id="checkout_shipping_address_first_name" />
-                    </div>
-                </div> -->
-
                 <div class="input-group mb-2">
                     <div class="input-group-prepend">
                         <label class="input-group-text" for="inputGroupSelect01">Options</label>
                     </div>
                     <select class="custom-select" id="inputGroupSelect01">
-                        <option selected>Choose Payment Selction</option>
+                        <option selected>Choose Payment Selction </option>
+                        <%  for(var i = 0; i < purchase.payments.length; i++){ %> 
                         <option>
+                            <%=    purchase.payments[i].paymentNickName %> | <%= purchase.payments[i].paymentName %> | <%=  purchase.payments[i].paymentNumber %>  
                         </option>
-                        <option selected>Choose...</option>    
+                        <% } %>
+                          
                         </select>
                 </div>
-
-                <!-- <div class="field--half field field--optional">
-                    <label class="field-label" for="checkout_shipping_address_first_name">Payment Number:</label>
-                    <div class="field-input-wrapper">
-                        <input placeholder="Account Number" class="field__input" size="50" type="text" id="checkout_shipping_address_first_name" />
-                    </div>
-                </div> -->
-
-                <!-- <div class="field--half field field--optional">
-                    <label class="field__label" for="checkout_shipping_address_first_name">Payment Number:</label>
-                    <div class="field__input-wrapper">
-                        <input placeholder="Account Number" class="field__input" size="50" type="text" id="checkout_shipping_address_first_name" />
-                    </div>
-                </div>-->
-
             </div>
 
             <div class="row">
@@ -63,18 +36,27 @@
                         </tr>
                         <tr>
                             <th scope="row">
-                                <h4>Quantity x ItemName:</h4>
+                                <h4>
+                                    <%= purchase.requestQuantity  %> x
+                                        <%= purchase.itemName%>
+                                </h4>
                             </th>
                             <td>
-                                <h4>Quantity x Price</h4>
+                                <h4>
+                                    <%= purchase.requestQuantity %> x $
+                                        <%= purchase.itemPrice%>
+                                </h4>
                             </td>
                         </tr>
                         <tr>
+
                             <th scope="row">
                                 <h4> Total: </h4>
                             </th>
                             <td>
-                                <h4> AUD$total</h4>
+                                <h4> AUD$
+                                    <%= purchase.itemPrice * purchase.requestQuantity %>
+                                </h4>
                             </td>
                         </tr>
                     </table>
@@ -91,55 +73,21 @@
                         <label class="input-group-text" for="DeliverySelection">Options</label>
                     </div>
                     <select class="custom-select" id="DeliverySelection">
-                              <option selected>Choose...</option>
-                              <option value="1">One</option>
-                              <option value="2">Two</option>
-                              <option value="3">Three</option>
+                              <option selected>Choose Delivery Selection </option>                       
+                               <%for (var i = 0; i < purchase.addresses.length; i++){%>
+                              <option>  <%= purchase.addresses[i].addressLine1 %> | <%= purchase.addresses[i].addressLine2 %> | <%= purchase.addresses[i].addressState%> | <%= purchase.addresses[i].addressCity %> | <%= purchase.addresses[i].addressPostCode %> | <%= purchase.addresses[i].addressCountry%> </option>
+                                    <% }%>
                             </select>
                 </div>
-
-                <!-- <div data-address-field="address1">
-                    <label class="field__label" for="checkout_shipping_address_address1">Address 1</label>
-                    <div class="field__input-wrapper">
-                        <input placeholder="Address1" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-required="true" class="field__input" size="50" type="text" id="checkout_shipping_address_address1" />
-                    </div>
-                </div> -->
-
-                <!-- <div data-address-field="address1">
-                    <label class="field__label" for="checkout_shipping_address_address1">Address 2</label>
-                    <div class="field-input-wrapper">
-                        <input placeholder="Address2" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-required="true" class="field__input" size="50" type="text" id="checkout_shipping_address_address1" />
-                    </div>
-                </div> -->
-                <!-- 
-                <div class="field field--optional">
-                    <label class="field__label" for="deliveryPostCode">Delivery Postcode:</label>
-                    <div class="field__input-wrapper">
-                        <input placeholder="2166" class="field__input" size="50" type="text" id="DeliveryPostCode" />
-                    </div>
-                </div> -->
-                <!-- <div>
-                    <label class="field__label" for="cityName">Delivery City:</label>
-                    <div class="field__input-wrapper">
-                        <input placeholder="City" class="field input" aria-required="true" size="50" type="text" id="cityName" />
-                    </div>
-                </div> -->
-
-                <!-- <div>
-                    <label class="field__label" for="countryName">Delivery Country:</label>
-                    <div class="field__input-wrapper">
-                        <input placeholder="Country" class="field input" aria-required="true" size="50" type="text" id="countryName" />
-                    </div> 
-            </div> -->
             </div>
         </div>
 
         <div class="row  my-3">
             <div class="col my-3 mx-auto">
-                <a href="/listing/id=''"> Return to listing </a>
+                <a href='/listing/id=<%= purchase.itemID%>'> Return to item </a>
             </div>
 
-            <button type="button" class="btn btn-lg btn-primary" onclick="window.location.href='/listing/summary='"> Confirm Purchase</button>
+            <button type="button" class="btn btn-lg btn-primary" onclick="window.location.href='/listing/summary=<%= purchase.purchasePK %>'"> Confirm Purchase</button>
 
         </div>
 

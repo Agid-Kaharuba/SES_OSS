@@ -67,10 +67,10 @@ router.get('/purchase=:listingID&quantity=:amount', (req, res) => {
             var userPK = session.SS_US;
 
             listingModel.getPrePurchaseInformation(userPK, req.params.listingID, req.params.amount, {
-                success: (purchaseInfo) => {
-                    console.log("hello");
-                    baseView.renderWithAddons(req, res, 'pages/purchase', { purchaseInfo });
+                success: (purchase) => {
+                    baseView.renderWithAddons(req, res, 'pages/purchase', { purchase });
                     //pass this onto the view.
+
                 },
                 fail: () => htmlResponse.fail(req, res, 'Could not get your purchase :(', 'Payment Not Found'),
             });
@@ -79,11 +79,6 @@ router.get('/purchase=:listingID&quantity=:amount', (req, res) => {
     });
 });
 
-
-router.get('/purchaseUi', (req, res) => {
-    baseView.renderWithAddons(req, res, 'pages/purchase');
-
-})
 
 router.post('/purchaseItem', (req, res) => {
     console.log(req);
