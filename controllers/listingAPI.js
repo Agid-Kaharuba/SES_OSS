@@ -83,14 +83,10 @@ router.get('/purchase=:listingID&quantity=:amount', (req, res) => {
 router.post('/purchaseItem', (req, res) => {
     console.log(req);
     listingModel.purchaseItem(
-        req.body.listingPK,
-        req.body.buyerPK,
-        req.body.paymentMethodPK,
-        req.body.deliveryAddressPK,
-        totalPrice,
-        quantity, {
-            success: (purchasePK) => {
-                res.redirect("/summary=" + purchasePK);
+        req.body,
+        {
+            success: (purchaseID) => {
+                res.send(jsonResponse.success({purchaseID}));
             },
             fail: (reason) => { res.send(jsonResponse.fail(reason)); }
         })

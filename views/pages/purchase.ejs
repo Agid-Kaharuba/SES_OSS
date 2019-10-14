@@ -5,6 +5,8 @@
             padding: 15px;
         }
     </style>
+    <div id="userID" data-user-id="<%= user.id %>" ></div>
+    
     <div class="container mt-5 my-2" role="purchase-body">
         <div class="row mb-3">
             <div class="col m-4">
@@ -17,9 +19,10 @@
                     <select class="custom-select" id="inputGroupSelect01">
                         <option selected>Choose Payment Selction </option>
                         <%  for(var i = 0; i < purchase.payments.length; i++){ %> 
-                        <option>
-                            <%=    purchase.payments[i].paymentNickName %> | <%= purchase.payments[i].paymentName %> | <%=  purchase.payments[i].paymentNumber %>  
+                        <option  id="paymentID" data-payment-id="<%= purchase.payments[i].paymentID%>" >
+                            <%= purchase.payments[i].paymentNickName %> | <%= purchase.payments[i].paymentName %> | <%=  purchase.payments[i].paymentNumber %>  
                         </option>
+                        
                         <% } %>
                           
                         </select>
@@ -29,7 +32,7 @@
             <div class="row">
                 <div class="col m-4">
                     <table class="table-white" id=>
-                        <tr class="bg-white">
+                        <tr class="bg-white"> 
                             <th colspan="3">
                                 <h4>Summary:</h4>
                             </th>
@@ -42,7 +45,7 @@
                                 </h4>
                             </th>
                             <td>
-                                <h4>
+                                <h4 id="quantity" data-quantity-id="<%= purchase.requestQuantity %>" >
                                     <%= purchase.requestQuantity %> x $
                                         <%= purchase.itemPrice%>
                                 </h4>
@@ -54,7 +57,7 @@
                                 <h4> Total: </h4>
                             </th>
                             <td>
-                                <h4> AUD$
+                                <h4  id="totalPrice" data-total-id="<%= purchase.itemPrice * purchase.requestQuantity %>"> AUD$
                                     <%= purchase.itemPrice * purchase.requestQuantity %>
                                 </h4>
                             </td>
@@ -75,22 +78,58 @@
                     <select class="custom-select" id="DeliverySelection">
                               <option selected>Choose Delivery Selection </option>                       
                                <%for (var i = 0; i < purchase.addresses.length; i++){%>
-                              <option>  <%= purchase.addresses[i].addressLine1 %> | <%= purchase.addresses[i].addressLine2 %> | <%= purchase.addresses[i].addressState%> | <%= purchase.addresses[i].addressCity %> | <%= purchase.addresses[i].addressPostCode %> | <%= purchase.addresses[i].addressCountry%> </option>
-                                    <% }%>
+                              <option id="addressID" data-address-id="<%= purchase.addresses[i].addressID%>">  <%= purchase.addresses[i].addressLine1 %> | <%= purchase.addresses[i].addressLine2 %> | <%= purchase.addresses[i].addressState%> | <%= purchase.addresses[i].addressCity %> | <%= purchase.addresses[i].addressPostCode %> | <%= purchase.addresses[i].addressCountry%> </option>
+                               
+                              <% }%>
                             </select>
                 </div>
             </div>
         </div>
-
+        <div id="remainingStocks" data-remain-id="<%= purchase.itemStockLeft %>"></div>
         <div class="row  my-3">
             <div class="col my-3 mx-auto">
-                <a href='/listing/id=<%= purchase.itemID%>'> Return to item </a>
+                <a id="listingID" data-listing-id="<%= purchase.itemID%>" href='/listing/id=<%= purchase.itemID %>'> Return to item </a>
             </div>
-
-            <button type="button" class="btn btn-lg btn-primary" onclick="window.location.href='/listing/purchaseItem'"> Confirm Purchase</button>
-
+            <button id="purchaseBtn" type="button" class="btn btn-lg btn-primary"> Confirm Purchase</button>
         </div>
 
+
+
+        <script>
+            $().ready(() =>{
+                console.log($('#listingID').data('listing-id'));
+                console.log($('#userID').data('user-id'));
+                console.log($('#paymentID').data('payment-id'));
+                console.log($('#addressID').data('address-id'));
+                console.log(parseFloat($('#totalPrice').data('total-id')));
+                console.log(parseInt($('#quantity').data('quantity-id')));
+               
+                $('#purchaseBtn').click(() => {
+                    
+                    let purchaseInfo = {
+                        listingID : $('#listingID').data('listing-id'), 
+                        buyerID : $('#userID').data('user-id'),
+                        paymentMethodID : $('#paymentID').data('payment-id'),
+                        deliveryAddressID : $('#addressID').data('address-id'), 
+                        totalPrice : parseFloat($('#totalPrice').data('total-id')),
+                        quantity : parseInt($('#quantity').data('quantity-id'))    
+                    }    
+                    
+                    $.post('/listing/purchaseItem', purchaseInfo, (response) =>
+                    { 
+                        console.log(response);
+                        if (response.status == 'success') 
+                        {
+                            location.href = './summary=' + response.purchaseID;       
+                        } 
+                        else
+                        {
+                            alert("Failed To Purchase Items!\n" + response.reason);
+                        }
+                    })
+                });
+            })
+        </script> 
 
     </div>
 

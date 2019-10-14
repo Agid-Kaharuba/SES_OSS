@@ -201,16 +201,16 @@ exports.modifyListingByID = function(listingid, listing, callback = { success: (
     })
 }
 
-exports.purchaseItem = function(listingPK, buyerPK, paymentMethodPK, deliveryAddressPK, totalPrice, quantity, callback = { success: (purchasePK) => {}, fail: (reason) => {} }) {
+exports.purchaseItem = function(purchase, callback = { success: (purchasePK) => {}, fail: (reason) => {} }) {
     const db = database.connectDatabase();
     let query = `
 	SELECT 
-		LS_RemainingStock as remainingStock
+		LS_RemainingStock as remainingStock,
 		LS_IsActive as isActive
 	FROM Listing
 	WHERE LS_PK = ?
 ;`
-    let sanitisedInputs = [listingPK];
+    let sanitisedInputs = [purchase.listingID];
     db.query(query, sanitisedInputs, (err, results) => {
         if (err) {
             var reason = "Failed to check remaining stock of item";
@@ -223,13 +223,13 @@ exports.purchaseItem = function(listingPK, buyerPK, paymentMethodPK, deliveryAdd
         } else {
             if (!results[0].isActive) {
                 return callback.fail("Tried to purchase an item which is no longer available.")
-            } else if (results[0].remainingStock < quantity) {
+            } else if (results[0].remainingStock < purchase.quantity) {
                 return callback.fail("Tried to purchase more stock than what is available.")
             } else {
                 let query2 = `
 INSERT INTO Purchase (PC_LS, PC_PM, PC_US_Buyer, PC_AD_Delivery, PC_Price, PC_Quantity)
 	VALUES (?, ?, ?, ?, ?, ?);`;
-                let sanitisedInputs2 = [listingPK, paymentMethodPK, buyerPK, deliveryAddressPK, totalPrice, quantity];
+                let sanitisedInputs2 = [purchase.listingID, purchase.paymentMethodID, purchase.buyerID, purchase.deliveryAddressID, purchase.totalPrice, purchase.quantity];
                 db.query(query2, sanitisedInputs2, (err) => { if (err) console.trace(err) });
 
                 let query3 = `
@@ -238,7 +238,7 @@ UPDATE Listing
 WHERE LS_PK = ?
 LIMIT 1
 ;`;
-                let sanitisedInputs3 = [quantity, listingPK];
+                let sanitisedInputs3 = [purchase.quantity, purchase.listingID];
                 db.query(query3, sanitisedInputs3, (err) => { if (err) console.trace(err) });
 
                 let query4 = `
@@ -249,7 +249,7 @@ ORDER BY PC_Date DESC
 LIMIT 1
 				;`;
 
-                let sanitisedInputs4 = [buyerPK];
+                let sanitisedInputs4 = [purchase.buyerID];
                 db.query(query4, sanitisedInputs4, (err, results) => {
                     let errorMsg = "Error retrieving purchase summary.";
                     if (err) {
@@ -277,14 +277,15 @@ exports.getPrePurchaseInformation = function(userPK,  listingPK, amount, callba
         let  paymentMethodsQuery = `
 SELECT
 	PM_Nickname as paymentNickName,
-	PM_Name as paymentName,
+    PM_Name as paymentName,
+    PM_PK as paymentID,
     CASE WHEN PM_CardNumber IS NOT NULL AND LENGTH(PM_CardNumber) > 4
 		THEN LPAD(SUBSTR(PM_CardNumber, -4), LENGTH(PM_CardNumber), '*') 
 		ELSE PM_CardNumber
 	END AS paymentNumber
 FROM PaymentMethod
 WHERE PM_US = ?
-;`;
+;`;         
         let sanitisedInputs = [userPK];    
         db.query(paymentMethodsQuery, sanitisedInputs, (err, payments) => {
             console.log("GOT THE PAYMENT INFO");
@@ -301,7 +302,8 @@ SELECT
 	AD_City as addressCity,
 	AD_State as addressState,
 	AD_PostCode as addressPostCode,
-	AD_Country as addressCountry
+    AD_Country as addressCountry,
+    AD_PK as addressID
 FROM Address
 WHERE AD_US = ?
 ;`;        
@@ -318,7 +320,8 @@ WHERE AD_US = ?
                 let  listingQuery  = `
 SELECT
 	LS_Title AS itemName,
-	LS_Price AS itemPrice,
+    LS_Price AS itemPrice,
+    LS_PK AS itemID, 
 	LS_RemainingStock AS itemStockLeft
 FROM Listing
 WHERE
