@@ -370,9 +370,6 @@ exports.getUserInfo = function(req, callback = (user, isAdmin) => {})
 exports.getUserProfileInfo = function (userid, callback = { found: () => {}, notFound: () => {} })
 {
 	var db = database.connectDatabase();
-	var userProfile;
-	var userAddress;
-	var userPayment;
 	var query = `
 	SELECT 
 		US_Username,
@@ -386,7 +383,6 @@ exports.getUserProfileInfo = function (userid, callback = { found: () => {}, not
 	LEFT JOIN PaymentMethod ON US_PK = PM_US
 	WHERE US_PK = ?
 	`;
-
 	var query2 = `
 	SELECT 
 		AD_Line1,
@@ -400,7 +396,6 @@ exports.getUserProfileInfo = function (userid, callback = { found: () => {}, not
 	LEFT JOIN PaymentMethod ON US_PK = PM_US
 	WHERE US_PK = ?
 	`;
-
 	var query3 = `
 	SELECT 
 		PM_Nickname,
@@ -422,7 +417,7 @@ exports.getUserProfileInfo = function (userid, callback = { found: () => {}, not
 		}
 		else
 		{
-			userProfile = convertToUserProfileObject(profile[0]);
+			var userProfile = convertToUserProfileObject(profile[0]);
 			db.query(query2, [userid], (err, address) =>
 			{
 				if (err)
@@ -431,7 +426,13 @@ exports.getUserProfileInfo = function (userid, callback = { found: () => {}, not
 				}
 				else
 				{
-					userAddress = convertToUserAddressObject(address[0]);
+					var i;
+					var userAddress = [];
+					for (i = 0; i < address.length; i++)
+					{
+						userAddress.push(convertToUserAddressObject(address[i]));
+					}
+					var userAddress = address;
 					db.query(query3, [userid], (err, payment) =>
 					{
 						if (err)
@@ -440,10 +441,18 @@ exports.getUserProfileInfo = function (userid, callback = { found: () => {}, not
 						}
 						else
 						{
-							userPayment = convertToUserPaymentObject(payment[0]);
+							var i;
+							var userPayment = [];
+							for (i = 0; i < payment.length; i++)
+							{
+								userPayment.push(convertToUserPaymentObject(payment[i]));
+							}
+							console.log(userPayment);
+							console.log(userAddress);
 							callback.found(userProfile, userAddress, userPayment);
 						}
 					});
+					
 				}
 			});
 		}

@@ -1,4 +1,3 @@
-<% include ../partials/head %>
 <!DOCTYPE html>
 <html>
 	<head>
@@ -100,24 +99,25 @@
 						<table class="userProfileTable">
 							<tr>
 								<th>Username</th>
+								<th>Email</th>
 								<th>First Name</th>
 								<th>Last Name</th>
 								<th>Date of Birth</th>
-								<th>Email</th>
 								<th>Phone Number</th>
 							</tr>
-							<tr id="userInfo">
-								<th id="displayUsername"> <%= userInfo.profile.username %></th>
-								<th id="displayEmail"> <%= userInfo.profile.email %></th>
-								<th id="displayFirstName"> <%= userInfo.profile.firstName %></th>
-								<th id="displayLastName"> <%= userInfo.profile.lastName %></th>
-								<th id="displayDOB"> <%= userInfo.profile.phoneNumber %></th>
-								<th id="displayPhone"> <%= userInfo.profile.birthDate %></th>
+							<tr class="userInfo">
+								<th style="font-weight: normal;"> <%= userInfo.profile.username %></th>
+								<th style="font-weight: normal;"> <%= userInfo.profile.email %></th>
+								<th style="font-weight: normal;"> <%= userInfo.profile.firstName %></th>
+								<th style="font-weight: normal;"> <%= userInfo.profile.lastName %></th>
+								<th style="font-weight: normal;"> <%= userInfo.profile.birthDate %></th>
+								<th style="font-weight: normal;"> <%= userInfo.profile.phoneNumber %></th>
+								<th action="./profile/editProfile">
+									<input type="submit" value="Edit Profile Information" />
+								</th>
 							</tr>
 						</table>
-						<form action="./profile/editProfile">
-							<input type="submit" value="Edit Profile Information" />
-						</form>
+						
 						<div class="title">Current User Address</div>
 						<table class="userAddressTable">
 							<tr>
@@ -128,18 +128,23 @@
 								<th>Country</th>
 								<th>Post Code</th>
 							</tr>
-							<tr id="userInfo">
-								<th id="displayLine1"><%= userInfo.address.addressLine1 %></th>
-								<th id="displayLine2"><%= userInfo.address.addressLine2 %></th>
-								<th id="displayCity"><%= userInfo.address.addressCity %></th>
-								<th id="displayState"><%= userInfo.address.addressState %></th>
-								<th id="diplayCountry"><%= userInfo.address.addressCountry %></th>
-								<th id="displayPostcode"><%= userInfo.address.addressPostcode %></th>
+							<%for(var i = 0; i < userInfo.address.length; i++) {%>
+							<tr class="userInfo">
+								<th style="font-weight: normal;"><%= userInfo.address[i].AD_Line1 %></th>
+								<th style="font-weight: normal;"><%= userInfo.address[i].AD_Line2 %></th>
+								<th style="font-weight: normal;"><%= userInfo.address[i].AD_City %></th>
+								<th style="font-weight: normal;"><%= userInfo.address[i].AD_State %></th>
+								<th style="font-weight: normal;"><%= userInfo.address[i].AD_Country %></th>
+								<th style="font-weight: normal;"><%= userInfo.address[i].AD_PostCode %></th>
+								<th >
+									<form action="./profile/editAddress">
+										<input type="submit" value="Edit Address" />
+									</form>
+								</th>
 							</tr>
+							<% } %>
 						</table>
-						<form action="./profile/editAddress">
-							<input type="submit" value="Edit Address" />
-						</form>
+						
 						<form action="./profile/addAddress">
 							<input type="submit" value="Add Address" />
 						</form>
@@ -152,19 +157,23 @@
 								<th>Expiry Date</th>
 								<th>CVC</th>
 							</tr>
-							<tr id="userInfo">
-								<th id="displayNickname"><%= userInfo.payment.paymentNickname %></th>
-								<th id="displayName"><%= userInfo.payment.paymentName %></th>
-								<th id="displayNumber"><%= userInfo.payment.paymentCardNumber %></th>
-								<th id="displayExp"><%= userInfo.payment.paymentExp %></th>
-								<th id="displayCVC"><%= userInfo.payment.paymentCVC %></th>
+							<%for(var i = 0; i < userInfo.payment.length; i++) {%>
+							<tr class="userInfo">
+								<th style="font-weight: normal;"><%= userInfo.payment[i].PM_Nickname %></th>
+								<th style="font-weight: normal;"><%= userInfo.payment[i].PM_Name %></th>
+								<th style="font-weight: normal;"><%= userInfo.payment[i].PM_CardNumber %></th>
+								<th style="font-weight: normal;"><%= userInfo.payment[i].PM_Expiry %></th>
+								<th style="font-weight: normal;"><%= userInfo.payment[i].PM_CVC %></th>
+								<th>
+									<form action="./profile/editPayment">
+										<input type="submit" value="Edit Payment" />
+									</form>
+								</th>
 							</tr>
+							<% } %>
 						</table>
-						<form action="./profile/editAddress">
-							<input type="submit" value="Edit Address" />
-						</form>
-						<form action="./profile/addAddress">
-							<input type="submit" value="Add Address" />
+						<form action="./profile/addPayment">
+							<input type="submit" value="Add Payment" />
 						</form>
 			</div>
 		</div>

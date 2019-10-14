@@ -50,20 +50,20 @@ router.post('/login', (req, res) =>
 
 router.get('/profile', (req, res) => 
 {
+    
     userModel.getUserInfo(req, (user, isAdmin) =>
     {
         userModel.getUserProfileInfo(user.id, 
         {
             found: (userProfile, userAddress, userPayment) =>
             {
-                var userInfo = 
+                var userInfo =
                 {
-                    profile: userProfile, 
+                    profile: userProfile,
                     address: userAddress,
                     payment: userPayment
                 };
-                console.log(userInfo.payment);
-                baseView.renderWithAddons(req, res, 'pages/userDashboard/userProfileView', {userInfo});
+                res.render('pages/userDashboard/userProfileView', {userInfo});
             },
             notFound: () =>
             {
@@ -71,6 +71,8 @@ router.get('/profile', (req, res) =>
             }
         });
     });
+
+
 });
 
 
@@ -117,11 +119,11 @@ router.post('/profile/editProfile', (req, res) =>
 });
 
 router.get('/profile/editAddress', (req, res) => {
-    baseView.renderWithAddons(req, res, 'pages/userDashboard/editAddressView');
+    res.render('pages/userDashboard/editAddressView');
 });
 
 router.get('/profile/addAddress', (req, res) => {
-    baseView.renderWithAddons(req, res, 'pages/userDashboard/addAddressView');
+    res.render('pages/userDashboard/addAddressView');
 });
 
 router.post('/profile/addAddress', (req, res) =>
@@ -180,10 +182,10 @@ router.post('/profile/editAddress', (req, res) =>
 });
 
 router.get('/profile/editPayment', (req, res) => {
-    baseView.renderWithAddons(req, res, 'pages/userDashboard/editPaymentView');
+    res.render('pages/userDashboard/editPaymentView');
 });
 router.get('/profile/addPayment', (req, res) => {
-    baseView.renderWithAddons(req, res, 'pages/userDashboard/addPaymentView');
+    res.render('pages/userDashboard/addPaymentView');
 });
 
 router.post('/profile/addPayment', (req, res) =>
@@ -239,7 +241,7 @@ router.post('/profile/editPayment', (req, res) =>
 
 router.get('/profile/createAd', (req, res) =>
 {
-    baseView.renderWithAddons(req, res, 'pages/userDashboard/createAd');
+    res.render('pages/userDashboard/createAd');
 });
 
 router.post('/profile/createAd', upload.single('productImage'), (req, res) =>
