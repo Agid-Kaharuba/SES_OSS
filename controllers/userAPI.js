@@ -54,9 +54,16 @@ router.get('/profile', (req, res) =>
     {
         userModel.getUserProfileInfo(user.id, 
         {
-            found: (userProfile) =>
+            found: (userProfile, userAddress, userPayment) =>
             {
-                res.render('pages/userDashboard/userProfileView', {userProfile});
+                var userInfo = 
+                {
+                    profile: userProfile, 
+                    address: userAddress,
+                    payment: userPayment
+                };
+                console.log(userInfo.payment);
+                baseView.renderWithAddons(req, res, 'pages/userDashboard/userProfileView', {userInfo});
             },
             notFound: () =>
             {
@@ -110,11 +117,11 @@ router.post('/profile/editProfile', (req, res) =>
 });
 
 router.get('/profile/editAddress', (req, res) => {
-    res.render('pages/userDashboard/editAddressView');
+    baseView.renderWithAddons(req, res, 'pages/userDashboard/editAddressView');
 });
 
 router.get('/profile/addAddress', (req, res) => {
-    res.render('pages/userDashboard/addAddressView');
+    baseView.renderWithAddons(req, res, 'pages/userDashboard/addAddressView');
 });
 
 router.post('/profile/addAddress', (req, res) =>
@@ -173,10 +180,10 @@ router.post('/profile/editAddress', (req, res) =>
 });
 
 router.get('/profile/editPayment', (req, res) => {
-    res.render('pages/userDashboard/editPaymentView');
+    baseView.renderWithAddons(req, res, 'pages/userDashboard/editPaymentView');
 });
 router.get('/profile/addPayment', (req, res) => {
-    res.render('pages/userDashboard/addPaymentView');
+    baseView.renderWithAddons(req, res, 'pages/userDashboard/addPaymentView');
 });
 
 router.post('/profile/addPayment', (req, res) =>
@@ -232,7 +239,7 @@ router.post('/profile/editPayment', (req, res) =>
 
 router.get('/profile/createAd', (req, res) =>
 {
-    res.render('pages/userDashboard/createAd');
+    baseView.renderWithAddons(req, res, 'pages/userDashboard/createAd');
 });
 
 router.post('/profile/createAd', upload.single('productImage'), (req, res) =>

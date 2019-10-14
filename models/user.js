@@ -39,13 +39,27 @@ let convertToUserProfileObject = function (rawUser)
 		firstName: rawUser.US_FirstName,
 		lastName: rawUser.US_LastName,
 		phoneNumber: rawUser.US_PhoneNumber,
-		birthDate: rawUser.US_BirthDate,
+		birthDate: rawUser.US_BirthDate
+		
+	};
+};
+
+let convertToUserAddressObject = function (rawUser)
+{
+	return {
 		addressLine1: rawUser.AD_Line1,
 		addressLine2: rawUser.AD_Line2,
 		addressCity: rawUser.AD_City,
 		addressState: rawUser.AD_State,
 		addressCountry: rawUser.AD_Country,
-		addressPostcode: rawUser.AD_PostCode,
+		addressPostcode: rawUser.AD_PostCode
+		
+	};
+};
+
+let convertToUserPaymentObject = function (rawUser)
+{
+	return {
 		paymentNickname: rawUser.PM_Nickname,
 		paymentName: rawUser.PM_Name,
 		paymentCardNumber: rawUser.PM_CardNumber,
@@ -353,9 +367,12 @@ exports.getUserInfo = function(req, callback = (user, isAdmin) => {})
 	})
 }
 
-exports.getUserProfileInfo = function (userid, callback = { found: () => { }, notFound: () => {} })
+exports.getUserProfileInfo = function (userid, callback = { found: () => {}, notFound: () => {} })
 {
 	var db = database.connectDatabase();
+	var userProfile;
+	var userAddress;
+	var userPayment;
 	var query = `
 	SELECT 
 		US_Username,
@@ -363,13 +380,29 @@ exports.getUserProfileInfo = function (userid, callback = { found: () => { }, no
 		US_FirstName,
 		US_LastName,
 		US_PhoneNumber,
-		US_BirthDate,
+		US_BirthDate
+	FROM User
+	LEFT JOIN Address ON US_PK = AD_US
+	LEFT JOIN PaymentMethod ON US_PK = PM_US
+	WHERE US_PK = ?
+	`;
+
+	var query2 = `
+	SELECT 
 		AD_Line1,
 		AD_Line2,
 		AD_City,
 		AD_State,
 		AD_Country,
-		AD_PostCode,
+		AD_PostCode
+	FROM User
+	LEFT JOIN Address ON US_PK = AD_US
+	LEFT JOIN PaymentMethod ON US_PK = PM_US
+	WHERE US_PK = ?
+	`;
+
+	var query3 = `
+	SELECT 
 		PM_Nickname,
 		PM_Name,
 		PM_CardNumber,
@@ -380,18 +413,39 @@ exports.getUserProfileInfo = function (userid, callback = { found: () => { }, no
 	LEFT JOIN PaymentMethod ON US_PK = PM_US
 	WHERE US_PK = ?
 	`;
-	db.query(query, [userid], (err, results) =>
+
+	db.query(query, [userid], (err, profile) =>
 	{
 		if (err)
 		{
 			console.log('Failed to get user info ' + err);
-			callback.notFound();
 		}
 		else
 		{
-			console.log(results[0]);
-			var userProfile = convertToUserProfileObject(results[0]);
-			callback.found(userProfile);
+			userProfile = convertToUserProfileObject(profile[0]);
+			db.query(query2, [userid], (err, address) =>
+			{
+				if (err)
+				{
+					console.log('Failed to get user info ' + err);
+				}
+				else
+				{
+					userAddress = convertToUserAddressObject(address[0]);
+					db.query(query3, [userid], (err, payment) =>
+					{
+						if (err)
+						{
+							console.log('Failed to get user info ' + err);
+						}
+						else
+						{
+							userPayment = convertToUserPaymentObject(payment[0]);
+							callback.found(userProfile, userAddress, userPayment);
+						}
+					});
+				}
+			});
 		}
 	});
 }
