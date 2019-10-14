@@ -347,6 +347,65 @@ WHERE AD_US = ?
 	});
 }
 
+const getPurchasesByCheck = function(check, callback = { success: (purchases) => {}, fail: (reason) => {} })
+{
+	const db = database.connectDatabase();
+
+	let query = `
+		SELECT 
+			PC_PK AS id,
+			PC_LS AS listingID,
+			LC_Title AS listingTitle,
+			PC_PM AS paymentMethod,
+			PC_US_Buyer AS buyerID,
+			US_Username AS buyerUsername,
+			PC_AD_Delivery AS addressID,
+			PC_TrackingNumber AS trackingNumber,
+			PC_Price AS price,
+			PC_Quantity AS quantity,
+			PC_Date AS date
+		FROM Purchase
+		LEFT JOIN User ON US_PK = PC_US_Buyer
+		LEFT JOIN Listing ON LS_PK = PC_LS
+	`
+	query += " WHERE " + check;
+
+	db.query(query, (err, results) =>
+	{
+		if (err)
+		{
+			console.trace("Failed to get purchases for user: " + err)
+			callback.fail("Could not get purchases for user from the database");
+		}
+		else
+		{
+			callback.success(results);
+		}
+	})
+}
+
+exports.getPurchasesForUserID = function(userID, callback = { success: (purchases) => {}, fail: (reason) => {} })
+{
+	let db = database.connectDatabase();
+	getPurchasesByCheck('PC_US_Buyer = ' + db.escape(userID));
+}
+
+exports.getPurchasesForUser = function(user, callback = { success: (purchases) => {}, fail: (reason) => {} })
+{
+	this.getPurchasesForUserID(user.id, callback);
+}
+
+exports.getPurchasesForListingID = function(listingID, callback = { success: (purchases) => {}, fail: (reason) => {} })
+{
+	let db = database.connectDatabase();
+	getPurchasesByCheck('PC_LS = ' + db.escape(listingID));
+}
+
+exports.getPurchasesForListing = function(listing, callback = { success: (purchases) => {}, fail: (reason) => {} })
+{
+	this.getPurchasesForListingID(listing.id, callback);
+}
+
 /**
  * Modify a listing.
  * @param {} listing The updated listing model.
