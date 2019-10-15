@@ -60,8 +60,10 @@
 		</script>
 
 	</head>
+
 	<body>
 		<%- include ../../partials/topBar %>
+
 		<div class="header">
 			<div class="logo">
 				<i class="fa fa-tachometer"></i>
@@ -76,101 +78,174 @@
 			</div>
 			<div class="main">
 				<div class="widget">
+
 					<div class="title">Profile Information</div>
           			<div class="card card-body">
 						<div>
 							<div class="row my-1">
 								<div class="col"><b>Username</b></div>
-								<div class="col" id="displayUsername"> <%= userInfo.profile.username %></div>
+								<div class="col"> 
+									<div id="displayUsername"><%= userInfo.profile.username %></div>
+								</div>
 							</div>
 							<div class="row my-1">
 								<div class="col "><b>First Name</b></div>
-								<div class="col" id="displayFirstName"> <%= userInfo.profile.firstName %></div>
+								<div class="col"> 
+									<div id="displayFirstName"><%= userInfo.profile.firstName %></div>
+								</div>
 							</div>
 							<div class="row my-1">
 								<div class="col "><b>Last Name</b></div>
-								<div class="col" id="displayLastName"> <%= userInfo.profile.lastName %></div>
+								<div class="col"> 
+									<div id="displayLastName"><%= userInfo.profile.lastName %></div>
+								</div>
 							</div>
 							<div class="row my-1">
 								<div class="col "><b>Date of Birth</b></div>
-								<div class="col" id="displayDOB"> <%= userInfo.profile.birthDate %></div>
+								<div class="col"> 
+									<div id="displayDOB"><%= userInfo.profile.birthDate %></div>
+								</div>
 							</div>
 							<div class="row my-1">
 								<div class="col "><b>Email</b></div>
-								<div class="col" id="displayEmail"> <%= userInfo.profile.email %></div>
+								<div class="col"> 
+									<div id="displayEmail"><%= userInfo.profile.email %></div>
+								</div>
 							</div>
 							<div class="row my-1">
 								<div class="col "><b>Phone Number</b></div>
-								<div class="col" id="displayPhone"> <%= userInfo.profile.phoneNumber %></div>
+								<div class="col"> 
+									<div id="displayPhone"><%= userInfo.profile.phoneNumber %></div>
+								</div>
 							</div>
 						</div>
 					</div>
 
-					<form action="./profile/editProfile">
-						<input type="submit" value="Edit Profile Information" />
-					</form>
-						
-						<div class="title">Current User Address</div>
-						<table class="userAddressTable">
-							<tr>
-								<th>Line 1</th>
-								<th>Line 2</th>
-								<th>City</th>
-								<th>State</th>
-								<th>Country</th>
-								<th>Post Code</th>
-							</tr>
-							<%for(var i = 0; i < userInfo.address.length; i++) {%>
-							<tr class="userInfo">
-								<th style="font-weight: normal;"><%= userInfo.address[i].addressLine1 %></th>
-								<th style="font-weight: normal;"><%= userInfo.address[i].addressLine2 %></th>
-								<th style="font-weight: normal;"><%= userInfo.address[i].addressCity %></th>
-								<th style="font-weight: normal;"><%= userInfo.address[i].addressState %></th>
-								<th style="font-weight: normal;"><%= userInfo.address[i].addressCountry %></th>
-								<th style="font-weight: normal;"><%= userInfo.address[i].addressPostcode %></th>
-								<th >
-									<% let dialogID = "editAddressDialog-" + userInfo.address[i].id; %>
-									<input type="submit" value="Edit Address" data-toggle="modal" data-target="#<%=dialogID%>"/>
-									<%- include('../../partials/userDashboard/editAddressDialog', {dialogID}) %>
-								</th>
-							</tr>
-							<% } %>
-						</table>
-						
-						<!-- Add address Dialog -->
-						<input type="submit" value="Add Address" data-toggle="modal" data-target="#addAddressDialog">
-						<%- include ../../partials/userDashboard/addAddressDialog %>
-
-						<div class="title">Current User Payment Methods</div>
-						<table class="userAddressTable">
-							<tr>
-								<th>Nickname</th>
-								<th>Name</th>
-								<th>Card Number</th>
-								<th>Expiry Date</th>
-								<th>CVC</th>
-							</tr>
-							<%for(var i = 0; i < userInfo.payment.length; i++) {%>
-							<tr class="userInfo">
-								<th style="font-weight: normal;"><%= userInfo.payment[i].paymentNickname %></th>
-								<th style="font-weight: normal;"><%= userInfo.payment[i].paymentName %></th>
-								<th style="font-weight: normal;"><%= userInfo.payment[i].paymentCardNumber %></th>
-								<th style="font-weight: normal;"><%= userInfo.payment[i].paymentExp %></th>
-								<th style="font-weight: normal;"><%= userInfo.payment[i].paymentCVC %></th>
-								<th>
-									<% let dialogID = "editPaymentDialog-" + userInfo.address[i].id; %>
-									<input type="submit" value="Edit Payment" data-toggle="modal" data-target="#<%=dialogID%>"/>
-									<%- include('../../partials/userDashboard/editPaymentDialog', {dialogID}) %>
-								</th>
-							</tr>
-							<% } %>
+					<input id="editProfileBtn" type="submit" value="Edit Profile Information" />
+					
+					<div class="title">Current User Address</div>
+					<table class="userAddressTable">
+						<tr>
+							<th>Line 1</th>
+							<th>Line 2</th>
+							<th>City</th>
+							<th>State</th>
+							<th>Country</th>
+							<th>Post Code</th>
+						</tr>
+						<%for(var i = 0; i < userInfo.address.length; i++) {%>
+						<tr class="userInfo">
+							<th style="font-weight: normal;"><%= userInfo.address[i].addressLine1 %></th>
+							<th style="font-weight: normal;"><%= userInfo.address[i].addressLine2 %></th>
+							<th style="font-weight: normal;"><%= userInfo.address[i].addressCity %></th>
+							<th style="font-weight: normal;"><%= userInfo.address[i].addressState %></th>
+							<th style="font-weight: normal;"><%= userInfo.address[i].addressCountry %></th>
+							<th style="font-weight: normal;"><%= userInfo.address[i].addressPostcode %></th>
+							<th >
+								<% let dialogID = "editAddressDialog-" + userInfo.address[i].id; %>
+								<input type="submit" value="Edit Address" data-toggle="modal" data-target="#<%=dialogID%>"/>
+								<%- include('../../partials/userDashboard/editAddressDialog', {dialogID}) %>
+							</th>
+						</tr>
+						<% } %>
 					</table>
+					
+					<!-- Add address Dialog -->
+					<input type="submit" value="Add Address" data-toggle="modal" data-target="#addAddressDialog">
+					<%- include ../../partials/userDashboard/addAddressDialog %>
 
-					<!-- Add payment Dialog -->
-					<input type="submit" value="Add Payment" data-toggle="modal" data-target="#addPaymentDialog"/>
-					<%- include ../../partials/userDashboard/addPaymentDialog %>
-				</div>
+					<div class="title">Current User Payment Methods</div>
+					<table class="userAddressTable">
+						<tr>
+							<th>Nickname</th>
+							<th>Name</th>
+							<th>Card Number</th>
+							<th>Expiry Date</th>
+							<th>CVC</th>
+						</tr>
+						<%for(var i = 0; i < userInfo.payment.length; i++) {%>
+						<tr class="userInfo">
+							<th style="font-weight: normal;"><%= userInfo.payment[i].paymentNickname %></th>
+							<th style="font-weight: normal;"><%= userInfo.payment[i].paymentName %></th>
+							<th style="font-weight: normal;"><%= userInfo.payment[i].paymentCardNumber %></th>
+							<th style="font-weight: normal;"><%= userInfo.payment[i].paymentExp %></th>
+							<th style="font-weight: normal;"><%= userInfo.payment[i].paymentCVC %></th>
+							<th>
+								<% let dialogID = "editPaymentDialog-" + userInfo.address[i].id; %>
+								<input type="submit" value="Edit Payment" data-toggle="modal" data-target="#<%=dialogID%>"/>
+								<%- include('../../partials/userDashboard/editPaymentDialog', {dialogID}) %>
+							</th>
+						</tr>
+						<% } %>
+				</table>
+
+				<!-- Add payment Dialog -->
+				<input type="submit" value="Add Payment" data-toggle="modal" data-target="#addPaymentDialog"/>
+				<%- include ../../partials/userDashboard/addPaymentDialog %>
 			</div>
 		</div>
 	</body>
+
+	<script>
+		function cleanEmpty(obj) 
+		{
+			for (var key in obj)
+			{
+				if (obj[key] == "")
+					delete obj[key];
+			}
+		}
+
+		function replaceWithTextInput(id) 
+		{
+			let text = $('#' + id);
+			text.replaceWith("<input type='text' id='" + id + "' value='" + text.text() + "' />")
+		}
+
+		$().ready(() =>
+		{
+			let editBtn = $("#editProfileBtn");
+
+			editBtn.click(() =>
+			{
+				// Replace the editBtn text to "Finish Edit" if not editing. Otherwise, send the updated profile data.
+				if (editBtn.val() == "Finish Edit")
+				{
+					let editData = {
+						firstName : $("#displayFirstName").val(),
+						lastName : $("#displayLastName").val(),
+						DOB: $("#displayDOB").val(),
+						phoneNumber : $("#displayPhone").val()
+					}
+
+
+					// Get rid of all values that are an empty string ''
+					cleanEmpty(editData);
+
+					$.post('./profile/editProfile', editData, (response) =>
+					{
+						console.log("Got response ", response)
+						if (response.status == "success")
+						{
+							alert("Edit Successful!");
+							location.reload();
+						} 
+						else
+						{
+							alert("Failed to edit profile!\n\n" + response.reason);
+						}
+					})
+				}
+				else
+				{
+					replaceWithTextInput("displayFirstName");
+					replaceWithTextInput("displayLastName");
+					replaceWithTextInput("displayDOB");
+					replaceWithTextInput("displayPhone");
+					editBtn.val("Finish Edit");
+				}
+			})
+		})
+	
+	</script>
 </html>

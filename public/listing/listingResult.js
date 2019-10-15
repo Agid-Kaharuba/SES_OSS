@@ -3,7 +3,7 @@ const ModifyText = "Finish Modifying";
 function replaceWithTextInput(id) 
 {
     let text = $('#' + id);
-    text.replaceWith("<input type='text' id='" + id.replace("Text", "") + "Input" + "' value=" + text.text() + " />")
+    text.replaceWith("<input type='text' id='" + id.replace("Text", "") + "Input" + "' value='" + text.text() + "' />")
 }
 
 
