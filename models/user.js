@@ -503,7 +503,49 @@ const getUserPayment = function(userid, callback = { found: () => {}, notFound: 
 	});
 }
 
+exports.deleteUserPayment = function (userid, callback = { success: () => {}, fail: () => {} })
+{
+	var db = database.connectDatabase();
+	var query = `
+	UPDATE PaymentMethod
+	SET PM_IsActive = 0
+	WHERE PM_US = ? AND PM_PK = ?
+	`;
 
+	db.query(query, [userid], (err, results) =>
+	{
+		if (err)
+		{
+			console.log('failed to delete payment' + err);
+		}
+		else 
+		{
+			callback.success();
+		}
+	});
+}
+
+exports.deleteUserAddress = function (userid, callback = { success: () => {}, fail: () => {} })
+{
+	var db = database.connectDatabase();
+	var query = `
+	UPDATE Address
+	SET AD_IsActive = 0
+	WHERE AD_US = ? AND AD_PK = ?
+	`;
+
+	db.query(query, [userid], (err, results) =>
+	{
+		if (err)
+		{
+			console.log('failed to delete address' + err);
+		}
+		else 
+		{
+			callback.success();
+		}
+	});
+}
 
 
 

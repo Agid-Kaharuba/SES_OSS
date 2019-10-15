@@ -146,6 +146,11 @@
 								<input type="submit" value="Edit Address" data-toggle="modal" data-target="#<%=dialogID%>"/>
 								<%- include('../../partials/userDashboard/editAddressDialog', {dialogID}) %>
 							</th>
+							<th >
+								<form method="POST" action="profile/deleteAddress/id=<%= userInfo.address[i].id%>""	>
+									<input type="submit" value="Delete Address"/>
+								</form>
+							</th>
 						</tr>
 						<% } %>
 					</table>
@@ -175,6 +180,11 @@
 								<input type="submit" value="Edit Payment" data-toggle="modal" data-target="#<%=dialogID%>"/>
 								<%- include('../../partials/userDashboard/editPaymentDialog', {dialogID}) %>
 							</th>
+							<th >
+									<form method="POST" action="profile/deletePayment/id=<%= userInfo.payment[i].id%>""	>
+										<input type="submit" value="Delete Payment"/>
+									</form>
+								</th>
 						</tr>
 						<% } %>
 				</table>

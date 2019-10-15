@@ -247,17 +247,54 @@ router.post('/profile/createAd', upload.single('productImage'), (req, res) =>
     userModel.getUserInfo(req, (user, isAdmin) =>
     {
         listingModel.createListingForUserID(user.id, listing,
+        {
+            success: () =>
             {
-                success: () =>
-                {
-                    res.redirect('/user/profile');
-                },
-                fail: () => {},
-                done: () => {}
-            });
+                res.redirect('/user/profile');
+            },
+            fail: () => {},
+            done: () => {}
+        });
     });
 
 });
+
+router.post('/profile/deletePayment/id=:id', (req, res) =>
+{
+    var paymentID = req.params.id;
+    userModel.getUserInfo(req, (user, isAdmin) =>
+    {
+        userModel.deleteUserPayment(user.id, paymentID, 
+        {
+            success: () =>
+            {
+                res.redirect('/user/profile');
+            },
+            fail: () =>
+            {
+            }
+        });
+    });
+});
+
+router.post('/profile/deleteAddress/id=:id', (req, res) =>
+{
+    var addressID = req.params.id;
+    userModel.getUserInfo(req, (user, isAdmin) =>
+    {
+        userModel.deleteUserAddress(user.id, addressID, 
+        {
+            success: () =>
+            {
+                res.redirect('/user/profile');
+            },
+            fail: () =>
+            {
+            }
+        });
+    });
+});
+    
 
 router.get('/userListings', (req, res) =>
 {
@@ -269,7 +306,7 @@ router.get('/userListings', (req, res) =>
             fail: (reason) => htmlResponse.fail(req, res, reason, 'Failed to get user listings')
         })
     })
-})
+});
 
 router.get('/public/profile/id=:id', (req, res) =>
 {
@@ -289,7 +326,7 @@ router.get('/public/profile/id=:id', (req, res) =>
             notFound: () => htmlResponse.fail(req, res, 'Failed to find user')
         })
     })
-})
+});
 
 router.get('/userPurchases', auth.authorizeUser, (req, res) =>
 {
@@ -301,6 +338,6 @@ router.get('/userPurchases', auth.authorizeUser, (req, res) =>
             fail: (reason) => htmlResponse.fail(req, res, reason, "Failed to get purchases for user!")
         })
     })
-})
+});
 
 module.exports = { router };
