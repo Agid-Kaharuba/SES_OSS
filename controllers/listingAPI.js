@@ -3,7 +3,6 @@ const router = express.Router();
 const listingModel = require('../models/listing');
 const userModel = require('../models/user')
 const baseView = require('../views/base')
-const view = require('../views/listingView');
 const jsonResponse = require('../utils/JSONResponse');
 const htmlResponse = require('../utils/HTMLResponse');
 const attachmentUtil = require('../utils/attachmentUtil');
@@ -24,7 +23,7 @@ router.get('/id=:id', (req, res) => // e.g. listing/id=4bb8590e-ce26-11e9-a859-2
                     htmlResponse.fail(req, res, "Could not find the listing that you were looking for :(", "Listing not found");
                 } else {
                     let result = results[0];
-                    result.imgName = attachmentUtil.getImgPath(result.imgName);
+                    result.listingImg = attachmentUtil.getImgPath(result.listingID);
                     baseView.renderWithAddons(req, res, 'pages/listingResult', { result });
                 }
             },
@@ -41,8 +40,9 @@ router.get('/search=:query', (req, res) =>
         {
             for (var i = 0; i < results.length; i++) 
             {
-                results[i].imgName = attachmentUtil.getImgPath(results[i].imgName);
-            }
+                results[i].listingImg = attachmentUtil.getImgPath(results[i].listingID);
+			}
+			console.log(results);
             baseView.renderWithAddons(req, res, 'pages/listing', { listings: results });
         });
 })
@@ -86,8 +86,6 @@ router.get('/purchase=:listingID&quantity=:amount', (req, res) =>
                 success: (purchase) => 
                 {
                     baseView.renderWithAddons(req, res, 'pages/purchase', { purchase });
-                    //pass this onto the view.
-
                 },
                 fail: () => htmlResponse.fail(req, res, 'Could not get your purchase :(', 'Payment Not Found'),
             });

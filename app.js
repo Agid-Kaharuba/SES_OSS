@@ -31,6 +31,7 @@ app.use('/dev', devAPI.router);
 app.use('/message', messageAPI.router);
 
 app.use('/images', express.static('public/images'));
+app.use('/attachment', express.static('attachment'));
 app.use('/styles', express.static('public/styles'));
 app.use('/js', express.static('public/js'));
 app.use('/public', express.static('public'));

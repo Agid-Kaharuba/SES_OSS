@@ -6,19 +6,14 @@ const fs = require("fs");
 exports.getImgPath = function(jpgImgName)
 {
 	var baseDir = __dirname + "/../attachment/IMG/";
-	var defaultFile = baseDir + 'default.jpg';
-	if (jpgImgName == null)
+	var imgDir = jpgImgName + '.jpg';
+	console.log(baseDir + imgDir);
+	if (jpgImgName != null && fs.existsSync(baseDir + imgDir))
 	{
-		return defaultFile;
-	}
-
-	var imgDir = baseDir + jpgImgName + '.jpg';
-	if (fs.existsSync(dir))
-	{
-		return jpgImgName;
+		return imgDir;
 	}
 	else
 	{
-		return defaultFile;
+		return 'default.jpg';;
 	}
 }
