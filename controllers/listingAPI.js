@@ -75,9 +75,7 @@ router.get('/summary=:purchaseID', auth.authorizeUser, (req, res) =>
                 found:
                     (result) => 
                     {
-                        console.log(result);
-                        // res.render(view.viewPurchaseSummary(result));
-                        console.log("hello my name is cameron");
+                        baseView.renderWithAddons(req, res, 'pages/purchaseSummary', {result});
                     },
                 notFound:
                     () => htmlResponse.fail(req, res, 'Could not get your purchase summary :(', 'Payment Summary Not Found'),

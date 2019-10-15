@@ -272,6 +272,7 @@ LIMIT 1
 
 function notifySellerOfPurchase(purchasePK)
 {
+	const db = database.connectDatabase();
 	let insertMessageQuery = `
 INSERT INTO Message (MS_US_To, MS_US_From, MS_Header, MS_Body) 
 SELECT Seller.US_PK, Sys.US_PK, 
@@ -306,10 +307,6 @@ WHERE
 
 exports.getPrePurchaseInformation = function(userPK, listingPK, amount, callback = { success: () => {}, fail: () => {} }) 
 {
-  console.log("@getPrePurchaseInformation");
-  console.log("userPK=" + userPK);
-  console.log("listingPK=" + listingPK);
-  console.log("amount=" + amount);
   const db = database.connectDatabase();
   let paymentMethodsQuery = `
 SELECT
