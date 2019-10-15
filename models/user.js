@@ -47,6 +47,7 @@ let convertToUserProfileObject = function (rawUser)
 let convertToUserAddressObject = function (rawUser)
 {
 	return {
+		id: rawUser.AD_PK,
 		addressLine1: rawUser.AD_Line1,
 		addressLine2: rawUser.AD_Line2,
 		addressCity: rawUser.AD_City,
@@ -437,6 +438,7 @@ const getUserAddress = function(userid, callback = { found: () => {}, notFound: 
 	var db = database.connectDatabase();
 	var query2 = `
 	SELECT 
+		AD_PK,
 		AD_Line1,
 		AD_Line2,
 		AD_City,

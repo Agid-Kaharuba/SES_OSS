@@ -1,0 +1,34 @@
+<div id="addAddressDialog" class="modal fade" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Add an Address</h5>
+            </div>
+
+            <form action="/user/profile/addAddress" method="POST">
+
+                <div class="modal-body">
+
+                    Address Line 1:<br>
+                    <input type="text" name="editAddress_line1"><br>
+                    Address Line 2:<br>
+                    <input type="text" name="editAddress_line2"><br>
+                    City:<br>
+                    <input type="text" name="editAddress_city"><br>
+                    State:<br>
+                    <input type="text" name="editAddress_state"><br>
+                    Country:<br>
+                    <input type="text" name="editAddress_country"><br>
+                    Post Code:<br>
+                    <input type="text" name="editAddress_postcode"><br>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                    <input type="submit" value="Submit" class="btn btn-primary"/>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
