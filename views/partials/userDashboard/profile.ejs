@@ -1,4 +1,6 @@
 <div class="container m-1">
+    <div id="userInfo" data-username="<%=userInfo.profile.username%>"></div>
+
     <div class="container m-4">
         <div class="title">Profile Information</div>
         <div class="card card-body">
@@ -51,6 +53,10 @@
         </div>
 
         <input class="btn btn-primary my-1" id="editProfileBtn" type="submit" value="Edit Profile Information" />
+
+        <!-- Add Reset password Dialog -->
+        <input class="btn btn-primary my-1" type="submit" value="Reset Password" data-toggle="modal" data-target="#resetPasswordDialog">
+        <%- include ../../partials/userDashboard/resetPasswordDialog %>
     </div>
     
     <div class="container m-4">

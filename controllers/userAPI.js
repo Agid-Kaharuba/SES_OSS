@@ -242,4 +242,20 @@ router.get('/userPurchases', auth.authorizeUser, (req, res) =>
     })
 })
 
+router.post('/resetPassword/username=:username', auth.authorizeUserJson, (req, res) =>
+{
+    console.log("Got reset pass ", req.body);
+    userModel.getUserInfo(req, (user, isAdmin) =>
+    {
+        if (isAdmin || user.username == req.params.username)
+        {
+            userModel.modifyPasswordByUsername(req.params.username, req.body.password, 
+            {
+                success: () => res.send(jsonResponse.success()),
+                fail: () => res.send(jsonResponse.fail("Failed to reset password"))
+            })
+        }
+    })
+})
+
 module.exports = { router };

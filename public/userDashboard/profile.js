@@ -76,4 +76,35 @@ $().ready(() =>
             editBtn.val("Finish Edit");
         }
     })
+
+    let resetPasswodBtn = $("#resetPasswordBtn");
+    
+    resetPasswodBtn.click(() =>
+    {
+        let currentUsername = $("#userInfo").data("username");
+        let newPass = $("#newPasswordInput");
+        let confirmPass = $('#confirmNewPasswordInput');
+
+        if (newPass.val() != confirmPass.val())
+        {
+            alert("Passwords entered do not match!");
+            return;
+        }
+        let data = {password: newPass.val()};
+
+        console.log("Sending pass ", data, " to ", './resetPassword/username=' + currentUsername);
+
+        $.post('/user/resetPassword/username=' + currentUsername, data, (response) =>
+        {
+            if (response.status == "success") 
+            {
+                alert("Password Reset Successful!");
+                location.reload();
+            }
+            else 
+            {
+                alert("Failed to reset password!\n\n" + response.reason);
+            }
+        })
+    })
 })
