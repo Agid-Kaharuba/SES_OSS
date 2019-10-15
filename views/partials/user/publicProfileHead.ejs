@@ -5,14 +5,22 @@
             <h1><%= targetUser.username %></h1>
         </div>
 
-        <% if (isAdmin && targetUser.id !== user.id) { %>
+        <% if (isAdmin) { %>
             <div class="card card-body container">
                 <div class="row ml-4 mb-3">
                     <h5>Admin controls</h5>
                 </div>
                 <div class="row">
+                    <a class="col" href="/user/public/profile/id=<%= targetUser.id %>">
+                        <input class="btn btn-warning" type="button" value="Public Profile"/>
+                    </a>
+
                     <a class="col" href="/admin/userProfile/id=<%= targetUser.id %>">
-                        <input class="btn btn-warning" type="button" value="View Profile"/>
+                        <input class="btn btn-warning" type="button" value="Personal Profile"/>
+                    </a>
+
+                    <a class="col" href="/admin/createUserListing/id=<%= targetUser.id %>">
+                        <input class="btn btn-warning" type="button" value="Create Listing for user"/>
                     </a>
                 </div>
             </div>

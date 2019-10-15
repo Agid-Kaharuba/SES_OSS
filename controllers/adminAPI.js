@@ -7,6 +7,9 @@ const baseView = require('../views/base');
 const auth = require('../utils/authUtil');
 const htmlResponse = require('../utils/HTMLResponse');
 const dateUtil = require('../utils/dateUtil');
+const listingModel = require('../models/listing');
+const multer = require('multer');
+const upload = multer({dest : 'attachment/IMG/'});
 
 const router = express.Router();
 
@@ -187,6 +190,27 @@ router.post('/editPayment/id=:id', auth.authorizeAdmin, (req, res) =>
             res.redirect('../userProfile/id=' + req.params.id);
         }, 
         fail: () => htmlResponse.fail("Failed to edit existing payment"),
+    });
+})
+
+router.get('/createUserListing/id=:id', auth.authorizeAdmin, (req, res) =>
+{
+    userModel.getUserFromID(req.params.id, 
+    {
+        found: (targetUser) => baseView.renderWithAddons(req, res, 'pages/admin/createUserListing', {targetUser}),
+        notFound: () => htmlResponse.fail(req, res, "Failed to get target user!")
+    })
+})
+
+router.post('/createUserListing/id=:id', auth.authorizeAdmin, upload.single('fileName'), (req, res) =>
+{
+    listingModel.createListingForUserID(req.params.id, req.body,
+    {
+        success: () =>
+        {
+            res.redirect('./createUserListing/id=' + req.params.id);
+        },
+        fail: () => htmlResponse.fail(req, res, "Failed to create new listing from admin control"),
     });
 })
 

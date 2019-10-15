@@ -177,31 +177,23 @@ router.post('/profile/editPayment', (req, res) =>
 
 router.get('/profile/createAd', (req, res) =>
 {
-    baseView.renderWithAddons(req, res, 'pages/userDashboard/createAd');
+    baseView.renderWithAddons(req, res, 'pages/admin/createUserListing');
 });
 
-router.post('/profile/createAd', upload.single('productImage'), (req, res) =>
+router.post('/profile/createAd', upload.single('fileName'), (req, res) =>
 {
-    var listing = 
-    {
-        title : req.body.productName,
-        description : req.body.productDescription,
-        price : req.body.productPrice,
-        remainingStock : req.body.productStock,
-        fileName : req.file.productImage
-    }
+    var listing = req.body;
 
     userModel.getUserInfo(req, (user, isAdmin) =>
     {
         listingModel.createListingForUserID(user.id, listing,
+        {
+            success: () =>
             {
-                success: () =>
-                {
-                    res.redirect('/user/profile');
-                },
-                fail: () => {},
-                done: () => {}
-            });
+                res.redirect('/user/profile');
+            },
+            fail: () => htmlResponse.fail(req, res, "Failed to create new listing"),
+        });
     });
 
 });
