@@ -793,10 +793,10 @@ exports.fillUserModel = function(obj, keyfrom, keyTo)
 	})
 }
 
-exports.modifyUserAddressByID = function (userid, address, callback = { success: () => {}, fail: () => {}, done: () => {} })
+exports.modifyUserAddress = function (address, callback = { success: () => {}, fail: () => {}, done: () => {} })
 {
 	const db = database.connectDatabase();
-	return modifyUserAddressByCheck(`AD_US = ` + db.escape(userid), address, callback);
+	return modifyUserAddressByCheck(`AD_PK = ` + db.escape(address.id), address, callback);
 }
 
 exports.modifyUserPaymentByID = function (userid, address, callback = { success: () => {}, fail: () => {}, done: () => {} })

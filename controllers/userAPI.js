@@ -107,14 +107,6 @@ router.post('/profile/editProfile', auth.authorizeUserJson, (req, res) =>
     });
 });
 
-router.get('/profile/editAddress', (req, res) => {
-    res.render('pages/userDashboard/editAddressView');
-});
-
-router.get('/profile/addAddress', (req, res) => {
-    res.render('pages/userDashboard/addAddressView');
-});
-
 router.post('/profile/addAddress', (req, res) =>
 {                   
     var editData = 
@@ -147,6 +139,7 @@ router.post('/profile/editAddress', (req, res) =>
 {                   
     var editData = 
             {
+                id: req.body.id,
                 addressLine1 : req.body.editAddress_line1,
                 addressLine2 : req.body.editAddress_line2,
                 city : req.body.editAddress_city,
@@ -157,7 +150,7 @@ router.post('/profile/editAddress', (req, res) =>
 
     userModel.getUserInfo(req, (user, isAdmin) =>
     {
-        userModel.modifyUserAddressByID(user.id, editData,
+        userModel.modifyUserAddress(editData,
         {
             success: () => 
             {

@@ -10,19 +10,20 @@
 
                 <div class="modal-body">
 
+                    <input type="hidden" name="id" value="<%=address.id%>"><br>
+
                     Address Line 1:<br>
-                    <input type="text" name="editAddress_line1"><br>
+                    <input type="text" name="editAddress_line1" value="<%=address.addressLine1%>"><br>
                     Address Line 2:<br>
-                    <input type="text" name="editAddress_line2"><br>
+                    <input type="text" name="editAddress_line2" value="<%=address.addressLine2%>"><br>
                     City:<br>
-                    <input type="text" name="editAddress_city"><br>
+                    <input type="text" name="editAddress_city" value="<%=address.addressCity%>"><br>
                     State:<br>
-                    <input type="text" name="editAddress_state"><br>
+                    <input type="text" name="editAddress_state" value="<%=address.addressState%>"><br>
                     Country:<br>
-                    <input type="text" name="editAddress_country"><br>
+                    <input type="text" name="editAddress_country" value="<%=address.addressCountry%>"><br>
                     Post Code:<br>
-                    <input type="text" name="editAddress_postcode"><br>
-                    <input type="submit" value="Submit">
+                    <input type="text" name="editAddress_postcode" value="<%=address.addressPostcode%>"><br>
                 </div>
 
                 <div class="modal-footer">

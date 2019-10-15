@@ -153,7 +153,7 @@
 							<th >
 								<% let dialogID = "editAddressDialog-" + userInfo.address[i].id; %>
 								<input type="submit" value="Edit Address" data-toggle="modal" data-target="#<%=dialogID%>"/>
-								<%- include('../../partials/userDashboard/editAddressDialog', {dialogID}) %>
+								<%- include('../../partials/userDashboard/editAddressDialog', {dialogID, address: userInfo.address[i]}) %>
 							</th>
 						</tr>
 						<% } %>
@@ -182,7 +182,7 @@
 							<th>
 								<% let dialogID = "editPaymentDialog-" + userInfo.address[i].id; %>
 								<input type="submit" value="Edit Payment" data-toggle="modal" data-target="#<%=dialogID%>"/>
-								<%- include('../../partials/userDashboard/editPaymentDialog', {dialogID}) %>
+								<%- include('../../partials/userDashboard/editPaymentDialog', {dialogID, payment: userInfo.payment[i]}) %>
 							</th>
 						</tr>
 						<% } %>
