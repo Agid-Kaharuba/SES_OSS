@@ -10,16 +10,16 @@
 
                 <div class="modal-body">
                     Nickname:<br>
-                    <input type="text" name="editPayment_nickname" value="<%=payment.paymentNickname%>"><br>
+                    <input type="text" name="nickName" value="<%=payment.paymentNickname%>"><br>
                     Cardholder Name:<br>
-                    <input type="text" name="editPayment_cardholderName" value="<%=payment.paymentName%>"><br>
+                    <input type="text" name="name" value="<%=payment.paymentName%>"><br>
                     Card Number:<br>
-                    <input type="text" name="editPayment_number" value="<%=payment.paymentCardNumber%>"><br>
+                    <input type="text" name="number" value="<%=payment.paymentCardNumber%>"><br>
                     Expiry:<br>
                     <% let date = payment.paymentExp.toLocaleString().split(',')[0].split('/').reverse().join('-'); %>
-                    <input type="date" name="editPayment_Expiry" value="<%=date%>"><br>
+                    <input type="date" name="exp" value="<%=date%>"><br>
                     CVV:<br>
-                    <input type="text" name="editPayment_CVV" value="<%=payment.paymentCVC%>"><br>
+                    <input type="text" name="cvc" value="<%=payment.paymentCVC%>"><br>
                 </div>
 
                 <div class="modal-footer">

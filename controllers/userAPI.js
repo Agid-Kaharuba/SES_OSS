@@ -87,10 +87,6 @@ router.get('/logout', (req, res) =>
 		});
 });
 
-router.get('/profile/editProfile', (req, res) => {
-    res.render('pages/userDashboard/editProfileView');
-});
-
 router.post('/profile/editProfile', auth.authorizeUserJson, (req, res) =>
 {                   
     var editData = req.body;
@@ -109,15 +105,7 @@ router.post('/profile/editProfile', auth.authorizeUserJson, (req, res) =>
 
 router.post('/profile/addAddress', (req, res) =>
 {                   
-    var editData = 
-            {
-                addressLine1 : req.body.editAddress_line1,
-                addressLine2 : req.body.editAddress_line2,
-                city : req.body.editAddress_city,
-                state : req.body.editAddress_state,
-                country : req.body.editAddress_country,
-                postcode : req.body.editAddress_postcode
-            }; 
+    var editData = req.body;
 
     console.log('were atlaest getting here');
     userModel.getUserInfo(req, (user, isAdmin) =>
@@ -128,8 +116,7 @@ router.post('/profile/addAddress', (req, res) =>
             {
                 res.redirect('/user/profile');
             }, 
-            fail: () => {}, 
-            done: () => {}
+            fail: () => htmlResponse.fail(req, res, "Failed to add new address!"), 
         });
     }); 
 
@@ -137,16 +124,7 @@ router.post('/profile/addAddress', (req, res) =>
 
 router.post('/profile/editAddress', (req, res) =>
 {                   
-    var editData = 
-            {
-                id: req.body.id,
-                addressLine1 : req.body.editAddress_line1,
-                addressLine2 : req.body.editAddress_line2,
-                city : req.body.editAddress_city,
-                state : req.body.editAddress_state,
-                country : req.body.editAddress_country,
-                postcode : req.body.editAddress_postcode
-            }; 
+    var editData = req.body;
 
     userModel.getUserInfo(req, (user, isAdmin) =>
     {
@@ -156,8 +134,7 @@ router.post('/profile/editAddress', (req, res) =>
             {
                 res.redirect('/user/profile');
             }, 
-            fail: () => {}, 
-            done: () => {}
+            fail: () => htmlResponse.fail(req, res, "Failed to edit existing address!"), 
         });
     }); 
 
@@ -165,14 +142,7 @@ router.post('/profile/editAddress', (req, res) =>
 
 router.post('/profile/addPayment', (req, res) =>
 {                   
-    var editData = 
-            {
-                nickName : req.body.editPayment_nickname,
-                name : req.body.editPayment_cardholderName,
-                number : req.body.editPayment_number,
-                exp : req.body.editPayment_Expiry,
-                cvc : req.body.editPayment_CVC,
-            }; 
+    var editData = req.body;
     dateUtil.fillPropertyFromHTML(editData, 'exp');
 
     userModel.getUserInfo(req, (user, isAdmin) =>
@@ -183,22 +153,15 @@ router.post('/profile/addPayment', (req, res) =>
             {
                 res.redirect('/user/profile');
             }, 
-            fail: () => {}
+            fail: () => htmlResponse.fail("Failed to add new payment")
         });
     });
 
 });
 
 router.post('/profile/editPayment', (req, res) =>
-{                   
-    var editData = 
-            {
-                nickName : req.body.editPayment_nickname,
-                name : req.body.editPayment_cardholderName,
-                number : req.body.editPayment_number,
-                exp : req.body.editPayment_Expiry,
-                cvv : req.body.editPayment_CVV,
-            }; 
+{
+    let editData = req.body;
     dateUtil.fillPropertyFromHTML(editData, 'exp');
 
     userModel.getUserInfo(req, (user, isAdmin) =>
@@ -209,8 +172,7 @@ router.post('/profile/editPayment', (req, res) =>
             {
                 res.redirect('/profile');
             }, 
-            fail: () => {}, 
-            done: () => {}
+            fail: () => htmlResponse.fail("Failed to edit existing payment"),
         });
     });
 

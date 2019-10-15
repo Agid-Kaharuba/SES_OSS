@@ -740,7 +740,7 @@ const modifyUserPaymentByCheck = function(check, payment, callback = { success: 
 		return;
 	}
 
-	db.query(query, [payment.nickName, payment.name, payment.number, dateUtil.convertToMySQLDatetime(payment.exp), payment.cvv], (err, results) => 
+	db.query(query, [payment.nickName, payment.name, payment.number, dateUtil.convertToMySQLDatetime(payment.exp), payment.cvc], (err, results) => 
 	{
 		if (err)
 		{
