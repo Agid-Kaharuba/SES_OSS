@@ -102,12 +102,23 @@
                     <th scope="col"></th>
                 </tr>
             </thead>
-            <%for(var i = 0; i < userInfo.payment.length; i++) {%>
+            <% for(var i = 0; i < userInfo.payment.length; i++) {%>
                 <tr class="userInfo">
                     <th scope="row" style="font-weight: normal;"><%= userInfo.payment[i].paymentNickname %></th>
                     <th scope="row" style="font-weight: normal;"><%= userInfo.payment[i].paymentName %></th>
                     <th scope="row" style="font-weight: normal;"><%= userInfo.payment[i].paymentCardNumber %></th>
-                    <th scope="row" style="font-weight: normal;"><%= userInfo.payment[i].paymentExp.toLocaleString().split(',')[0] %></th>
+                    <% 
+                        let expiryDate;
+                        if (userInfo.payment[i].paymentExp) 
+                        {
+                            expiryDate = userInfo.payment[i].paymentExp.toLocaleString().split(',')[0];
+                        }
+                        else 
+                        {
+                            expiryDate = "No expiry date found";
+                        }
+                    %>
+                    <th scope="row" style="font-weight: normal;"><%= expiryDate %></th>
                     <th scope="row" style="font-weight: normal;"><%= userInfo.payment[i].paymentCVC %></th>
                     <th scope="row">
                         <% let dialogID = "editPaymentDialog-" + userInfo.address[i].id; %>

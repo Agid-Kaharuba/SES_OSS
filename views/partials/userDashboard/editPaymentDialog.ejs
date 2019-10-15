@@ -16,8 +16,19 @@
                     Card Number:<br>
                     <input type="text" name="number" value="<%=payment.paymentCardNumber%>"><br>
                     Expiry:<br>
-                    <% let date = payment.paymentExp.toLocaleString().split(',')[0].split('/').reverse().join('-'); %>
-                    <input type="date" name="exp" value="<%=date%>"><br>
+                    <% 
+                        let expiryDate;
+                        if (expiryDate) 
+                        {
+                            expiryDate = payment.paymentExp.toLocaleString().split(',')[0].split('/').reverse().join('-'); 
+                        }
+                        else
+                        {
+                            expiryDate = "No expiry date found";
+                        }
+                     %>
+                    <input type="date" name="exp" value="<%=expiryDate;
+                    %>"><br>
                     CVV:<br>
                     <input type="text" name="cvc" value="<%=payment.paymentCVC%>"><br>
                 </div>
