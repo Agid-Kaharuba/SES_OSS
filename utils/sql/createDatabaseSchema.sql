@@ -27,14 +27,15 @@ CREATE TABLE User
   US_FirstName		varchar(64) DEFAULT NULL,
   US_LastName		varchar(64) DEFAULT NULL,
   US_PhoneNumber	varchar(32) DEFAULT NULL,
-  US_BirthDate		varchar(10) DEFAULT NULL,
+  US_BirthDate		datetime NULL,
+  US_IsActive		bit NOT NULL DEFAULT 1,
   US_JoinDate		datetime NOT NULL DEFAULT NOW(),
   PRIMARY KEY (US_PK),
   UNIQUE KEY US_PK_UNIQUE (US_PK),
   UNIQUE KEY US_Username_UNIQUE (US_Username)
 );
 
-CREATE TRIGGER GenerateUserPK BEFORE INSERT ON User FOR EACH ROW SET new.US_PK = uuid();
+CREATE TRIGGER GenerateUserPK BEFORE INSERT ON User FOR EACH ROW SET new.US_PK = IF (ISNULL(new.US_PK), uuid(), new.US_PK);;
 
 
 
@@ -48,7 +49,7 @@ CREATE TABLE Admin
   UNIQUE KEY AD_PK_UNIQUE (AD_PK)
 );
 
-CREATE TRIGGER GenerateAdminPK BEFORE INSERT ON Admin FOR EACH ROW SET new.AD_PK = uuid();
+CREATE TRIGGER GenerateAdminPK BEFORE INSERT ON Admin FOR EACH ROW SET new.AD_PK = IF (ISNULL(new.AD_PK), uuid(), new.AD_PK);;
 
 
 
@@ -62,7 +63,7 @@ CREATE TABLE Session
   UNIQUE KEY SS_PK_UNIQUE (SS_PK)
 );
 
-CREATE TRIGGER GenerateSessionPK BEFORE INSERT ON Session FOR EACH ROW SET new.SS_PK = uuid();
+CREATE TRIGGER GenerateSessionPK BEFORE INSERT ON Session FOR EACH ROW SET new.SS_PK = IF (ISNULL(new.SS_PK), uuid(), new.SS_PK);
 
 
 
@@ -76,13 +77,14 @@ CREATE TABLE Address
   AD_State 		varchar(64) NULL,
   AD_Country 	varchar(64) NULL,
   AD_PostCode 	varchar(8) NULL,
+  AD_IsActive	BIT NOT NULL DEFAULT 1,
   AD_IsPrimary	BIT NOT NULL DEFAULT 0,
   PRIMARY KEY (AD_PK),
   FOREIGN KEY (AD_US) REFERENCES User(US_PK),
   UNIQUE KEY AD_PK_UNIQUE (AD_PK)
 );
 
-CREATE TRIGGER GenerateAddressPK BEFORE INSERT ON Address FOR EACH ROW SET new.AD_PK = uuid();
+CREATE TRIGGER GenerateAddressPK BEFORE INSERT ON Address FOR EACH ROW SET new.AD_PK = IF (ISNULL(new.AD_PK), uuid(), new.AD_PK);
 
 
 
@@ -95,25 +97,14 @@ CREATE TABLE PaymentMethod
   PM_CardNumber		varchar(16) NULL,
   PM_Expiry			datetime NULL,
   PM_CVC		 	varchar(3) NULL,
+  PM_IsActive		BIT NOT NULL DEFAULT 1,
   PM_IsPrimary		BIT NOT NULL DEFAULT 0,
   PRIMARY KEY (PM_PK),
   FOREIGN KEY (PM_US) REFERENCES User(US_PK),
   UNIQUE KEY PM_PK_UNIQUE (PM_PK)
 );
 
-CREATE TRIGGER GeneratePaymentMethodPK BEFORE INSERT ON PaymentMethod FOR EACH ROW SET new.PM_PK = uuid();
-
-
-
-CREATE TABLE Category 
-(
-  CT_PK 			varchar(36) NOT NULL,
-  CT_Name		 	varchar(64) NOT NULL,
-  PRIMARY KEY (CT_PK),
-  UNIQUE KEY CT_PK_UNIQUE (CT_PK)
-);
-
-CREATE TRIGGER GenerateCategoryPK BEFORE INSERT ON Category FOR EACH ROW SET new.CT_PK = uuid();
+CREATE TRIGGER GeneratePaymentMethodPK BEFORE INSERT ON PaymentMethod FOR EACH ROW SET new.PM_PK = IF (ISNULL(new.PM_PK), uuid(), new.PM_PK);
 
 
 
@@ -121,7 +112,6 @@ CREATE TABLE Listing
 (
   LS_PK 			varchar(36) NOT NULL,
   LS_US_Seller 		varchar(36) NOT NULL,
-  LS_CT				varchar(36) NULL,
   LS_Title 			varchar(256) NULL,
   LS_Description	varchar(2048) NULL,
   LS_RemainingStock	INT NOT NULL,
@@ -130,11 +120,10 @@ CREATE TABLE Listing
   LS_PostedDate		datetime NOT NULL DEFAULT NOW(),
   PRIMARY KEY (LS_PK),
   FOREIGN KEY (LS_US_Seller) 	REFERENCES User(US_PK),
-  FOREIGN KEY (LS_CT) 		REFERENCES Category(CT_PK),
   UNIQUE KEY LS_PK_UNIQUE (LS_PK)
 );
 
-CREATE TRIGGER GenerateListingPK BEFORE INSERT ON Listing FOR EACH ROW SET new.LS_PK = uuid();
+CREATE TRIGGER GenerateListingPK BEFORE INSERT ON Listing FOR EACH ROW SET new.LS_PK = IF (ISNULL(new.LS_PK), uuid(), new.LS_PK);
 
 
 
@@ -157,7 +146,7 @@ CREATE TABLE Purchase
   UNIQUE KEY PC_PK_UNIQUE (PC_PK)
 );
 
-CREATE TRIGGER GeneratePurchasePK BEFORE INSERT ON Purchase FOR EACH ROW SET new.PC_PK = uuid();
+CREATE TRIGGER GeneratePurchasePK BEFORE INSERT ON Purchase FOR EACH ROW SET new.PC_PK = IF (ISNULL(new.PC_PK), uuid(), new.PC_PK);
 
 
 
@@ -175,19 +164,4 @@ CREATE TABLE Message
   UNIQUE KEY PC_PK_UNIQUE (MS_PK)
 );
 
-CREATE TRIGGER GenerateMessagePK BEFORE INSERT ON Message FOR EACH ROW SET new.MS_PK = uuid();
-
-
-
-CREATE TABLE Attachment 
-(
-  AT_PK 				varchar(36) NOT NULL,
-  AT_ParentPK			varchar(36) NOT NULL,
-  AT_ParentID			varchar(2) NOT NULL,
-  AT_Type				varchar(8) NOT NULL,
-  AT_Description		varchar(256) NOT NULL,
-  AT_Directory			varchar(512) NOT NULL,
-  AT_Date				datetime NOT NULL DEFAULT NOW(),
-  PRIMARY KEY (AT_PK),
-  UNIQUE KEY AT_PK_UNIQUE (AT_PK)
-);
+CREATE TRIGGER GenerateMessagePK BEFORE INSERT ON Message FOR EACH ROW SET new.MS_PK = IF (ISNULL(new.MS_PK), uuid(), new.MS_PK);

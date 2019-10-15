@@ -243,7 +243,6 @@ exports.registerUser = function (user, callback = { success: () => { }, fail: ()
 {
 	bcrypt.hash(user.password, 10, (errHash, encryptedPassword) => 
 	{
-		console.log(user.password);
 		if (errHash) 
 		{
 			callback.fail("Error creating user hash.");
