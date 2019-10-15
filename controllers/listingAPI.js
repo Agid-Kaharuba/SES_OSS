@@ -15,39 +15,22 @@ router.get('/id=:id', (req, res) => // e.g. listing/id=4bb8590e-ce26-11e9-a859-2
     {
         console.log('Receieved req for listing id: ' + req.params.id); // Example params usage.
 
-	listingModel.GetListing(req.params.id,
-	{
-		found: (litings) => 
-		{
-			if (litings.length < 1) 
-			{
-				htmlResponse.fail(req, res, "Could not find the listing that you were looking for :(", "Listing not found");
-			}
-			else 
-			{
-				userModel.getUserInfo(req, (user, isAdmin) =>
-				{
-					let listing = litings[0];
-					listing.imgName = attachmentUtil.getImgPath(listing.imgName);
-
-					if (isAdmin || user.id == listing.sellerID)
-					{
-						listingModel.getPurchasesForListing(listing, 
-						{
-							success: (purchases) => baseView.renderFromInfo(req, res, 'pages/listingResult', {user, isAdmin, listing, purchases}),
-							fail: (reason) => htmlResponse.fail(req, res, reason, "Failed to get purchases for listing!")
-						})
-					}
-					else
-					{
-						baseView.renderWithAddons(req, res, 'pages/listingResult', {user, isAdmin, listing});
-					}
-				})
-			}
-		},
-		notFound: () => { htmlResponse.fail(req, res, "Failed to get the listing that you were looking for :(", "Listing Fetch Failure"); }
-  });
-})
+        listingModel.GetListing(req.params.id, 
+            {
+            found: (results) =>
+            {
+                if (results.length < 1) 
+                {
+                    htmlResponse.fail(req, res, "Could not find the listing that you were looking for :(", "Listing not found");
+                } else {
+                    let result = results[0];
+                    result.imgName = attachmentUtil.getImgPath(result.imgName);
+                    baseView.renderWithAddons(req, res, 'pages/listingResult', { result });
+                }
+            },
+            notFound: () => { htmlResponse.fail(req, res, "Failed to get the listing that you were looking for :(", "Listing Fetch Failure"); }
+        });
+    });
 
 router.get('/search=:query', (req, res) => 
 {
