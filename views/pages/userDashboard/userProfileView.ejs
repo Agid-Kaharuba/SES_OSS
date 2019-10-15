@@ -61,35 +61,7 @@
 			</div>
 			<a href="#" class="nav-trigger"><span></span></a>
 		</div>
-		<div class="side-nav">
-			<div class="logo">
-				<i class="fa fa-tachometer"></i>
-				<span>Brand</span>
-			</div>
-			<nav>
-				<ul>
-					<li>
-						<a href="/user/profile" >
-							<span><i class="fa fa-user"></i></span>
-							<span>User Profile</span>
-						</a>
-					</li>
-					<li>
-						<a href="/user/profile/createAd">
-
-							<span><i class="fa fa-envelope"></i></span>
-							<span>Create An Ad</span>
-						</a>
-					</li>
-					<li class="active">
-						<a href="/user/userListings">
-							<span><i class="fa fa-bar-chart"></i></span>
-							<span>Manage Your Ads</span>
-						</a>
-					</li>
-				</ul>
-			</nav>
-		</div>
+		<%- include("../../partials/user/dashboardSideNav", {active: "profile"}) %>
 		<div class="main-content">
 			<div class="title">
 				User Profile
@@ -97,27 +69,38 @@
 			<div class="main">
 				<div class="widget">
 					<div class="title">Profile Information</div>
-						<table class="userProfileTable">
-							<tr>
-								<th>Username</th>
-								<th>Email</th>
-								<th>First Name</th>
-								<th>Last Name</th>
-								<th>Date of Birth</th>
-								<th>Phone Number</th>
-							</tr>
-							<tr class="userInfo">
-								<th style="font-weight: normal;"> <%= userInfo.profile.username %></th>
-								<th style="font-weight: normal;"> <%= userInfo.profile.email %></th>
-								<th style="font-weight: normal;"> <%= userInfo.profile.firstName %></th>
-								<th style="font-weight: normal;"> <%= userInfo.profile.lastName %></th>
-								<th style="font-weight: normal;"> <%= userInfo.profile.birthDate %></th>
-								<th style="font-weight: normal;"> <%= userInfo.profile.phoneNumber %></th>
-								<th action="./profile/editProfile">
-									<input type="submit" value="Edit Profile Information" />
-								</th>
-							</tr>
-						</table>
+          			<div class="card card-body">
+						<div>
+							<div class="row my-1">
+								<div class="col"><b>Username</b></div>
+								<div class="col" id="displayUsername"> <%= userInfo.profile.username %></div>
+							</div>
+							<div class="row my-1">
+								<div class="col "><b>First Name</b></div>
+								<div class="col" id="displayFirstName"> <%= userInfo.profile.firstName %></div>
+							</div>
+							<div class="row my-1">
+								<div class="col "><b>Last Name</b></div>
+								<div class="col" id="displayLastName"> <%= userInfo.profile.lastName %></div>
+							</div>
+							<div class="row my-1">
+								<div class="col "><b>Date of Birth</b></div>
+								<div class="col" id="displayDOB"> <%= userInfo.profile.birthDate %></div>
+							</div>
+							<div class="row my-1">
+								<div class="col "><b>Email</b></div>
+								<div class="col" id="displayEmail"> <%= userInfo.profile.email %></div>
+							</div>
+							<div class="row my-1">
+								<div class="col "><b>Phone Number</b></div>
+								<div class="col" id="displayPhone"> <%= userInfo.profile.phoneNumber %></div>
+							</div>
+						</div>
+					</div>
+
+					<form action="./profile/editProfile">
+						<input type="submit" value="Edit Profile Information" />
+					</form>
 						
 						<div class="title">Current User Address</div>
 						<table class="userAddressTable">

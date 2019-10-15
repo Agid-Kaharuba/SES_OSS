@@ -3,3 +3,9 @@
 *.env
 node_modules
 *.iml
+
+# Ignore files related to eslint
+*.eslintrc*
+
+# Ignore files related to jshint
+*.jshintrc*

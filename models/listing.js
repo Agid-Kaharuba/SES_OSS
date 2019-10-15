@@ -304,13 +304,14 @@ WHERE
 	});
 }
 
-exports.getPrePurchaseInformation = function(userPK,  listingPK, amount, callback  = {  success: ()  => { }, fail: ()  => { }  }) {
-        console.log("@getPrePurchaseInformation");
-        console.log("userPK=" + userPK);
-        console.log("listingPK=" + listingPK);
-        console.log("amount=" + amount);
-        const db = database.connectDatabase();    
-        let  paymentMethodsQuery = `
+exports.getPrePurchaseInformation = function(userPK, listingPK, amount, callback = { success: () => {}, fail: () => {} }) 
+{
+  console.log("@getPrePurchaseInformation");
+  console.log("userPK=" + userPK);
+  console.log("listingPK=" + listingPK);
+  console.log("amount=" + amount);
+  const db = database.connectDatabase();
+  let paymentMethodsQuery = `
 SELECT
 	PM_Nickname as paymentNickName,
     PM_Name as paymentName,
@@ -322,74 +323,134 @@ SELECT
 FROM PaymentMethod
 WHERE PM_US = ?
 ;`;         
-        let sanitisedInputs = [userPK];    
-        db.query(paymentMethodsQuery, sanitisedInputs, (err, payments) => {
-            console.log("GOT THE PAYMENT INFO");
-            console.log(payments);
+  let sanitisedInputs = [userPK];
+  db.query(paymentMethodsQuery, sanitisedInputs, (err, payments) => {
+    console.log("GOT THE PAYMENT INFO");
+    console.log(payments);
 
-            if (err) {            
-                console.trace(err);            
-                callback.fail("Failed to retrieve payment options");        
-            }        
-            let  addressQuery  = `
-SELECT
-	AD_Line1 as addressLine1,
-	AD_Line2 as addressLine2,
-	AD_City as addressCity,
-	AD_State as addressState,
-	AD_PostCode as addressPostCode,
-    AD_Country as addressCountry,
-    AD_PK as addressID
-FROM Address
-WHERE AD_US = ?
-;`;        
-
-            let sanitisedInputs2  = [userPK];        
-            db.query(addressQuery, sanitisedInputs2, (err, addresses)  => {
-                console.log("GOT THE address INFO");
-                console.log(addresses);
-
-                if (err) {
-                    console.trace(err);                
-                    callback.fail("Failed to retrieve address options");            
-                }            
-                let  listingQuery  = `
-SELECT
-	LS_Title AS itemName,
-    LS_Price AS itemPrice,
-    LS_PK AS itemID, 
-	LS_RemainingStock AS itemStockLeft
-FROM Listing
-WHERE
-	LS_PK = ? AND
-	LS_IsActive = 1
-LIMIT 1
-;`;            
-                let  sanitisedInputs3 = [listingPK];            
-                db.query(listingQuery, sanitisedInputs3, (err, listing) => {
-                    console.log("GOT THE listing INFO");
-                    console.log(listing);
-
-                    if  (err) {
-                        console.trace(err);                    
-                        callback.fail("Failed to retrieve listing");         
-                    }
-
-                    listing[0].addresses = addresses;                                
-                    listing[0].payments = payments;                              
-                    listing[0].requestQuantity = amount;        
-                    callback.success(listing[0]);    
-                });     
-            });    
-        });
+    if (err) {
+        console.trace(err);
+        callback.fail("Failed to retrieve payment options");
     }
-    /**
-     * Modify a listing.
-     * @param {} listing The updated listing model.
-     * @param {} callback callbacks with success() if successful, fail() if failed, and done() when done. Note that done() is called after fail() or success().
-     */
-exports.modifyListing = function(listing, callback = { success: () => {}, fail: () => {}, done: () => {} }) {
-    this.modifyListingByID(listing.id, listing, callback);
+    let addressQuery = `
+    SELECT
+      AD_Line1 as addressLine1,
+      AD_Line2 as addressLine2,
+      AD_City as addressCity,
+      AD_State as addressState,
+      AD_PostCode as addressPostCode,
+        AD_Country as addressCountry,
+        AD_PK as addressID
+    FROM Address
+    WHERE AD_US = ?
+    ;`;
+    let sanitisedInputs2 = [userPK];
+    db.query(addressQuery, sanitisedInputs2, (err, addresses) => {
+        console.log("GOT THE address INFO");
+        console.log(addresses);
+
+        if (err) {
+            console.trace(err);                
+            callback.fail("Failed to retrieve address options");
+        }
+        let listingQuery = `
+        SELECT
+          LS_Title AS itemName,
+            LS_Price AS itemPrice,
+            LS_PK AS itemID, 
+          LS_RemainingStock AS itemStockLeft
+        FROM Listing
+        WHERE
+          LS_PK = ? AND
+          LS_IsActive = 1
+        LIMIT 1
+        ;`;
+      let sanitisedInputs3 = [listingPK];
+      db.query(listingQuery, sanitisedInputs3, (err, listing) => {
+          console.log("GOT THE listing INFO");
+          console.log(listing);
+
+          if (err) {
+              console.trace(err);                    
+              callback.fail("Failed to retrieve listing");
+          }
+
+          listing[0].addresses = addresses;
+          listing[0].payments = payments;
+          listing[0].requestQuantity = amount;
+          callback.success(listing[0]);
+      });
+    });
+  });
+}
+
+const getPurchasesByCheck = function(check, callback = { success: (purchases) => {}, fail: (reason) => {} })
+{
+	const db = database.connectDatabase();
+
+	let query = `
+		SELECT 
+			PC_PK AS id,
+			PC_LS AS listingID,
+			LS_Title AS listingTitle,
+			PC_PM AS paymentMethod,
+			PC_US_Buyer AS buyerID,
+			US_Username AS buyerUsername,
+			PC_AD_Delivery AS addressID,
+			PC_TrackingNumber AS trackingNumber,
+			PC_Price AS price,
+			PC_Quantity AS quantity,
+			PC_Date AS date
+		FROM Purchase
+		LEFT JOIN User ON US_PK = PC_US_Buyer
+		LEFT JOIN Listing ON LS_PK = PC_LS
+	`
+	query += " WHERE " + check;
+
+	db.query(query, (err, results) =>
+	{
+		if (err)
+		{
+			console.trace("Failed to get purchases for user! " + err)
+			callback.fail("Could not get purchases for user from the database");
+		}
+		else
+		{
+			callback.success(results);
+		}
+	})
+}
+
+exports.getPurchasesForUserID = function(userID, callback = { success: (purchases) => {}, fail: (reason) => {} })
+{
+	let db = database.connectDatabase();
+	getPurchasesByCheck('PC_US_Buyer = ' + db.escape(userID), callback);
+}
+
+exports.getPurchasesForUser = function(user, callback = { success: (purchases) => {}, fail: (reason) => {} })
+{
+	this.getPurchasesForUserID(user.id, callback);
+}
+
+exports.getPurchasesForListingID = function(listingID, callback = { success: (purchases) => {}, fail: (reason) => {} })
+{
+	let db = database.connectDatabase();
+	getPurchasesByCheck('PC_LS = ' + db.escape(listingID), callback);
+}
+
+exports.getPurchasesForListing = function(listing, callback = { success: (purchases) => {}, fail: (reason) => {} })
+{
+	this.getPurchasesForListingID(listing.id, callback);
+}
+
+/**
+ * Modify a listing.
+ * @param {} listing The updated listing model.
+ * @param {} callback callbacks with success() if successful, fail() if failed, and done() when done. Note that done() is called after fail() or success().
+ */
+exports.modifyListing = function(listing, callback = { success: () => {}, fail: () => {}, done: () => {} })
+{
+	this.modifyListingByID(listing.id, listing, callback);
 }
 
 /**
