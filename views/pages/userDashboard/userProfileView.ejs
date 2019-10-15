@@ -68,25 +68,36 @@
 			</div>
 			<div class="main">
 				<div class="widget">
-                    <div class="title">Profile Information</div>
-                    <table class="userProfileTable">
-                        <tr>
-                            <th>Username</th>
-                            <th>First Name</th>
-							<th>Last Name</th>
-							<th>Date of Birth</th>
-							<th>Email</th>
-							<th>Phone Number</th>
-                        </tr>
-                        <tr id="userInfo">
-                            <th id="displayUsername"> <%= userProfile.username %></th>
-                            <th id="displayFirstName"> <%= userProfile.firstName %></th>
-							<th id="displayLastName"> <%= userProfile.lastName %></th>
-							<th id="displayDOB"> <%= userProfile.birthDate %></th>
-							<th id="displayEmail"> <%= userProfile.email %></th>
-							<th id="displayPhone"> <%= userProfile.phoneNumber %></th>
-						</tr>
-					</table>
+					<div class="title">Profile Information</div>
+					<div class="card card-body">
+						<div>
+							<div class="row my-1">
+								<div class="col "><b>Username</b></div>
+								<div class="col" id="displayUsername"> <%= userProfile.username %></div>
+							</div>
+							<div class="row my-1">
+								<div class="col "><b>First Name</b></div>
+								<div class="col" id="displayFirstName"> <%= userProfile.firstName %></div>
+							</div>
+							<div class="row my-1">
+								<div class="col "><b>Last Name</b></div>
+								<div class="col" id="displayLastName"> <%= userProfile.lastName %></div>
+							</div>
+							<div class="row my-1">
+								<div class="col "><b>Date of Birth</b></div>
+								<div class="col" id="displayDOB"> <%= userProfile.birthDate %></div>
+							</div>
+							<div class="row my-1">
+								<div class="col "><b>Email</b></div>
+								<div class="col" id="displayEmail"> <%= userProfile.email %></div>
+							</div>
+							<div class="row my-1">
+								<div class="col "><b>Phone Number</b></div>
+								<div class="col" id="displayPhone"> <%= userProfile.phoneNumber %></div>
+							</div>
+						</div>
+					</div>
+
 					<form action="./profile/editProfile">
 						<input type="submit" value="Edit Profile Information" />
 					</form>
