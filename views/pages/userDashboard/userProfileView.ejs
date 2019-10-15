@@ -78,6 +78,13 @@
 			</div>
 			<div class="main">
 				<div class="widget">
+					<%
+						// Set up arguments for profile partial.
+						var editPaymentPath = "/user/profile/editPayment";
+						var addPaymentPath ='/user/profile/addPayment';
+						var addAddressPath = "/user/profile/addAddress";
+						var editAddressPath = "/user/profile/editAddress";
+					%>
 					<%- include ../../partials/userDashboard/profile %>
 				</div>
 			</div>

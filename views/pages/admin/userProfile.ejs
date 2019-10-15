@@ -10,30 +10,26 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 		<link href="/styles/js2.css" rel="stylesheet" type="text/css">
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     </head>
 
     <body>
         <%- include ../../partials/topBar -%>
         <%- include ../../partials/user/publicProfileHead %>
 
-        <div class="my-3">
-            <label>Joined at <%=targetUser.joinDate.toISOString().slice(0, 10)%></label>
-        </div>
-
-        <% var showActive = true; //Variable state used for the listings partial %>
-        <h4>Listings </h4>
-        <hr>
-        <%- include ../../partials/user/listingsTable %>
-
-
-        <h4>Past Listings </h4>
-        <hr>
-        <% if (user.id = targetUser.id || isAdmin) { %>
-            <%- include('../../partials/user/listingsTable', {showActive: false}) %>
-        <% } %>
+        <%
+            // Set up arguments for profile partial.
+            var editPaymentPath = "/admin/editPayment/id=" + targetUser.id;
+            var addPaymentPath ='/admin/addPayment/id=' + targetUser.id;
+            var addAddressPath = "/admin/addAddress/id=" + targetUser.id;
+            var editAddressPath = "/admin/editAddress/id=" + targetUser.id;
+        %>
+        <%- include ../../partials/userDashboard/profile %>
 
         <%- include ../../partials/user/publicProfileFoot %>
         <%- include ../../partials/bottomBar -%>
     </body>
+
+    <!-- Script for profile -->
+    <script src="/public/userDashboard/profile.js" data-profile-path="./editProfile/id=<%=targetUser.id%>"></script>
 </html>

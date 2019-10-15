@@ -1,10 +1,12 @@
 const express = require('express');
 const jsonResponse = require('../utils/JSONResponse');
-const userModel = require('../models/user')
+const userModel = require('../models/user');
 const adminModel = require('../models/admin');
 const view = require('../views/adminView');
-const baseView = require('../views/base')
+const baseView = require('../views/base');
 const auth = require('../utils/authUtil');
+const htmlResponse = require('../utils/HTMLResponse');
+const dateUtil = require('../utils/dateUtil');
 
 const router = express.Router();
 
@@ -90,6 +92,103 @@ router.post('/revoke_admin_userid=:id', auth.authorizeAdminJson, (req, res) =>
     });
 })
 
+router.get('/userProfile/id=:id', auth.authorizeAdmin, (req, res) =>
+{
+    userModel.getUserFromID(req.params.id,
+    {
+        found: (targetUser) => 
+        {
+            userModel.getUserProfileInfo(req.params.id, 
+            {
+                found: (userProfile, userAddress, userPayment) =>
+                {
+                    var userInfo =
+                    {
+                        profile: userProfile,
+                        address: userAddress,
+                        payment: userPayment
+                    }
+                    baseView.renderWithAddons(req, res, 'pages/admin/userProfile', {userInfo, targetUser});
+                },
+                notFound: () =>
+                {
+                    htmlResponse.fail(req, res, "Failed to get user profile for admin!")
+                }
+            });
+        },
+        notFound: () => htmlResponse.fail(req, res, "Failed to get target user for admin!")
+    })
+    
+})
+
+router.post('/editProfile/id=:id', auth.authorizeAdmin, (req, res) =>
+{
+    var editData = req.body;
+    dateUtil.fillPropertyFromHTML(editData, 'DOB');
+
+    userModel.modifyUserByID(req.params.id, editData,
+    {
+        success: () => res.send(jsonResponse.success()),
+        fail: () => res.send(jsonResponse.fail("Failed to modify user"))
+    });
+})
+
+router.post('/addAddress/id=:id', auth.authorizeAdmin, (req, res) =>
+{
+    var editData = req.body;
+    userModel.createUserAddress(req.params.id, editData,
+    {
+        success: () => 
+        {
+            res.redirect('../userProfile/id=' + req.params.id);
+        }, 
+        fail: () => htmlResponse.fail(req, res, "Failed to add new address!"), 
+    });
+})
+
+router.post('/editAddress/id=:id', auth.authorizeAdmin, (req, res) =>
+{
+    var editData = req.body;
+
+    userModel.modifyUserAddress(editData,
+    {
+        success: () => 
+        {
+            res.redirect('../userProfile/id=' + req.params.id);
+        }, 
+        fail: () => htmlResponse.fail(req, res, "Failed to edit existing address!"), 
+    });
+})
+
+router.post('/addPayment/id=:id', auth.authorizeAdmin, (req, res) =>
+{
+    var editData = req.body;
+    dateUtil.fillPropertyFromHTML(editData, 'exp');
+
+    userModel.createUserPayment(req.params.id, editData,
+    {
+        success: () => 
+        {
+            res.redirect('../userProfile/id=' + req.params.id);
+        }, 
+        fail: () => htmlResponse.fail("Failed to add new payment")
+    });
+})
+
+router.post('/editPayment/id=:id', auth.authorizeAdmin, (req, res) =>
+{
+    let editData = req.body;
+    dateUtil.fillPropertyFromHTML(editData, 'exp');
+
+    userModel.modifyUserPaymentByID(req.params.id, editData,
+    {
+        success: () => 
+        {
+            res.redirect('../userProfile/id=' + req.params.id);
+        }, 
+        fail: () => htmlResponse.fail("Failed to edit existing payment"),
+    });
+})
 
 
 module.exports = { router };

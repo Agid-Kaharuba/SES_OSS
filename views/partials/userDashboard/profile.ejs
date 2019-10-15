@@ -78,7 +78,7 @@
                     <th scope="row">
                         <% let dialogID = "editAddressDialog-" + userInfo.address[i].id; %>
                         <input class="btn btn-info" type="submit" value="Edit Address" data-toggle="modal" data-target="#<%=dialogID%>"/>
-                        <%- include('../../partials/userDashboard/editAddressDialog', {dialogID, address: userInfo.address[i]}) %>
+                        <%- include('../../partials/userDashboard/editAddressDialog', {dialogID, address: userInfo.address[i], editAddressPath}) %>
                     </th>
                 </tr>
             <% } %>
@@ -86,7 +86,7 @@
     
         <!-- Add address Dialog -->
         <input class="btn btn-primary my-1" type="submit" value="Add Address" data-toggle="modal" data-target="#addAddressDialog">
-        <%- include ../../partials/userDashboard/addAddressDialog %>
+        <%- include('../../partials/userDashboard/addAddressDialog', {addAddressPath}) %>
     </div>
 
     <div class="container m-4">
@@ -112,7 +112,7 @@
                     <th scope="row">
                         <% let dialogID = "editPaymentDialog-" + userInfo.address[i].id; %>
                         <input class="btn btn-info" type="submit" value="Edit Payment" data-toggle="modal" data-target="#<%=dialogID%>"/>
-                        <%- include('../../partials/userDashboard/editPaymentDialog', {dialogID, payment: userInfo.payment[i]}) %>
+                        <%- include('../../partials/userDashboard/editPaymentDialog', {dialogID, payment: userInfo.payment[i], editPaymentPath}) %>
                     </th>
                 </tr>
             <% } %>
@@ -120,6 +120,6 @@
 
         <!-- Add payment Dialog -->
         <input class="btn btn-primary my-1" type="submit" value="Add Payment" data-toggle="modal" data-target="#addPaymentDialog"/>
-        <%- include ../../partials/userDashboard/addPaymentDialog %>
+        <%- include('../../partials/userDashboard/addPaymentDialog', {addPaymentPath}) %>
     </div>
 </div>

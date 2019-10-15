@@ -1,0 +1,19 @@
+<div class="container">
+            
+    <div class="justify-content-center card card-body">
+        <div class="text-center text-primary jumbotron">
+            <h1><%= targetUser.username %></h1>
+        </div>
+
+        <% if (isAdmin && targetUser.id !== user.id) { %>
+            <div class="card card-body container">
+                <div class="row ml-4 mb-3">
+                    <h5>Admin controls</h5>
+                </div>
+                <div class="row">
+                    <a class="col" href="/admin/userProfile/id=<%= targetUser.id %>">
+                        <input class="btn btn-warning" type="button" value="View Profile"/>
+                    </a>
+                </div>
+            </div>
+        <% } %>

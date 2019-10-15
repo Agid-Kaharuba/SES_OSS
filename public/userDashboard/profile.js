@@ -1,3 +1,13 @@
+var path;
+
+if (!document.currentScript.hasAttribute("data-profile-path")) {
+    path = './profile/editProfile';
+}
+else 
+{
+    path = document.currentScript.getAttribute('data-profile-path');
+}
+
 function cleanEmpty(obj) 
 {
     for (var key in obj)
@@ -5,11 +15,6 @@ function cleanEmpty(obj)
         if (obj[key] == "")
             delete obj[key];
     }
-}
-
-function getDateFromInput(id) {
-    let text = $('#' + id );
-    return new Date(year, month, day);
 }
 
 function replaceWithDateInput(id)
@@ -46,7 +51,7 @@ $().ready(() =>
             // Get rid of all values that are an empty string ''
             cleanEmpty(editData);
 
-            $.post('./profile/editProfile', editData, (response) =>
+            $.post(path, editData, (response) =>
             {
                 console.log("Got response ", response)
                 if (response.status == "success")
