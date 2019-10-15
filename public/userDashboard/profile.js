@@ -44,7 +44,8 @@ $().ready(() =>
                 firstName : $("#displayFirstName").val(),
                 lastName : $("#displayLastName").val(),
                 DOB: $("#displayDOB").val(),
-                phoneNumber : $("#displayPhone").val()
+                phoneNumber : $("#displayPhone").val(),
+                email : $('#displayEmail').val()
             }
 
 
@@ -71,6 +72,7 @@ $().ready(() =>
             replaceWithTextInput("displayLastName");
             replaceWithDateInput("displayDOB");
             replaceWithTextInput("displayPhone");
+            replaceWithTextInput("displayEmail");
             editBtn.val("Finish Edit");
         }
     })
