@@ -1,4 +1,5 @@
 const jsonResponse = require('./JSONResponse');
+const htmlResponse = require('./HTMLResponse');
 const database = require('../utils/database');
 const admin = require('../models/admin');
 
@@ -73,11 +74,26 @@ exports.tryAuthorizeUser = function(req, callback = {success: (rawSession) => {}
     });
 }
 
+/**
+ * Try to authorize an user session, returns a html response if failed.
+ */
 exports.authorizeUser = function(req, res, next)
 {
     exports.tryAuthorizeUser(req, 
     {
-        success: next,
+        success: () => next(),
+        fail: () => htmlResponse.fail(req, res, 'Invalid authentication credentials!', 'Authentication Failure!')
+    })
+}
+
+/**
+ * Try to authorize an user session, returns a json response if failed.
+ */
+exports.authorizeUserJson = function(req, res, next)
+{
+    exports.tryAuthorizeUser(req, 
+    {
+        success: () => next(),
         fail: () => res.send(jsonResponse.fail('Invalid authentication credentials!'))
     })
 }
@@ -116,7 +132,29 @@ exports.tryAdminAction = function(userID, callback = {success: () => {}, fail: (
     })
 }
 
+/**
+ * Try to authorize an admin, returns a html response if failed.
+ */
 exports.authorizeAdmin = function(req, res, next) 
+{
+    exports.tryAuthorizeUser(req,
+    {
+        success: (rawSession) => 
+        {
+            exports.tryAdminAction(rawSession.SS_US,
+            {
+                success: next,
+                fail: () => htmlResponse.fail(req, res, 'Access is not allowed for the user', 'Security Error!')
+            })
+        },
+        fail: () => htmlResponse.fail(req, res, 'Invalid authentication credentials!', 'Authentication Failure!')
+    })
+}
+
+/**
+ * Like #authorizeAdmin but returns a json when failed.
+ */
+exports.authorizeAdminJson = function(req, res, next) 
 {
     exports.tryAuthorizeUser(req,
     {
@@ -134,7 +172,7 @@ exports.authorizeAdmin = function(req, res, next)
 
 let attachSessionOnCookie = function(res, payload)
 {
-    res.cookie(SessionCookieProp, payload, {httpOnly: true, expiresIn: SessionHoursExpiry + 'h'});
+    res.cookie(SessionCookieProp, payload, {httpOnly: true, maxAge: 1000 * 60 * 60 * SessionHoursExpiry});
 }
 
 let attachSessionForUser = function(res, user, callback = {success: () => {}, fail: () => {}}) 

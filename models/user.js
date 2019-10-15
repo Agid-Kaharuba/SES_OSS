@@ -2,7 +2,7 @@ const database = require('../utils/database');
 const auth = require('../utils/authUtil');
 const bcrypt = require('bcrypt');
 
-let convertToFullUserObject = function (rawUser)
+exports.convertToFullUserObject = function (rawUser)
 {
 	return {
 		id: rawUser.US_PK,
@@ -17,7 +17,7 @@ let convertToFullUserObject = function (rawUser)
 	};
 };
 
-let convertToUserObject = function (rawUser)
+exports.convertToUserObject = function (rawUser)
 {
 	return {
 		id: rawUser.US_PK,
@@ -98,7 +98,7 @@ LIMIT 1
 
 		if (results.length > 0) 
 		{
-			callback.found(convertToUserObject(results[0]));
+			callback.found(this.convertToUserObject(results[0]));
 		} 
 		else
 		{
@@ -154,7 +154,7 @@ LIMIT 1
 exports.getFullUser = function (username, callback = { found: (user) => {}, notFound: () => {}})
 {
 	exports.getRawUser(username, {
-		found: (rawUser) => callback.found(convertToFullUserObject(rawUser)),
+		found: (rawUser) => callback.found(this.convertToFullUserObject(rawUser)),
 		notFound: callback.notFound
 	})
 };
@@ -167,7 +167,7 @@ exports.getFullUser = function (username, callback = { found: (user) => {}, notF
 exports.getUser = function (username, callback = { found: (user) => {}, notFound: () => {}})
 {
 	exports.getRawUser(username, {
-		found: (rawUser) => callback.found(convertToUserObject(rawUser)),
+		found: (rawUser) => callback.found(this.convertToUserObject(rawUser)),
 		notFound: callback.notFound
 	})
 };
@@ -780,6 +780,15 @@ exports.modifyUserByID = function (userid, user, callback = { success: () => {},
 {
 	const db = database.connectDatabase();
 	return modifyUserByCheck(`US_PK = ` + db.escape(userid), user, callback);
+}
+
+exports.fillUserModel = function(obj, keyfrom, keyTo) 
+{
+	this.getUserFromID(obj[keyfrom], 
+	{
+		found: (user) => obj[keyTo] = user,
+		notFound: () => obj[keyTo] = {}
+	})
 }
 
 exports.modifyUserAddressByID = function (userid, address, callback = { success: () => {}, fail: () => {}, done: () => {} })

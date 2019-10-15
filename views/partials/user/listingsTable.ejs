@@ -1,0 +1,48 @@
+<style type="text/css">
+    tr:hover {
+        background-color: antiquewhite;
+    }
+    .inboxText {
+        -ms-user-select: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -webkit-touch-callout: none;
+        user-select: none;
+    }
+</style>
+
+<%
+    if (showActive === undefined) var showActive = true;
+    if (showAll === undefined) var showAll = false;
+%>
+
+<div>
+    <div class="overflow-auto m-4">
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Date Posted</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Description</th>
+                </tr>
+            </thead>		
+            <% for (result of results) { 
+
+                if ((showActive == result.isActive) || showAll) { %>
+
+                    <tr class="inboxText" onclick="window.location.href = '/listing/id=<%= result.id%>'">
+                        <td width="10%"><%= result.postedDate.toLocaleDateString()%></td>
+                        <td><%= result.title%></td>
+                        <% if (result.description == null) { %>
+                            <td>No Description</td>
+                        <% } else if (result.description.length > 100) { %>
+                            <td><%= result.description.substring(0, 100).trimEnd() %>....</td>
+                        <% } else { %>
+                            <td><%= result.description %></td>
+                        <% } %>
+                    </tr>
+                <% }
+            } %>
+        </table>
+    </div>
+</div>

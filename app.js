@@ -10,6 +10,7 @@ const userAPI = require('./controllers/userAPI');
 const listingAPI = require('./controllers/listingAPI');
 const adminAPI = require('./controllers/adminAPI');
 const devAPI = require('./controllers/devAPI');
+const messageAPI = require('./controllers/messageAPI');
 
 app.use('/images', express.static('images'));
 app.use('/styles', express.static('html/styles'));
@@ -27,11 +28,12 @@ app.use('/user', userAPI.router);
 app.use('/listing', listingAPI.router);
 app.use('/admin', adminAPI.router);
 app.use('/dev', devAPI.router);
+app.use('/message', messageAPI.router);
 
 app.use('/images', express.static('public/images'));
 app.use('/styles', express.static('public/styles'));
 app.use('/js', express.static('public/js'));
-app.use(express.static('js'));
+app.use('/public', express.static('public'));
 
 app.set('view engine','ejs');
 

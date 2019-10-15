@@ -2,6 +2,11 @@ var mysql = require('mysql');
 var fs = require('fs');
 var db;
 
+exports.convertToDateTime = function(date) 
+{
+    return date.toISOString().slice(0, 19).replace('T',' ');
+}
+
 exports.connectDatabase = function()
 {
 	if (!db)
