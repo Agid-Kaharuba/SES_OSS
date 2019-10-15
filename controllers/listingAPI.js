@@ -3,7 +3,6 @@ const router = express.Router();
 const listingModel = require('../models/listing');
 const userModel = require('../models/user')
 const baseView = require('../views/base')
-const view = require('../views/listingView');
 const jsonResponse = require('../utils/JSONResponse');
 const htmlResponse = require('../utils/HTMLResponse');
 const attachmentUtil = require('../utils/attachmentUtil');
@@ -26,7 +25,7 @@ router.get('/id=:id', (req, res) => // e.g. listing/id=4bb8590e-ce26-11e9-a859-2
 				userModel.getUserInfo(req, (user, isAdmin) =>
 				{
 					let listing = listings[0];
-					listing.imgName = attachmentUtil.getImgPath(listing.imgName);
+					listing.listingImg = attachmentUtil.getImgPath(listing.listingID);
 
 					if (isAdmin || user.id == listing.sellerID)
 					{
@@ -56,8 +55,9 @@ router.get('/search=:query', (req, res) =>
         {
             for (var i = 0; i < results.length; i++) 
             {
-                results[i].imgName = attachmentUtil.getImgPath(results[i].imgName);
-            }
+                results[i].listingImg = attachmentUtil.getImgPath(results[i].listingID);
+			}
+			console.log(results);
             baseView.renderWithAddons(req, res, 'pages/listing', { listings: results });
         });
 })
@@ -101,8 +101,6 @@ router.get('/purchase=:listingID&quantity=:amount', (req, res) =>
                 success: (purchase) => 
                 {
                     baseView.renderWithAddons(req, res, 'pages/purchase', { purchase });
-                    //pass this onto the view.
-
                 },
                 fail: () => htmlResponse.fail(req, res, 'Could not get your purchase :(', 'Payment Not Found'),
             });

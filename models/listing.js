@@ -27,16 +27,11 @@ SELECT
 	LS_Description as listingDescription,
 	LS_Price as listingPrice,
 	LS_RemainingStock as remainingStock,
-    LS_IsActive as isActive,
-    
-   	
-	AT_PK as imgName
+    LS_IsActive as isActive
 FROM Listing
 	INNER JOIN User ON LS_US_Seller = US_PK
-    LEFT JOIN Attachment ON LS_PK = AT_ParentPK AND AT_ParentID = 'LS' AND AT_Type = 'IMG'
 WHERE
 	LS_PK = ?
-ORDER BY AT_Description ASC
 LIMIT 1
 ;`;
 
@@ -62,11 +57,9 @@ SELECT
 	LS_Title as listingTitle,
 	LS_Price as listingPrice,
 	LS_IsActive as isActive,
-	LS_PK as listingID,
-	AT_PK as imgName
+	LS_PK as listingID
 FROM Listing
 	INNER JOIN User ON LS_US_Seller = US_PK
-	LEFT JOIN Attachment ON LS_PK = AT_ParentPK AND AT_ParentID = 'LS' AND AT_Type = 'IMG'
 WHERE
 	LS_IsActive = 1 AND 
 	(

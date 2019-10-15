@@ -1,9 +1,9 @@
 const express = require('express');
 const homePage = require('../models/homePage');
-const auth = require('../utils/authUtil');
 const userModel = require('../models/user');
 const baseView = require('../views/base')
 const router = express.Router();
+const attachmentUtil = require('../utils/attachmentUtil');
 
 router.get('/', (req, res) =>
 {
@@ -16,6 +16,13 @@ router.get('/', (req, res) =>
 			return;
 		}
 		let currentUser = user == null ? null : user.username;
+
+		for (var i = 0; i < results.length; i++) 
+		{
+			results[i].listingImg = attachmentUtil.getImgPath(results[i].listingID);
+		}
+		
+		console.log(results);
 
 		baseView.renderWithAddons(req, res, 'pages/home', 
 		{
