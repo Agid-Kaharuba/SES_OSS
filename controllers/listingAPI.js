@@ -15,11 +15,15 @@ router.get('/id=:id', (req, res) => // e.g. listing/id=4bb8590e-ce26-11e9-a859-2
     {
         console.log('Receieved req for listing id: ' + req.params.id); // Example params usage.
 
-        listingModel.GetListing(req.params.id, {
-            found: (results) => {
-                if (results.length < 1) {
+        listingModel.GetListing(req.params.id, 
+            {
+            found: (results) => 
+            {
+                if (results.length < 1)
+                {
                     htmlResponse.fail(req, res, "Could not find the listing that you were looking for :(", "Listing not found");
-                } else {
+                } else 
+                {
                     let result = results[0];
                     result.imgName = attachmentUtil.getImgPath(result.imgName);
                     baseView.renderWithAddons(req, res, 'pages/listingResult', { result });
@@ -29,28 +33,37 @@ router.get('/id=:id', (req, res) => // e.g. listing/id=4bb8590e-ce26-11e9-a859-2
         });
     });
 
-router.get('/search=:query', (req, res) => {
+router.get('/search=:query', (req, res) => 
+{
     console.log('Received search query: ' + req.params.query); // Example params usage.
 
     listingModel.SearchListings(req.params.query,
-        (results) => {
-            for (var i = 0; i < results.length; i++) {
+        (results) => 
+        {
+            for (var i = 0; i < results.length; i++) 
+            {
                 results[i].imgName = attachmentUtil.getImgPath(results[i].imgName);
             }
             baseView.renderWithAddons(req, res, 'pages/listing', { listings: results });
         });
 })
 
-router.get('/summary=:purchaseID', auth.authorizeUser, (req, res) => {
+router.get('/summary=:purchaseID', auth.authorizeUser, (req, res) =>
+ {
     console.log('Received request to see purchase summary.')
-    auth.getSessionFromCookie(req, {
-        found: (session) => {
+    auth.getSessionFromCookie(req, 
+    {
+        found: (session) => 
+        {
             var userPK = session.SS_US;
-            listingModel.GetPurchaseSummary(req.params.purchaseID, userPK, {
+            listingModel.GetPurchaseSummary(req.params.purchaseID, userPK, 
+                {
                 found:
-                    (result) => {
+                    (result) => 
+                    {
                         console.log(result);
-                        res.render(view.viewPurchaseSummary(result));
+                     // res.render(view.viewPurchaseSummary(result));
+                        console.log("hello my name is cameron");
                     },
                 notFound:
                     () => htmlResponse.fail(req, res, 'Could not get your purchase summary :(', 'Payment Summary Not Found'),
@@ -60,15 +73,20 @@ router.get('/summary=:purchaseID', auth.authorizeUser, (req, res) => {
     });
 });
 
-router.get('/purchase=:listingID&quantity=:amount', (req, res) => {
+router.get('/purchase=:listingID&quantity=:amount', (req, res) => 
+{
     console.log(req.params.listingID + "|" + req.params.amount);
-    auth.getSessionFromCookie(req, {
-        found: (session) => {
+    auth.getSessionFromCookie(req, 
+        {
+        found: (session) => 
+        {
             var userPK = session.SS_US;
 
-            listingModel.getPrePurchaseInformation(userPK, req.params.listingID, req.params.amount, {
-                success: (purchase) => {
-                    baseView.renderWithAddons(req, res, 'pages/purchase', { purchase });
+            listingModel.getPrePurchaseInformation(userPK, req.params.listingID, req.params.amount, 
+                {
+                success: (purchase) => 
+                {
+                baseView.renderWithAddons(req, res, 'pages/purchase', { purchase });
                     //pass this onto the view.
 
                 },
@@ -80,43 +98,54 @@ router.get('/purchase=:listingID&quantity=:amount', (req, res) => {
 });
 
 
-router.post('/purchaseItem', (req, res) => {
+router.post('/purchaseItem', (req, res) => 
+{
     console.log(req);
     listingModel.purchaseItem(
         req.body,
         {
-            success: (purchaseID) => {
+            success: (purchaseID) => 
+            {
                 res.send(jsonResponse.success({purchaseID}));
             },
-            fail: (reason) => { res.send(jsonResponse.fail(reason)); }
+            fail: (reason) => 
+            { res.send(jsonResponse.fail(reason)); }
         })
 });
 
-router.get('/confirmPurchase', (req, res) => {
+router.get('/confirmPurchase', (req, res) => 
+{
     let currentUser = req.cookies.currentUser;
     // console.log('currentUser is ' + currentUser);
     baseView.renderWithAddons(req, res, 'pages/confirmPurchase', { currentUser })
 });
 
-router.get('/paymentSummary', auth.authorizeUser, (req, res) => {
+router.get('/paymentSummary', auth.authorizeUser, (req, res) => 
+{
     baseView.renderWithAddons(req, res, 'pages/paymentSummary');
 });
 
-router.post('/modify', auth.authorizeUserJson, (req, res) => {
+router.post('/modify', auth.authorizeUserJson, (req, res) => 
+{
     console.log("modifying listing!")
     console.log(req.body);
-    userModel.getUserInfo(req, (user, isAdmin) => {
+    userModel.getUserInfo(req, (user, isAdmin) => 
+    {
         let listing = req.body;
 
-        if (!listing.hasOwnProperty('id')) {
+        if (!listing.hasOwnProperty('id')) 
+        {
             res.send(jsonResponse.fail("Failed to modify a listing with no id property!"));
             return;
         }
 
-        if (isAdmin || user.id == listing.id) {
-            listingModel.modifyListing(listing, {
+        if (isAdmin || user.id == listing.id) 
+        {
+            listingModel.modifyListing(listing, 
+            {
                 success: () => res.send(jsonResponse.success()),
                 fail: (reason) => res.send(jsonResponse.fail(reason))
+            
             })
         }
     })
