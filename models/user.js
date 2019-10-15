@@ -39,13 +39,27 @@ let convertToUserProfileObject = function (rawUser)
 		firstName: rawUser.US_FirstName,
 		lastName: rawUser.US_LastName,
 		phoneNumber: rawUser.US_PhoneNumber,
-		birthDate: rawUser.US_BirthDate,
+		birthDate: rawUser.US_BirthDate
+		
+	};
+};
+
+let convertToUserAddressObject = function (rawUser)
+{
+	return {
 		addressLine1: rawUser.AD_Line1,
 		addressLine2: rawUser.AD_Line2,
 		addressCity: rawUser.AD_City,
 		addressState: rawUser.AD_State,
 		addressCountry: rawUser.AD_Country,
-		addressPostcode: rawUser.AD_PostCode,
+		addressPostcode: rawUser.AD_PostCode
+		
+	};
+};
+
+let convertToUserPaymentObject = function (rawUser)
+{
+	return {
 		paymentNickname: rawUser.PM_Nickname,
 		paymentName: rawUser.PM_Name,
 		paymentCardNumber: rawUser.PM_CardNumber,
@@ -352,7 +366,44 @@ exports.getUserInfo = function(req, callback = (user, isAdmin) => {})
 		notFound: () => callback(null, false)
 	})
 }
-exports.getUserProfileInfo = function (userid, callback = { found: () => { }, notFound: () => {} }){
+
+exports.getUserProfileInfo = function(userid, callback = { found: () => {}, notFound: () => {} })
+{
+	getUserProfile(userid, 
+	{
+		found: (userProfile) =>
+		{
+			getUserAddress(userid, 
+			{
+				found: (userAddress) =>
+				{
+					getUserPayment(userid, 
+					{
+						found: (userPayment) =>
+						{
+							callback.found(userProfile, userAddress, userPayment);
+						},
+						notFound:() =>
+						{
+
+						}
+					});
+				},
+				notFound: () =>
+				{
+					
+				}
+				});
+		},
+		notFound: () =>
+		{
+		}
+	});
+	
+}
+
+const getUserProfile = function(userid, callback = { found: () => {}, notFound: () => {} })
+{
 	var db = database.connectDatabase();
 	var query = `
 	SELECT 
@@ -361,38 +412,96 @@ exports.getUserProfileInfo = function (userid, callback = { found: () => { }, no
 		US_FirstName,
 		US_LastName,
 		US_PhoneNumber,
-		US_BirthDate,
+		US_BirthDate
+	FROM User
+	LEFT JOIN Address ON US_PK = AD_US
+	LEFT JOIN PaymentMethod ON US_PK = PM_US
+	WHERE US_PK = ?
+	`;
+	db.query(query, [userid], (err, profile) =>
+	{
+		if (err)
+		{
+			console.log('Failed to get user info ' + err);
+		}
+		else
+		{
+			var userProfile = convertToUserProfileObject(profile[0]);
+			callback.found(userProfile);
+		}
+	});
+}
+
+const getUserAddress = function(userid, callback = { found: () => {}, notFound: () => {} })
+{
+	var db = database.connectDatabase();
+	var query2 = `
+	SELECT 
 		AD_Line1,
 		AD_Line2,
 		AD_City,
 		AD_State,
 		AD_Country,
-		AD_PostCode,
+		AD_PostCode
+	FROM User
+	LEFT JOIN Address ON US_PK = AD_US
+	WHERE US_PK = ?
+	`;
+	var userAddress =[];
+	db.query(query2, [userid], (err, address) =>
+	{
+		if (err)
+		{
+			console.log('Failed to get user info ' + err);
+		}
+		else
+		{
+			var i;
+			for (i = 0; i < address.length; i++)
+			{
+				userAddress.push(convertToUserAddressObject(address[i]));
+				callback.found(userAddress);
+			}
+		}
+	});
+	
+}
+
+const getUserPayment = function(userid, callback = { found: () => {}, notFound: () => {} })
+{
+	var db = database.connectDatabase();
+	var query3 = `
+	SELECT 
 		PM_Nickname,
 		PM_Name,
 		PM_CardNumber,
 		PM_Expiry,
 		PM_CVC
 	FROM User
-	LEFT JOIN Address ON US_PK = AD_US
 	LEFT JOIN PaymentMethod ON US_PK = PM_US
 	WHERE US_PK = ?
 	`;
-	db.query(query, [userid], (err, results) =>
+	var userPayment = [];
+	db.query(query3, [userid], (err, payment) =>
 	{
 		if (err)
 		{
 			console.log('Failed to get user info ' + err);
-			callback.notFound();
 		}
 		else
 		{
-			console.log(results[0]);
-			var userProfile = convertToUserProfileObject(results[0]);
-			callback.found(userProfile);
+			var i;
+			for (i = 0; i < payment.length; i++)
+			{
+				userPayment.push(convertToUserPaymentObject(payment[i]));
+				callback.found(userPayment);
+			}
 		}
+
 	});
 }
+
+
 
 
 
@@ -534,10 +643,6 @@ exports.createUserAddress = function(userid, address,callback = { success: () =>
 	const db = database.connectDatabase();
 	let query = `INSERT INTO Address (AD_US, AD_Line1, AD_Line2, AD_City, AD_State, AD_Country, AD_Postcode)
 	VALUES (? ,? , ?, ?, ?, ?, ?)`;
-	console.log("beep");
-	console.log(userid);
-	console.log(address);
-	console.log("boop");
 
 	db.query(query,[userid, address.addressLine1, address.addressLine2, address.city, address.state, address.country, address.postcode], (err,results) =>
 	{
@@ -595,10 +700,6 @@ exports.createUserPayment = function(userid, payment, callback = { success: () =
 	const db = database.connectDatabase();
 	let query = `INSERT INTO PaymentMethod (PM_US, PM_Nickname, PM_Name, PM_CardNumber, PM_Expiry, PM_CVC)
 	VALUES (? ,? ,? ,? , ?, ?)`;
-	console.log("beep");
-	console.log(userid);
-	console.log(payment);
-	console.log("boop");
 
 	db.query(query,[userid, payment.nickName, payment.name, payment.number, payment.exp, payment.cvc], (err,results) =>
 	{

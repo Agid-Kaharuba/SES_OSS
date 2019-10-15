@@ -125,13 +125,11 @@ body {
 	padding: 0;
 	padding-top: 44px;
 	height: 100%;
-	overflow: scroll;
 }
 .main-content .title {
 	background-color: #eef1f7;
 	border-bottom: 1px solid #b8bec9;
 	padding: 10px 20px;
-	font-weight: 700;
 	color: #333;
 	font-size: 18px;
 }
@@ -207,7 +205,6 @@ body {
 .widget {
 	flex-basis: 300px;
 	flex-grow: 10;
-	height: 300px;
 	margin: 15px;
 	border-radius: 6px;
 	background-color: #ffffff;
@@ -242,3 +239,6 @@ tr{
 	font-weight: bold;
 }
 
+.userInfo {
+	font-weight: normal;
+}
