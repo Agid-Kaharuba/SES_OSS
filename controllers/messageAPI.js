@@ -35,11 +35,26 @@ router.get('/inbox', auth.authorizeUser, (req, res) =>
 {
     userModel.getUserInfo(req, (user, isAdmin) => 
     {
-        messageModel.getMessagesForUserID(user.id, 
+        messageModel.getMessagesForUser(user, 
         {
             success: (messages) => 
             {
                 baseView.renderWithAddons(req, res, 'pages/message/inbox', {messages})
+            },
+            fail: (reason) => htmlResponse.fail(req, res, reason)
+        })
+    })
+})
+
+router.get('/sentMessages', auth.authorizeUser, (req, res) =>
+{
+    userModel.getUserInfo(req, (user, isAdmin) => 
+    {
+        messageModel.getMessagesByUser(user, 
+        {
+            success: (messages) => 
+            {
+                baseView.renderWithAddons(req, res, 'pages/message/sentMessages', {messages})
             },
             fail: (reason) => htmlResponse.fail(req, res, reason)
         })
