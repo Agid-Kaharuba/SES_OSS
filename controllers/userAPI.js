@@ -313,16 +313,16 @@ router.get('/public/profile/id=:id', (req, res) =>
     })
 })
 
-router.get('/contact', function(req, res) {
-	baseView.renderWithAddons(req, res, 'pages/contact');
-});
-
-router.get('/inbox', function(req, res) {
-	baseView.renderWithAddons(req, res, 'pages/adminDashboard/inbox');
-});
-
-router.get('/email', function(req, res) {
-	baseView.renderWithAddons(req, res, 'pages/adminDashboard/email');
-});
+router.get('/userPurchases', auth.authorizeUser, (req, res) =>
+{
+    userModel.getUserInfo(req, (user, isAdmin) =>
+    {
+        listingModel.getPurchasesForUser(user,
+        {
+            success: (purchases) => baseView.renderFromInfo(req, res, 'pages/userDashboard/userPurchases', {user, isAdmin, purchases}),
+            fail: (reason) => htmlResponse.fail(req, res, reason, "Failed to get purchases for user!")
+        })
+    })
+})
 
 module.exports = { router };
