@@ -254,7 +254,7 @@ LIMIT 1
                         return callback.fail(errorMsg);
                     } else {
                         let purchasePK = results[0].purchasePK
-                        notifySellerOfPurchase(purchasePK);
+                        //exports.notifySellerOfPurchase(purchasePK);
                         return callback.success(purchasePK);
                     }
                 });
@@ -263,8 +263,9 @@ LIMIT 1
     });
 }
 
-function notifySellerOfPurchase(purchasePK)
+exports.notifySellerOfPurchase = function(purchasePK)
 {
+	//I'm a bit buggy and noone knows whats wrong with me, 
 	const db = database.connectDatabase();
 	let insertMessageQuery = `
 INSERT INTO Message (MS_US_To, MS_US_From, MS_Header, MS_Body) 
@@ -275,8 +276,7 @@ SELECT Seller.US_PK, Sys.US_PK,
 		'\n',
 		'The buyer has requested the item(s) to be delivered to the following name and address:\n',
 		Buyer.US_FirstName, ' ', Buyer.US_LastName, '\n',
-		Delivery.AD_Line1, '\n',
-		Delivery.AD_Line2, '\n',
+		Delivery.AD_Line1, ', ', Delivery.AD_Line2, '\n',
 		Delivery.AD_City, ', ', Delivery.AD_State, '\n',
 		Delivery.AD_Country, ' ', Delivery.AD_PostCode))
 FROM Purchase
