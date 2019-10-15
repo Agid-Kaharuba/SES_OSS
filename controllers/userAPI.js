@@ -92,29 +92,19 @@ router.get('/profile/editProfile', (req, res) => {
     res.render('pages/userDashboard/editProfileView');
 });
 
-router.post('/profile/editProfile', (req, res) =>
+router.post('/profile/editProfile', auth.authorizeUserJson, (req, res) =>
 {                   
-    var editData = 
-            {
-                firstName : req.body.editProfile_firstName,
-                lastName : req.body.editProfile_lastName,
-                DOB: req.body.editProfile_DOB,
-                phoneNumber : req.body.editProfile_phoneNumber
-            };
+    var editData = req.body;
+    console.log("Got edit ", editData);
 
     userModel.getUserInfo(req, (user, isAdmin) =>
     {
         userModel.modifyUserByID(user.id, editData,
         {
-            success: () => 
-            {
-                res.redirect('/user/profile');
-            }, 
-            fail: () => {}, 
-            done: () => {}
+            success: () => res.send(jsonResponse.success()),
+            fail: () => res.send(jsonResponse.fail("Failed to modify user"))
         });
     });
-
 });
 
 router.get('/profile/editAddress', (req, res) => {
