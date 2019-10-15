@@ -59,7 +59,35 @@
 			</div>
 			<a href="#" class="nav-trigger"><span></span></a>
 		</div>
-		<%- include("../../partials/user/dashboardSideNav", {active: "profile"}) %>
+		<div class="side-nav">
+			<div class="logo">
+				<i class="fa fa-tachometer"></i>
+				<span>Brand</span>
+			</div>
+			<nav>
+				<ul>
+					<li>
+						<a href="/user/profile" >
+							<span><i class="fa fa-user"></i></span>
+							<span>User Profile</span>
+						</a>
+					</li>
+					<li>
+						<a href="/user/profile/createAd">
+
+							<span><i class="fa fa-envelope"></i></span>
+							<span>Create An Ad</span>
+						</a>
+					</li>
+					<li class="active">
+						<a href="/user/userListings">
+							<span><i class="fa fa-bar-chart"></i></span>
+							<span>Manage Your Ads</span>
+						</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
 		<div class="main-content">
 			<div class="title">
 				Update Your Address
