@@ -369,46 +369,36 @@ exports.getUserInfo = function(req, callback = (user, isAdmin) => {})
 
 exports.getUserProfileInfo = function(userid, callback = { found: () => {}, notFound: () => {} })
 {
-	var userProfile;
-	var userAddress = [];
-	var userPayment = [];
 	getUserProfile(userid, 
 	{
-		found: (Profile) =>
+		found: (userProfile) =>
 		{
-			
-		},
-		notFound: () =>
-		{
-		  }
-	});
+			getUserAddress(userid, 
+			{
+				found: (userAddress) =>
+				{
+					getUserPayment(userid, 
+					{
+						found: (userPayment) =>
+						{
+							callback.found(userProfile, userAddress, userPayment);
+						},
+						notFound:() =>
+						{
 
-	getUserAddress(userid, 
-    {
-        found: (addressList) =>
-        {
-			
-        },
-        notFound: () =>
-        {
-      	}
-	});
-	
-	getUserPayment(userid, 
-	{
-		found: (paymentList) =>
-		{
-			
+						}
+					});
+				},
+				notFound: () =>
+				{
+					
+				}
+				});
 		},
 		notFound: () =>
 		{
 		}
 	});
-	console.log(userProfile);
-	console.log(userAddress);
-	console.log(userPayment);
-
-	callback.found(userProfile, userAddress, userPayment);
 	
 }
 
@@ -436,8 +426,8 @@ const getUserProfile = function(userid, callback = { found: () => {}, notFound: 
 		}
 		else
 		{
-			var Profile = convertToUserProfileObject(profile[0]);
-			callback.found(Profile);
+			var userProfile = convertToUserProfileObject(profile[0]);
+			callback.found(userProfile);
 		}
 	});
 }
@@ -457,7 +447,7 @@ const getUserAddress = function(userid, callback = { found: () => {}, notFound: 
 	LEFT JOIN Address ON US_PK = AD_US
 	WHERE US_PK = ?
 	`;
-	var addressList =[];
+	var userAddress =[];
 	db.query(query2, [userid], (err, address) =>
 	{
 		if (err)
@@ -469,8 +459,8 @@ const getUserAddress = function(userid, callback = { found: () => {}, notFound: 
 			var i;
 			for (i = 0; i < address.length; i++)
 			{
-				addressList.push(convertToUserAddressObject(address[i]));
-				callback.found(addressList);
+				userAddress.push(convertToUserAddressObject(address[i]));
+				callback.found(userAddress);
 			}
 		}
 	});
@@ -491,7 +481,7 @@ const getUserPayment = function(userid, callback = { found: () => {}, notFound: 
 	LEFT JOIN PaymentMethod ON US_PK = PM_US
 	WHERE US_PK = ?
 	`;
-	var paymentList = [];
+	var userPayment = [];
 	db.query(query3, [userid], (err, payment) =>
 	{
 		if (err)
@@ -503,8 +493,8 @@ const getUserPayment = function(userid, callback = { found: () => {}, notFound: 
 			var i;
 			for (i = 0; i < payment.length; i++)
 			{
-				paymentList.push(convertToUserPaymentObject(payment[i]));
-				callback.found(paymentList);
+				userPayment.push(convertToUserPaymentObject(payment[i]));
+				callback.found(userPayment);
 			}
 		}
 

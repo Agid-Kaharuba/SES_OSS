@@ -128,7 +128,7 @@
 								<th>Country</th>
 								<th>Post Code</th>
 							</tr>
-							<%for(var i = 0; i < address.length; i++) {%>
+							<%for(var i = 0; i < userInfo.address.length; i++) {%>
 							<tr class="userInfo">
 								<th style="font-weight: normal;"><%= userInfo.address[i].addressLine1 %></th>
 								<th style="font-weight: normal;"><%= userInfo.address[i].addressLine2 %></th>
@@ -148,7 +148,7 @@
 						<form action="./profile/addAddress">
 							<input type="submit" value="Add Address" />
 						</form>
-						<div class="title">Current User Address</div>
+						<div class="title">Current User Payment Methods</div>
 						<table class="userAddressTable">
 							<tr>
 								<th>Nickname</th>
@@ -157,7 +157,7 @@
 								<th>Expiry Date</th>
 								<th>CVC</th>
 							</tr>
-							<%for(var i = 0; i < payment.length; i++) {%>
+							<%for(var i = 0; i < userInfo.payment.length; i++) {%>
 							<tr class="userInfo">
 								<th style="font-weight: normal;"><%= userInfo.payment[i].paymentNickname %></th>
 								<th style="font-weight: normal;"><%= userInfo.payment[i].paymentName %></th>

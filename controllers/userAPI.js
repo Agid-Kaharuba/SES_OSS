@@ -63,6 +63,7 @@ router.get('/profile', (req, res) =>
                     address: userAddress,
                     payment: userPayment
                 }
+                console.log(userInfo);
                 res.render('pages/userDashboard/userProfileView', {userInfo});
             },
             notFound: () =>
