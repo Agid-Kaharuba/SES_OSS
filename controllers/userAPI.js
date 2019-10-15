@@ -48,9 +48,8 @@ router.post('/login', (req, res) =>
 		});
 });
 
-router.get('/profile', (req, res) => 
+router.get('/profile', auth.authorizeUser, (req, res) => 
 {
-    
     userModel.getUserInfo(req, (user, isAdmin) =>
     {
         userModel.getUserProfileInfo(user.id, 
@@ -63,16 +62,14 @@ router.get('/profile', (req, res) =>
                     address: userAddress,
                     payment: userPayment
                 }
-                baseView.renderWithAddons(req, res, 'pages/userDashboard/userProfileView', {userInfo});
+                baseView.renderFromInfo(req, res, 'pages/userDashboard/userProfileView', {userInfo, user, isAdmin});
             },
-            notFound: () =>
+            notFound: (reason) =>
             {
-                htmlResponse.fail(req, res, "Failed to get user profile!")
+                htmlResponse.fail(req, res, reason, "Failed to get user profile!")
             }
         });
     });
-
-
 });
 
 router.get('/logout', (req, res) =>

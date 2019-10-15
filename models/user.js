@@ -369,7 +369,7 @@ exports.getUserInfo = function(req, callback = (user, isAdmin) => {})
 	})
 }
 
-exports.getUserProfileInfo = function(userid, callback = { found: () => {}, notFound: () => {} })
+exports.getUserProfileInfo = function(userid, callback = { found: () => {}, notFound: (reason) => {} })
 {
 	getUserProfile(userid, 
 	{
@@ -387,18 +387,19 @@ exports.getUserProfileInfo = function(userid, callback = { found: () => {}, notF
 						},
 						notFound:() =>
 						{
-
+							callback.notFound("Could not get user payments!");
 						}
 					});
 				},
 				notFound: () =>
 				{
-					
+					callback.notFound("Could not get user addesses!");
 				}
 				});
 		},
 		notFound: () =>
 		{
+			callback.notFound("Could not get user profile!");
 		}
 	});
 	
@@ -450,7 +451,6 @@ const getUserAddress = function(userid, callback = { found: () => {}, notFound: 
 	LEFT JOIN Address ON US_PK = AD_US
 	WHERE US_PK = ?
 	`;
-	var userAddress =[];
 	db.query(query2, [userid], (err, address) =>
 	{
 		if (err)
@@ -460,11 +460,12 @@ const getUserAddress = function(userid, callback = { found: () => {}, notFound: 
 		else
 		{
 			var i;
+			var userAddress = [];
 			for (i = 0; i < address.length; i++)
 			{
 				userAddress.push(convertToUserAddressObject(address[i]));
-				callback.found(userAddress);
 			}
+			callback.found(userAddress);
 		}
 	});
 	
@@ -484,7 +485,6 @@ const getUserPayment = function(userid, callback = { found: () => {}, notFound: 
 	LEFT JOIN PaymentMethod ON US_PK = PM_US
 	WHERE US_PK = ?
 	`;
-	var userPayment = [];
 	db.query(query3, [userid], (err, payment) =>
 	{
 		if (err)
@@ -494,11 +494,12 @@ const getUserPayment = function(userid, callback = { found: () => {}, notFound: 
 		else
 		{
 			var i;
+			var userPayment = [];
 			for (i = 0; i < payment.length; i++)
 			{
 				userPayment.push(convertToUserPaymentObject(payment[i]));
-				callback.found(userPayment);
 			}
+			callback.found(userPayment);
 		}
 
 	});
