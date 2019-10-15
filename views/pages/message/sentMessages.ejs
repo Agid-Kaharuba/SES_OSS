@@ -17,14 +17,14 @@
         <%- include ../../partials/topBar %>
         
         <div class="side-nav">
-            <a class="side-nav-selected" href="./inbox">Inbox</a>
-            <a href="./sentMessages">Sent messages</a>
+            <a href="./inbox">Inbox</a>
+            <a class="side-nav-selected" href="./sentMessages">Sent messages</a>
         </div>
 
         <div class="main-content my-4">
 
             <div class="text-bold text-primary">
-                <h2><bold>Inbox</bold></h2>
+                <h2><bold>Sent Messages</bold></h2>
             </div>
             <hr>
 
@@ -47,7 +47,7 @@
                 <tbody>
                     <% for (message of messages) { %>
                         <tr onclick="window.location.href = '/message/id=<%= message.id%>'">
-                            <td><%=message.usernameFrom%></td>
+                            <td><%=message.usernameTo%></td>
                             <td><%=message.header%></td>
                             <td><%=message.date.toLocaleString()%></td>
                         </tr>
