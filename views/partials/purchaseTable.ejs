@@ -1,0 +1,57 @@
+<style type="text/css">
+    tr:hover {
+        background-color: antiquewhite;
+    }
+    .tableRow {
+        -ms-user-select: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -webkit-touch-callout: none;
+        user-select: none;
+    }
+</style>
+
+<%
+    if (showBuyer === undefined) var showBuyer = false;
+    if (showListing === undefined) var showListing = false;
+    if (showTotalPrice === undefined) var showTotalPrice = false;
+%>
+
+
+<div>
+    <div class="overflow-auto m-4">
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Date Posted</th>
+                    <% if (showBuyer) { %>
+                        <th scope="col">Buyer</th>
+                    <% } %>
+                    <% if (showListing) { %>
+                        <th scope="col">Listing</th>
+                    <% } %>
+                    <% if (showTotalPrice) { %>
+                        <th scope="col">Total Price</th>
+                    <% } %>
+                    <th scope="col">Quantity</th>
+                </tr>
+            </thead>		
+            <% for (purchase of purchases) { %>
+
+                <tr class="tableRow" onclick="window.location.href = '/purchase/id=<%= purchase.id%>'">
+                    <td width="10%"><%= purchase.date.toLocaleDateString()%></td>
+                    <% if (showBuyer) { %>
+                        <td><%=purchase.buyerUsername%></td>
+                    <% } %>
+                    <% if (showListing) { %>
+                        <td><%=purchase.listingTitle%></td>
+                    <% } %>
+                    <% if (showTotalPrice) { %>
+                        <td>$<%=purchase.quantity * purchase.price%></td>
+                    <% } %>
+                    <td><%=purchase.quantity%></td>
+                </tr>
+            <% } %>
+        </table>
+    </div>
+</div>
