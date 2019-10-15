@@ -10,7 +10,7 @@ const auth = require('../utils/authUtil');
 
 // Every method is prepended with "/listing" see app.js
 
-router.get('/id=:id', (req, res) => // e.g. listing/id=4bb8590e-ce26-11e9-a859-256794b0b57d
+router.get('/id=:id', (req, res) => //e.g. listing/id=4bb8590e-ce26-11e9-a859-256794b0b57d
     {
         console.log('Receieved req for listing id: ' + req.params.id); // Example params usage.
 
