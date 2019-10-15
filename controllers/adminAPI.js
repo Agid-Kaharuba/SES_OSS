@@ -214,5 +214,21 @@ router.post('/createUserListing/id=:id', auth.authorizeAdmin, upload.single('fil
     });
 })
 
+router.get('/userPurchases/id=:id', auth.authorizeAdmin, (req, res) =>
+{
+    userModel.getUserFromID(req.params.id, 
+    {
+        found: (targetUser) => 
+        {
+            listingModel.getPurchasesForUser(req.params.id,
+            {
+                success: (purchases) => baseView.renderWithAddons(req, res, 'pages/admin/userPurchases', {purchases, targetUser}),
+                fail: (reason) => htmlResponse.fail(req, res, reason, "Failed to get purchases for target user!")
+            })
+        },
+        notFound: () => htmlResponse.fail(req, res, "Failed to get target user!")
+    })
+})
+
 
 module.exports = { router };

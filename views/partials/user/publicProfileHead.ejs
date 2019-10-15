@@ -5,7 +5,7 @@
             <h1><%= targetUser.username %></h1>
         </div>
 
-        <% if (isAdmin) { %>
+        <% if (isAdmin && targetUser.id !== user.id) { %>
             <div class="card card-body container">
                 <div class="row ml-4 mb-3">
                     <h5>Admin controls</h5>
@@ -21,6 +21,10 @@
 
                     <a class="col" href="/admin/createUserListing/id=<%= targetUser.id %>">
                         <input class="btn btn-warning" type="button" value="Create Listing for user"/>
+                    </a>
+
+                    <a class="col" href="/admin/userPurchases/id=<%= targetUser.id %>">
+                        <input class="btn btn-warning" type="button" value="Purchases by user"/>
                     </a>
                 </div>
             </div>
