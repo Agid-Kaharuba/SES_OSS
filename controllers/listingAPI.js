@@ -15,9 +15,9 @@ router.get('/id=:id', (req, res) => // e.g. listing/id=4bb8590e-ce26-11e9-a859-2
 {
 	listingModel.GetListing(req.params.id,
 	{
-		found: (litings) => 
+		found: (listings) => 
 		{
-			if (litings.length < 1) 
+			if (listings.length < 1) 
 			{
 				htmlResponse.fail(req, res, "Could not find the listing that you were looking for :(", "Listing not found");
 			}
@@ -25,7 +25,7 @@ router.get('/id=:id', (req, res) => // e.g. listing/id=4bb8590e-ce26-11e9-a859-2
 			{
 				userModel.getUserInfo(req, (user, isAdmin) =>
 				{
-					let listing = litings[0];
+					let listing = listings[0];
 					listing.imgName = attachmentUtil.getImgPath(listing.imgName);
 
 					if (isAdmin || user.id == listing.sellerID)
