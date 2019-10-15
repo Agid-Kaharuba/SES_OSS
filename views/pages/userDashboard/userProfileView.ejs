@@ -89,31 +89,40 @@
 								</div>
 							</div>
 							<div class="row my-1">
-								<div class="col "><b>First Name</b></div>
+								<div class="col"><b>First Name</b></div>
 								<div class="col"> 
 									<div id="displayFirstName"><%= userInfo.profile.firstName %></div>
 								</div>
 							</div>
 							<div class="row my-1">
-								<div class="col "><b>Last Name</b></div>
+								<div class="col"><b>Last Name</b></div>
 								<div class="col"> 
 									<div id="displayLastName"><%= userInfo.profile.lastName %></div>
 								</div>
 							</div>
 							<div class="row my-1">
-								<div class="col "><b>Date of Birth</b></div>
+								<div class="col"><b>Date of Birth</b></div>
 								<div class="col"> 
-									<div id="displayDOB"><%= userInfo.profile.birthDate %></div>
+									<% 
+										var birthDate = "";
+										
+										if (userInfo.profile.birthDate) 
+										{
+											let date = userInfo.profile.birthDate;
+											birthDate = date.toLocaleString().split(',')[0];
+										}
+									%>
+									<div id="displayDOB"><%= birthDate %></div>
 								</div>
 							</div>
 							<div class="row my-1">
-								<div class="col "><b>Email</b></div>
+								<div class="col"><b>Email</b></div>
 								<div class="col"> 
 									<div id="displayEmail"><%= userInfo.profile.email %></div>
 								</div>
 							</div>
 							<div class="row my-1">
-								<div class="col "><b>Phone Number</b></div>
+								<div class="col"><b>Phone Number</b></div>
 								<div class="col"> 
 									<div id="displayPhone"><%= userInfo.profile.phoneNumber %></div>
 								</div>
@@ -196,6 +205,19 @@
 			}
 		}
 
+		function getDateFromInput(id) {
+			let text = $('#' + id );
+			return new Date(year, month, day);
+		}
+
+		function replaceWithDateInput(id)
+		{
+			let text = $('#' + id);
+			let dateList = text.text().split('/');
+			let htmlDateString = dateList.reverse().join('-');
+			text.replaceWith("<input type='date' id='" + id + "' value='" + htmlDateString + "' />");
+		}
+
 		function replaceWithTextInput(id) 
 		{
 			let text = $('#' + id);
@@ -240,7 +262,7 @@
 				{
 					replaceWithTextInput("displayFirstName");
 					replaceWithTextInput("displayLastName");
-					replaceWithTextInput("displayDOB");
+					replaceWithDateInput("displayDOB");
 					replaceWithTextInput("displayPhone");
 					editBtn.val("Finish Edit");
 				}

@@ -1,6 +1,7 @@
 const database = require('../utils/database');
 const auth = require('../utils/authUtil');
 const bcrypt = require('bcrypt');
+const dateUtil = require('../utils/dateUtil');
 
 exports.convertToFullUserObject = function (rawUser)
 {
@@ -703,16 +704,15 @@ exports.createUserPayment = function(userid, payment, callback = { success: () =
 	let query = `INSERT INTO PaymentMethod (PM_US, PM_Nickname, PM_Name, PM_CardNumber, PM_Expiry, PM_CVC)
 	VALUES (? ,? ,? ,? , ?, ?)`;
 
-	db.query(query,[userid, payment.nickName, payment.name, payment.number, payment.exp, payment.cvc], (err,results) =>
+	db.query(query,[userid, payment.nickName, payment.name, payment.number, dateUtil.convertToMySQLDatetime(payment.exp), payment.cvc], (err,results) =>
 	{
 		if (err)
 		{
-			console.log("failed");
+			console.trace("failed to create user payment method " + err);
 			callback.fail('Failed to insert new payment');
 		}
 		else
 		{
-			console.log("NOT failed");
 			callback.success();
 		}
 	});
@@ -740,11 +740,11 @@ const modifyUserPaymentByCheck = function(check, payment, callback = { success: 
 		return;
 	}
 
-	db.query(query, [payment.nickName, payment.name, payment.number, payment.exp, payment.cvv], (err, results) => 
+	db.query(query, [payment.nickName, payment.name, payment.number, dateUtil.convertToMySQLDatetime(payment.exp), payment.cvv], (err, results) => 
 	{
 		if (err)
 		{
-			console.trace("Failed to update Address: " + err);
+			console.trace("Failed to update Payment: " + err);
 			if (callback.hasOwnProperty('fail')) callback.fail();
 		}
 		else

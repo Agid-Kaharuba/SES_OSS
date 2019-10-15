@@ -8,6 +8,7 @@ const auth = require('../utils/authUtil');
 const router = express.Router();
 const multer = require('multer');
 const upload = multer({dest : 'attachment/IMG/'});
+const dateUtil = require('../utils/dateUtil');
 
 // Every method is prepended with "/user" see app.js
 
@@ -31,7 +32,6 @@ router.post('/register', (req, res) =>
 
 router.post('/login', (req, res) =>
 {
-	console.log(req.body);
 	userModel.loginUser(req.body.username, req.body.password,
 		{
 			success:
@@ -63,7 +63,6 @@ router.get('/profile', (req, res) =>
                     address: userAddress,
                     payment: userPayment
                 }
-                console.log(userInfo);
                 baseView.renderWithAddons(req, res, 'pages/userDashboard/userProfileView', {userInfo});
             },
             notFound: () =>
@@ -95,6 +94,7 @@ router.get('/profile/editProfile', (req, res) => {
 router.post('/profile/editProfile', auth.authorizeUserJson, (req, res) =>
 {                   
     var editData = req.body;
+    dateUtil.fillPropertyFromHTML(editData, 'DOB');
     console.log("Got edit ", editData);
 
     userModel.getUserInfo(req, (user, isAdmin) =>
@@ -170,13 +170,6 @@ router.post('/profile/editAddress', (req, res) =>
 
 });
 
-router.get('/profile/editPayment', (req, res) => {
-    res.render('pages/userDashboard/editPaymentView');
-});
-router.get('/profile/addPayment', (req, res) => {
-    res.render('pages/userDashboard/addPaymentView');
-});
-
 router.post('/profile/addPayment', (req, res) =>
 {                   
     var editData = 
@@ -187,6 +180,7 @@ router.post('/profile/addPayment', (req, res) =>
                 exp : req.body.editPayment_Expiry,
                 cvc : req.body.editPayment_CVC,
             }; 
+    dateUtil.fillPropertyFromHTML(editData, 'exp');
 
     userModel.getUserInfo(req, (user, isAdmin) =>
     {
@@ -212,6 +206,7 @@ router.post('/profile/editPayment', (req, res) =>
                 exp : req.body.editPayment_Expiry,
                 cvv : req.body.editPayment_CVV,
             }; 
+    dateUtil.fillPropertyFromHTML(editData, 'exp');
 
     userModel.getUserInfo(req, (user, isAdmin) =>
     {
