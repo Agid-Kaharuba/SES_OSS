@@ -304,14 +304,14 @@ WHERE
 	});
 }
 
-exports.getPrePurchaseInformation = function(userPK,  listingPK, amount, callback  = {  success: ()  => { }, fail: ()  => { }  }) 
+exports.getPrePurchaseInformation = function(userPK, listingPK, amount, callback = { success: () => {}, fail: () => {} }) 
 {
   console.log("@getPrePurchaseInformation");
   console.log("userPK=" + userPK);
   console.log("listingPK=" + listingPK);
   console.log("amount=" + amount);
-  const db = database.connectDatabase();    
-  let  paymentMethodsQuery = `
+  const db = database.connectDatabase();
+  let paymentMethodsQuery = `
 SELECT
 	PM_Nickname as paymentNickName,
     PM_Name as paymentName,
@@ -323,16 +323,16 @@ SELECT
 FROM PaymentMethod
 WHERE PM_US = ?
 ;`;         
-  let sanitisedInputs = [userPK];    
+  let sanitisedInputs = [userPK];
   db.query(paymentMethodsQuery, sanitisedInputs, (err, payments) => {
     console.log("GOT THE PAYMENT INFO");
     console.log(payments);
 
-    if (err) {            
-        console.trace(err);            
-        callback.fail("Failed to retrieve payment options");        
-    }        
-    let addressQuery = `
+    if (err) {
+        console.trace(err);
+        callback.fail("Failed to retrieve payment options");
+    }
+    let addressQuery = `
     SELECT
       AD_Line1 as addressLine1,
       AD_Line2 as addressLine2,
@@ -343,17 +343,17 @@ WHERE PM_US = ?
         AD_PK as addressID
     FROM Address
     WHERE AD_US = ?
-    ;`;        
-    let sanitisedInputs2  = [userPK];        
-    db.query(addressQuery, sanitisedInputs2, (err, addresses)  => {
+    ;`;
+    let sanitisedInputs2 = [userPK];
+    db.query(addressQuery, sanitisedInputs2, (err, addresses) => {
         console.log("GOT THE address INFO");
         console.log(addresses);
 
         if (err) {
             console.trace(err);                
-            callback.fail("Failed to retrieve address options");            
-        }            
-        let  listingQuery  = `
+            callback.fail("Failed to retrieve address options");
+        }
+        let listingQuery = `
         SELECT
           LS_Title AS itemName,
             LS_Price AS itemPrice,
@@ -364,23 +364,23 @@ WHERE PM_US = ?
           LS_PK = ? AND
           LS_IsActive = 1
         LIMIT 1
-        ;`;            
-      let sanitisedInputs3 = [listingPK];            
+        ;`;
+      let sanitisedInputs3 = [listingPK];
       db.query(listingQuery, sanitisedInputs3, (err, listing) => {
           console.log("GOT THE listing INFO");
           console.log(listing);
 
-          if  (err) {
+          if (err) {
               console.trace(err);                    
-              callback.fail("Failed to retrieve listing");         
+              callback.fail("Failed to retrieve listing");
           }
 
-          listing[0].addresses = addresses;                                
-          listing[0].payments = payments;                              
-          listing[0].requestQuantity = amount;        
-          callback.success(listing[0]);    
-      });     
-    });  
+          listing[0].addresses = addresses;
+          listing[0].payments = payments;
+          listing[0].requestQuantity = amount;
+          callback.success(listing[0]);
+      });
+    });
   });
 }
 
