@@ -210,6 +210,18 @@ router.get('/userListings', (req, res) =>
     })
 })
 
+router.get('/pastListings', (req, res) =>
+{
+    baseView.renderWithCallback(req, res, 'pages/userDashboard/pastListings', (user, isAdmin, next) =>
+    {
+        listingModel.getListingsForUser(user, 
+        {
+            success: (results) => next({results}),
+            fail: (reason) => htmlResponse.fail(req, res, reason, 'Failed to get user listings')
+        })
+    })
+})
+
 router.get('/public/profile/id=:id', (req, res) =>
 {
     baseView.renderWithCallback(req, res, 'pages/user/publicProfile', (user, isAdmin, next) =>
