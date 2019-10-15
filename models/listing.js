@@ -293,10 +293,47 @@ LIMIT 1
 					}
 					else
 					{
-						return callback.success(results[0].purchasePK);
+						let purchasePK = results[0].purchasePK
+						notifySellerOfPurchase(purchasePK);
+						return callback.success(purchasePK);
 					}
 				});
 			}
+		}
+	});
+}
+
+
+function notifySellerOfPurchase(purchasePK)
+{
+	let insertMessageQuery = `
+INSERT INTO Message (MS_US_To, MS_US_From, MS_Header, MS_Body) 
+SELECT Seller.US_PK, Sys.US_PK, 
+	(CONCAT(Buyer.US_Username, ' has purchased ', PC_Quantity, 'x ', LS_Title)),
+	(CONCAT('Hello ', Seller.US_Username, ',\n',
+		'This is an automated notification to let you know that ', Buyer.US_Username, ' has purchased ', PC_Quantity, 'x ', LS_Title, '\'s for a grand total of $', PC_Price, '.\n',
+		'\n',
+		'The buyer has requested the item(s) to be delivered to the following name and address:\n',
+		Buyer.US_FirstName, ' ', Buyer.US_LastName, '\n',
+		Delivery.AD_Line1, '\n',
+		Delivery.AD_Line2, '\n',
+		Delivery.AD_City, ', ', Delivery.AD_State, '\n',
+		Delivery.AD_Country, ' ', Delivery.AD_PostCode))
+FROM Purchase
+	LEFT JOIN Listing ON PC_LS = LS_PK
+	LEFT JOIN User AS Sys ON Sys.US_Username = 'System'
+	LEFT JOIN User as Buyer ON Buyer.US_PK = PC_US_Buyer
+	LEFT JOIN User as Seller ON Seller.US_PK = LS_US_Seller
+	LEFT JOIN Address as Delivery ON PC_AD_Delivery = AD_PK
+WHERE 
+	PC_PK = ?;
+	`;
+
+	db.query(insertMessageQuery, [purchasePK], (err) => 
+	{ 
+		if (err)
+		{
+			console.trace(err);
 		}
 	});
 }
