@@ -128,14 +128,14 @@
 								<th>Country</th>
 								<th>Post Code</th>
 							</tr>
-							<%for(var i = 0; i < userInfo.address.length; i++) {%>
+							<%for(var i = 0; i < address.length; i++) {%>
 							<tr class="userInfo">
-								<th style="font-weight: normal;"><%= userInfo.address[i].AD_Line1 %></th>
-								<th style="font-weight: normal;"><%= userInfo.address[i].AD_Line2 %></th>
-								<th style="font-weight: normal;"><%= userInfo.address[i].AD_City %></th>
-								<th style="font-weight: normal;"><%= userInfo.address[i].AD_State %></th>
-								<th style="font-weight: normal;"><%= userInfo.address[i].AD_Country %></th>
-								<th style="font-weight: normal;"><%= userInfo.address[i].AD_PostCode %></th>
+								<th style="font-weight: normal;"><%= userInfo.address[i].addressLine1 %></th>
+								<th style="font-weight: normal;"><%= userInfo.address[i].addressLine2 %></th>
+								<th style="font-weight: normal;"><%= userInfo.address[i].addressCity %></th>
+								<th style="font-weight: normal;"><%= userInfo.address[i].addressState %></th>
+								<th style="font-weight: normal;"><%= userInfo.address[i].addressCountry %></th>
+								<th style="font-weight: normal;"><%= userInfo.address[i].addressPostcode %></th>
 								<th >
 									<form action="./profile/editAddress">
 										<input type="submit" value="Edit Address" />
@@ -157,13 +157,13 @@
 								<th>Expiry Date</th>
 								<th>CVC</th>
 							</tr>
-							<%for(var i = 0; i < userInfo.payment.length; i++) {%>
+							<%for(var i = 0; i < payment.length; i++) {%>
 							<tr class="userInfo">
-								<th style="font-weight: normal;"><%= userInfo.payment[i].PM_Nickname %></th>
-								<th style="font-weight: normal;"><%= userInfo.payment[i].PM_Name %></th>
-								<th style="font-weight: normal;"><%= userInfo.payment[i].PM_CardNumber %></th>
-								<th style="font-weight: normal;"><%= userInfo.payment[i].PM_Expiry %></th>
-								<th style="font-weight: normal;"><%= userInfo.payment[i].PM_CVC %></th>
+								<th style="font-weight: normal;"><%= userInfo.payment[i].paymentNickname %></th>
+								<th style="font-weight: normal;"><%= userInfo.payment[i].paymentName %></th>
+								<th style="font-weight: normal;"><%= userInfo.payment[i].paymentCardNumber %></th>
+								<th style="font-weight: normal;"><%= userInfo.payment[i].paymentExp %></th>
+								<th style="font-weight: normal;"><%= userInfo.payment[i].paymentCVC %></th>
 								<th>
 									<form action="./profile/editPayment">
 										<input type="submit" value="Edit Payment" />

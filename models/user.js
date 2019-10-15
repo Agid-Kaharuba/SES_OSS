@@ -367,7 +367,52 @@ exports.getUserInfo = function(req, callback = (user, isAdmin) => {})
 	})
 }
 
-exports.getUserProfileInfo = function (userid, callback = { found: () => {}, notFound: () => {} })
+exports.getUserProfileInfo = function(userid, callback = { found: () => {}, notFound: () => {} })
+{
+	var userProfile;
+	var userAddress = [];
+	var userPayment = [];
+	getUserProfile(userid, 
+	{
+		found: (Profile) =>
+		{
+			
+		},
+		notFound: () =>
+		{
+		  }
+	});
+
+	getUserAddress(userid, 
+    {
+        found: (addressList) =>
+        {
+			
+        },
+        notFound: () =>
+        {
+      	}
+	});
+	
+	getUserPayment(userid, 
+	{
+		found: (paymentList) =>
+		{
+			
+		},
+		notFound: () =>
+		{
+		}
+	});
+	console.log(userProfile);
+	console.log(userAddress);
+	console.log(userPayment);
+
+	callback.found(userProfile, userAddress, userPayment);
+	
+}
+
+const getUserProfile = function(userid, callback = { found: () => {}, notFound: () => {} })
 {
 	var db = database.connectDatabase();
 	var query = `
@@ -383,6 +428,23 @@ exports.getUserProfileInfo = function (userid, callback = { found: () => {}, not
 	LEFT JOIN PaymentMethod ON US_PK = PM_US
 	WHERE US_PK = ?
 	`;
+	db.query(query, [userid], (err, profile) =>
+	{
+		if (err)
+		{
+			console.log('Failed to get user info ' + err);
+		}
+		else
+		{
+			var Profile = convertToUserProfileObject(profile[0]);
+			callback.found(Profile);
+		}
+	});
+}
+
+const getUserAddress = function(userid, callback = { found: () => {}, notFound: () => {} })
+{
+	var db = database.connectDatabase();
 	var query2 = `
 	SELECT 
 		AD_Line1,
@@ -393,9 +455,31 @@ exports.getUserProfileInfo = function (userid, callback = { found: () => {}, not
 		AD_PostCode
 	FROM User
 	LEFT JOIN Address ON US_PK = AD_US
-	LEFT JOIN PaymentMethod ON US_PK = PM_US
 	WHERE US_PK = ?
 	`;
+	var addressList =[];
+	db.query(query2, [userid], (err, address) =>
+	{
+		if (err)
+		{
+			console.log('Failed to get user info ' + err);
+		}
+		else
+		{
+			var i;
+			for (i = 0; i < address.length; i++)
+			{
+				addressList.push(convertToUserAddressObject(address[i]));
+				callback.found(addressList);
+			}
+		}
+	});
+	
+}
+
+const getUserPayment = function(userid, callback = { found: () => {}, notFound: () => {} })
+{
+	var db = database.connectDatabase();
 	var query3 = `
 	SELECT 
 		PM_Nickname,
@@ -404,12 +488,11 @@ exports.getUserProfileInfo = function (userid, callback = { found: () => {}, not
 		PM_Expiry,
 		PM_CVC
 	FROM User
-	LEFT JOIN Address ON US_PK = AD_US
 	LEFT JOIN PaymentMethod ON US_PK = PM_US
 	WHERE US_PK = ?
 	`;
-
-	db.query(query, [userid], (err, profile) =>
+	var paymentList = [];
+	db.query(query3, [userid], (err, payment) =>
 	{
 		if (err)
 		{
@@ -417,47 +500,18 @@ exports.getUserProfileInfo = function (userid, callback = { found: () => {}, not
 		}
 		else
 		{
-			var userProfile = convertToUserProfileObject(profile[0]);
-			db.query(query2, [userid], (err, address) =>
+			var i;
+			for (i = 0; i < payment.length; i++)
 			{
-				if (err)
-				{
-					console.log('Failed to get user info ' + err);
-				}
-				else
-				{
-					var i;
-					var userAddress = [];
-					for (i = 0; i < address.length; i++)
-					{
-						userAddress.push(convertToUserAddressObject(address[i]));
-					}
-					var userAddress = address;
-					db.query(query3, [userid], (err, payment) =>
-					{
-						if (err)
-						{
-							console.log('Failed to get user info ' + err);
-						}
-						else
-						{
-							var i;
-							var userPayment = [];
-							for (i = 0; i < payment.length; i++)
-							{
-								userPayment.push(convertToUserPaymentObject(payment[i]));
-							}
-							console.log(userPayment);
-							console.log(userAddress);
-							callback.found(userProfile, userAddress, userPayment);
-						}
-					});
-					
-				}
-			});
+				paymentList.push(convertToUserPaymentObject(payment[i]));
+				callback.found(paymentList);
+			}
 		}
+
 	});
 }
+
+
 
 
 
@@ -599,10 +653,6 @@ exports.createUserAddress = function(userid, address,callback = { success: () =>
 	const db = database.connectDatabase();
 	let query = `INSERT INTO Address (AD_US, AD_Line1, AD_Line2, AD_City, AD_State, AD_Country, AD_Postcode)
 	VALUES (? ,? , ?, ?, ?, ?, ?)`;
-	console.log("beep");
-	console.log(userid);
-	console.log(address);
-	console.log("boop");
 
 	db.query(query,[userid, address.addressLine1, address.addressLine2, address.city, address.state, address.country, address.postcode], (err,results) =>
 	{
@@ -660,10 +710,6 @@ exports.createUserPayment = function(userid, payment, callback = { success: () =
 	const db = database.connectDatabase();
 	let query = `INSERT INTO PaymentMethod (PM_US, PM_Nickname, PM_Name, PM_CardNumber, PM_Expiry, PM_CVC)
 	VALUES (? ,? ,? ,? , ?, ?)`;
-	console.log("beep");
-	console.log(userid);
-	console.log(payment);
-	console.log("boop");
 
 	db.query(query,[userid, payment.nickName, payment.name, payment.number, payment.exp, payment.cvc], (err,results) =>
 	{
