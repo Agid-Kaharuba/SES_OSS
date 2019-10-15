@@ -283,7 +283,7 @@ router.get('/', (req, res) =>
 
 router.get('/userListings', (req, res) =>
 {
-    baseView.renderWithCallback(req, res, 'pages/user/userListings', (user, isAdmin, next) =>
+    baseView.renderWithCallback(req, res, 'pages/userDashboard/userListings', (user, isAdmin, next) =>
     {
         listingModel.getListingsForUser(user, 
         {
