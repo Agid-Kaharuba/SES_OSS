@@ -1,0 +1,29 @@
+.side-nav {
+    height: 100%;
+    width: 15%;
+    z-index: 1;
+    overflow-x: hidden;
+    left: 0;
+    position: absolute;
+    background: rgb(241, 241, 241);
+}
+
+.main-content {
+    margin-left: 16%;
+    margin-right: 1%;
+}
+
+.side-nav a {
+    color: black;
+    padding-left: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin: 5px;
+    display: block;
+    text-decoration: none;
+}
+
+.side-nav-selected {
+    background-color: rgb(183, 183, 253);
+    border-radius: 25px;
+}
