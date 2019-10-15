@@ -51,13 +51,21 @@ router.post('/login', (req, res) =>
 
 router.get('/profile', (req, res) => 
 {
+    
     userModel.getUserInfo(req, (user, isAdmin) =>
     {
         userModel.getUserProfileInfo(user.id, 
         {
-            found: (userProfile) =>
+            found: (userProfile, userAddress, userPayment) =>
             {
-                baseView.renderWithAddons(req, res, 'pages/userDashboard/userProfileView', {userProfile});
+                var userInfo =
+                {
+                    profile: userProfile,
+                    address: userAddress,
+                    payment: userPayment
+                }
+                console.log(userInfo);
+                baseView.renderWithAddons(req, res, 'pages/userDashboard/userProfileView', {userInfo});
             },
             notFound: () =>
             {
@@ -65,6 +73,8 @@ router.get('/profile', (req, res) =>
             }
         });
     });
+
+
 });
 
 router.get('/logout', (req, res) =>
