@@ -10,26 +10,41 @@ const auth = require('../utils/authUtil');
 
 // Every method is prepended with "/listing" see app.js
 
-router.get('/id=:id', (req, res) => //e.g. listing/id=4bb8590e-ce26-11e9-a859-256794b0b57d
-    {
-        console.log('Receieved req for listing id: ' + req.params.id); // Example params usage.
+router.get('/id=:id', (req, res) => // e.g. listing/id=4bb8590e-ce26-11e9-a859-256794b0b57d
+{
+	listingModel.GetListing(req.params.id,
+	{
+		found: (listings) => 
+		{
+			if (listings.length < 1) 
+			{
+				htmlResponse.fail(req, res, "Could not find the listing that you were looking for :(", "Listing not found");
+			}
+			else 
+			{
+				userModel.getUserInfo(req, (user, isAdmin) =>
+				{
+					let listing = listings[0];
+					listing.listingImg = attachmentUtil.getImgPath(listing.listingID);
 
-        listingModel.GetListing(req.params.id, 
-            {
-            found: (results) =>
-            {
-                if (results.length < 1) 
-                {
-                    htmlResponse.fail(req, res, "Could not find the listing that you were looking for :(", "Listing not found");
-                } else {
-                    let result = results[0];
-                    result.listingImg = attachmentUtil.getImgPath(result.listingID);
-                    baseView.renderWithAddons(req, res, 'pages/listingResult', { result });
-                }
-            },
-            notFound: () => { htmlResponse.fail(req, res, "Failed to get the listing that you were looking for :(", "Listing Fetch Failure"); }
-        });
-    });
+					if (isAdmin || user.id == listing.sellerID)
+					{
+						listingModel.getPurchasesForListing(listing, 
+						{
+							success: (purchases) => baseView.renderFromInfo(req, res, 'pages/listingResult', {user, isAdmin, listing, purchases}),
+							fail: (reason) => htmlResponse.fail(req, res, reason, "Failed to get purchases for listing!")
+						})
+					}
+					else
+					{
+						baseView.renderWithAddons(req, res, 'pages/listingResult', {user, isAdmin, listing});
+					}
+				})
+			}
+		},
+		notFound: () => { htmlResponse.fail(req, res, "Failed to get the listing that you were looking for :(", "Listing Fetch Failure"); }
+  });
+});
 
 router.get('/search=:query', (req, res) => 
 {
