@@ -14,8 +14,9 @@
 <%
     if (showBuyer === undefined) var showBuyer = false;
     if (showListing === undefined) var showListing = false;
-    console.log("Purchases at ", purchases);
+    if (showTotalPrice === undefined) var showTotalPrice = false;
 %>
+
 
 <div>
     <div class="overflow-auto m-4">
@@ -29,6 +30,9 @@
                     <% if (showListing) { %>
                         <th scope="col">Listing</th>
                     <% } %>
+                    <% if (showTotalPrice) { %>
+                        <th scope="col">Total Price</th>
+                    <% } %>
                     <th scope="col">Quantity</th>
                 </tr>
             </thead>		
@@ -41,6 +45,9 @@
                     <% } %>
                     <% if (showListing) { %>
                         <td><%=purchase.listingTitle%></td>
+                    <% } %>
+                    <% if (showTotalPrice) { %>
+                        <td>$<%=purchase.quantity * purchase.price%></td>
                     <% } %>
                     <td><%=purchase.quantity%></td>
                 </tr>
