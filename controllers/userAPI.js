@@ -39,6 +39,7 @@ router.post('/login', (req, res) =>
 				{
 					success: () => 
 					{
+						res.cookie("currentUser", user.username);
 						res.redirect("/?login=success");
 					},
 					fail: () => htmlResponse.fail(req, res, 'Failed to create a new session', 'Failed to login')
@@ -68,7 +69,7 @@ router.get('/profile', (req, res) =>
             },
             notFound: () =>
             {
-                htmlResponse.fail(req, res, "Failed to get user profile!")
+
             }
         });
     });
@@ -82,6 +83,7 @@ router.get('/logout', (req, res) =>
 		{
 			success: () => 
 			{
+				res.cookie('currentUser', "", {maxAge: Date.now()});
 				res.redirect("/?logout=success");
 			},
 			fail: () => htmlResponse.fail(req, res, 'Failed to logout', 'Logout failure')
@@ -269,9 +271,29 @@ router.post('/profile/createAd', upload.single('productImage'), (req, res) =>
 
 });
 
+router.put('/modify', (req, res) =>
+{
+
+});
+
+router.get('/purchase/:listingID', (req, res) =>
+{
+
+});
+
+router.post('/confirm_purchase/:listingID', (req, res) =>
+{
+
+});
+
+router.get('/', (req, res) =>
+{
+
+});
+
 router.get('/userListings', (req, res) =>
 {
-    baseView.renderWithCallback(req, res, 'pages/userDashboard/userListings', (user, isAdmin, next) =>
+    baseView.renderWithCallback(req, res, 'pages/user/userListings', (user, isAdmin, next) =>
     {
         listingModel.getListingsForUser(user, 
         {
@@ -296,21 +318,21 @@ router.get('/public/profile/id=:id', (req, res) =>
                     fail: (reason) => htmlResponse.fail(req, res, reason, 'Failed to get user listings')
                 })
             },
-            notFound: () => htmlResponse.fail(req, res, 'Failed to find user')
+            notFound: () => htmlResponse.fail(req, res, reason, 'Failed to find user')
         })
     })
 })
 
-router.get('/userPurchases', auth.authorizeUser, (req, res) =>
-{
-    userModel.getUserInfo(req, (user, isAdmin) =>
-    {
-        listingModel.getPurchasesForUser(user,
-        {
-            success: (purchases) => baseView.renderFromInfo(req, res, 'pages/userDashboard/userPurchases', {user, isAdmin, purchases}),
-            fail: (reason) => htmlResponse.fail(req, res, reason, "Failed to get purchases for user!")
-        })
-    })
-})
+router.get('/contact', function(req, res) {
+	baseView.renderWithAddons(req, res, 'pages/contact');
+});
+
+router.get('/inbox', function(req, res) {
+	baseView.renderWithAddons(req, res, 'pages/adminDashboard/inbox');
+});
+
+router.get('/email', function(req, res) {
+	baseView.renderWithAddons(req, res, 'pages/adminDashboard/email');
+});
 
 module.exports = { router };
