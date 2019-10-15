@@ -1,0 +1,112 @@
+<div class="title">Profile Information</div>
+    <div class="card card-body">
+        <div class="row my-1">
+            <div class="col"><b>Username</b></div>
+            <div class="col"> 
+                <div id="displayUsername"><%= userInfo.profile.username %></div>
+            </div>
+        </div>
+        <div class="row my-1">
+            <div class="col"><b>First Name</b></div>
+            <div class="col"> 
+                <div id="displayFirstName"><%= userInfo.profile.firstName %></div>
+            </div>
+        </div>
+        <div class="row my-1">
+            <div class="col"><b>Last Name</b></div>
+            <div class="col"> 
+                <div id="displayLastName"><%= userInfo.profile.lastName %></div>
+            </div>
+        </div>
+        <div class="row my-1">
+            <div class="col"><b>Date of Birth</b></div>
+            <div class="col"> 
+                <% 
+                    var birthDate = "";
+                    
+                    if (userInfo.profile.birthDate) 
+                    {
+                        let date = userInfo.profile.birthDate;
+                        birthDate = date.toLocaleString().split(',')[0];
+                    }
+                %>
+                <div id="displayDOB"><%= birthDate %></div>
+            </div>
+        </div>
+
+        <div class="row my-1">
+            <div class="col"><b>Email</b></div>
+            <div class="col"> 
+                <div id="displayEmail"><%= userInfo.profile.email %></div>
+            </div>
+        </div>
+        <div class="row my-1">
+            <div class="col"><b>Phone Number</b></div>
+            <div class="col"> 
+                <div id="displayPhone"><%= userInfo.profile.phoneNumber %></div>
+            </div>
+        </div>
+    </div>
+
+    <input id="editProfileBtn" type="submit" value="Edit Profile Information" />
+    
+    <div class="title">Current User Address</div>
+    <table class="userAddressTable">
+        <tr>
+            <th>Line 1</th>
+            <th>Line 2</th>
+            <th>City</th>
+            <th>State</th>
+            <th>Country</th>
+            <th>Post Code</th>
+        </tr>
+        <%for(var i = 0; i < userInfo.address.length; i++) {%>
+        <tr class="userInfo">
+            <th style="font-weight: normal;"><%= userInfo.address[i].addressLine1 %></th>
+            <th style="font-weight: normal;"><%= userInfo.address[i].addressLine2 %></th>
+            <th style="font-weight: normal;"><%= userInfo.address[i].addressCity %></th>
+            <th style="font-weight: normal;"><%= userInfo.address[i].addressState %></th>
+            <th style="font-weight: normal;"><%= userInfo.address[i].addressCountry %></th>
+            <th style="font-weight: normal;"><%= userInfo.address[i].addressPostcode %></th>
+            <th >
+                <% let dialogID = "editAddressDialog-" + userInfo.address[i].id; %>
+                <input type="submit" value="Edit Address" data-toggle="modal" data-target="#<%=dialogID%>"/>
+                <%- include('../../partials/userDashboard/editAddressDialog', {dialogID, address: userInfo.address[i]}) %>
+            </th>
+        </tr>
+        <% } %>
+    </table>
+    
+    <!-- Add address Dialog -->
+    <input type="submit" value="Add Address" data-toggle="modal" data-target="#addAddressDialog">
+    <%- include ../../partials/userDashboard/addAddressDialog %>
+
+    <div class="title">Current User Payment Methods</div>
+    <table class="userAddressTable">
+        <tr>
+            <th>Nickname</th>
+            <th>Name</th>
+            <th>Card Number</th>
+            <th>Expiry Date</th>
+            <th>CVC</th>
+        </tr>
+        <%for(var i = 0; i < userInfo.payment.length; i++) {%>
+        <tr class="userInfo">
+            <th style="font-weight: normal;"><%= userInfo.payment[i].paymentNickname %></th>
+            <th style="font-weight: normal;"><%= userInfo.payment[i].paymentName %></th>
+            <th style="font-weight: normal;"><%= userInfo.payment[i].paymentCardNumber %></th>
+            <th style="font-weight: normal;"><%= userInfo.payment[i].paymentExp.toLocaleString().split(',')[0] %></th>
+            <th style="font-weight: normal;"><%= userInfo.payment[i].paymentCVC %></th>
+            <th>
+                <% let dialogID = "editPaymentDialog-" + userInfo.address[i].id; %>
+                <input type="submit" value="Edit Payment" data-toggle="modal" data-target="#<%=dialogID%>"/>
+                <%- include('../../partials/userDashboard/editPaymentDialog', {dialogID, payment: userInfo.payment[i]}) %>
+            </th>
+        </tr>
+        <% } %>
+    </table>
+
+    <!-- Add payment Dialog -->
+    <input type="submit" value="Add Payment" data-toggle="modal" data-target="#addPaymentDialog"/>
+    <%- include ../../partials/userDashboard/addPaymentDialog %>
+</div>

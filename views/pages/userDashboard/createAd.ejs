@@ -65,19 +65,7 @@
 			<div class="title">
 				Create Your Ad
             </div>
-			<form action="/user/profile/createAd" method="POST", enctype="multipart/form-data">
-				Product Name:<br>
-                <input type="text" name="productName"><br>
-                Product Description:<br>
-                <input type="text" name="productDescription"><br>
-                Price:<br>
-                <input type="number" name="productPrice"><br>
-                Stock:<br>
-				<input type="number" name="productStock"><br>
-				Photo:<br>
-                <input type="file" name="productImage"><br>
-                <input type="submit" value="Submit">
-              </form>
+			<%- include ../../partials/userDashboard/createAd %>
 		</div>
 	</body>
 </html>
