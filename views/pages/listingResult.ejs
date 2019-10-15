@@ -1,10 +1,5 @@
 <% include ../partials/head %>
-      <style>
 
-
-
-
-      </style>
 <div class="container">
     <!-- Content here -->
   <div class="card justify-content-center mt-3">
@@ -12,9 +7,9 @@
 
       <div class="card container justify-content-center bg-light mb-3">
         <div class="card-header text-center text-primary">
-            <h3 id="titleId"><%= result.listingTitle%></h3> 
+            <h3 id="titleId"><%= listing.listingTitle%></h3> 
         </div>
-        <% if (result.isActive == false) { %>
+        <% if (listing.isActive == false) { %>
           <div class="my-4 text-danger text-center jumbotron">
               <h1 class="warning">This listing is closed!</h1> 
           </div>
@@ -37,29 +32,29 @@
 
                       <div class="form">
                         <div class="form-group row">
-                          <a class="text-dark" href="/user/public/profile/id=<%=result.sellerID%>">
+                          <a class="text-dark" href="/user/public/profile/id=<%=listing.sellerID%>">
                             <h4 class="mr-2" id="userId">Seller Name:</h4> 
-                            <h4 id="usernameText"> <%= result.sellerUsername%></h4>
+                            <h4 id="usernameText"> <%= listing.sellerUsername%></h4>
                           </a>
                         </div>
                         <div class="form-group row">
                           <h4 id="priceId">Price: $</h4>
-                            <h4 id="priceText"><%= result.listingPrice%></h4>
+                            <h4 id="priceText"><%= listing.listingPrice%></h4>
                         </div>
                         <div class="form-group row">
                           <h4 class="mr-2" id="remainId">Stock Avaliable: </h4>
-                          <h4 id="remainingStockText"><%= result.remainingStock%></h4>
+                          <h4 id="remainingStockText"><%= listing.remainingStock%></h4>
                         </div>
                       </div>
 
                     </div>
 
 
-                    <% if (result.isActive) { %>
+                    <% if (listing.isActive) { %>
 
                       <% if (user != null) { %>
 
-                        <% if (isAdmin || user.id == result.sellerID) { %>
+                        <% if (isAdmin || user.id == listing.sellerID) { %>
                           <div class="row my-3 mx-auto">
                               <button id="modifyListingBtn" class="btn btn-dark btn-lg">Modify</button>
                           </div>
@@ -69,7 +64,7 @@
                           </div>
                         <% } %>
 
-                        <% if (user.id != result.sellerID) { %>
+                        <% if (user.id != listing.sellerID) { %>
                           <div class="row my-3 mx-auto">
                             <button id="purchaseBtn" class="btn btn-dark btn-lg" onclick="window.location.href='/listing/confirmPurchase'">Purchase</button>
                           </div>
@@ -94,16 +89,27 @@
 
           <div class="row">
             <div id="descriptionCard" class="card m-4" style="width: 1000px; height: 380px;">
-              <p id="descriptionParagraph" class="card-text m-4"><%= result.listingDescription%></p>     
+              <p id="descriptionParagraph" class="card-text m-4"><%= listing.listingDescription%></p>     
             </div>
           </div>
+
+          <% if (isAdmin || user.id == listing.sellerID) { %>
+            <div class="row mx-2">
+              <div class="container">
+                <h4 class="row">Purchases</h4>
+                <div class="row">
+                  <%- include('../partials/purchaseTable', {showBuyer: true, purchases}) %>
+                </div>
+              </div>
+            </div>
+          <% } %>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<% if (isAdmin || (user != null && user.id == result.sellerID)) { %>
+<% if (isAdmin || (user != null && user.id == listing.sellerID)) { %>
   <script src="/public/listing/listingResult.js" type="text/javascript"></script>
 <% } %>
 

@@ -355,7 +355,7 @@ const getPurchasesByCheck = function(check, callback = { success: (purchases) =>
 		SELECT 
 			PC_PK AS id,
 			PC_LS AS listingID,
-			LC_Title AS listingTitle,
+			LS_Title AS listingTitle,
 			PC_PM AS paymentMethod,
 			PC_US_Buyer AS buyerID,
 			US_Username AS buyerUsername,
@@ -374,7 +374,7 @@ const getPurchasesByCheck = function(check, callback = { success: (purchases) =>
 	{
 		if (err)
 		{
-			console.trace("Failed to get purchases for user: " + err)
+			console.trace("Failed to get purchases for user! " + err)
 			callback.fail("Could not get purchases for user from the database");
 		}
 		else
@@ -387,7 +387,7 @@ const getPurchasesByCheck = function(check, callback = { success: (purchases) =>
 exports.getPurchasesForUserID = function(userID, callback = { success: (purchases) => {}, fail: (reason) => {} })
 {
 	let db = database.connectDatabase();
-	getPurchasesByCheck('PC_US_Buyer = ' + db.escape(userID));
+	getPurchasesByCheck('PC_US_Buyer = ' + db.escape(userID), callback);
 }
 
 exports.getPurchasesForUser = function(user, callback = { success: (purchases) => {}, fail: (reason) => {} })
@@ -398,7 +398,7 @@ exports.getPurchasesForUser = function(user, callback = { success: (purchases) =
 exports.getPurchasesForListingID = function(listingID, callback = { success: (purchases) => {}, fail: (reason) => {} })
 {
 	let db = database.connectDatabase();
-	getPurchasesByCheck('PC_LS = ' + db.escape(listingID));
+	getPurchasesByCheck('PC_LS = ' + db.escape(listingID), callback);
 }
 
 exports.getPurchasesForListing = function(listing, callback = { success: (purchases) => {}, fail: (reason) => {} })
