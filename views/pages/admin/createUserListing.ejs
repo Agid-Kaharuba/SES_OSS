@@ -15,7 +15,11 @@
 
     <body>
         <%- include ../../partials/topBar -%>
+        <% var active = "createUserListing"; %>
         <%- include ../../partials/user/publicProfileHead %>
+
+        <h4 class="mt-4">Create Listing For <%=targetUser.username%></h4>
+        <hr>
 
         <%- include('../../partials/userDashboard/createAd', {path: "/admin/createUserListing/id=" + targetUser.id}) %>
 

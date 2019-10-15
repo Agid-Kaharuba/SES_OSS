@@ -1,3 +1,35 @@
+<style>
+    .hori-nav {
+        list-style-type: none;
+        width: 80%;
+        overflow: hidden;
+        background: rgb(85, 85, 85);
+    }
+
+    .hori-nav li {
+        float: left;
+    }
+
+    .hori-nav-header {
+        background-color: rgb(58, 58, 58);
+        color: white;
+    }
+
+    .hori-nav li a {
+        color: rgb(255, 172, 78);
+        padding: 20px;
+        margin: 5px;
+        display: block;
+        text-decoration: none;
+        text-align: center;
+    }
+
+    .hori-selected {
+        color: rgb(163, 105, 38);
+        border-radius: 25px;
+    }
+</style>
+
 <div class="container">
             
     <div class="justify-content-center card card-body">
@@ -6,26 +38,52 @@
         </div>
 
         <% if (isAdmin && targetUser.id !== user.id) { %>
-            <div class="card card-body container">
-                <div class="row ml-4 mb-3">
-                    <h5>Admin controls</h5>
+            <div class="container mx-2">
+                <div class="row hori-nav-header">
+                    <h5 class="m-3"><b>Admin controls</b></h5>
                 </div>
                 <div class="row">
-                    <a class="col" href="/user/public/profile/id=<%= targetUser.id %>">
-                        <input class="btn btn-warning" type="button" value="Public Profile"/>
-                    </a>
+                    <ul class="col hori-nav">
+                        <li>
+                            <a class="col" 
+                            <% if (active === 'public') {%> 
+                                class="hori-selected" 
+                            <% } else { %> 
+                                href="/user/public/profile/id=<%= targetUser.id %>"
+                            <% } %>>
+                                <b>Public Profile</b>
+                            </a>
+                        </li>
 
-                    <a class="col" href="/admin/userProfile/id=<%= targetUser.id %>">
-                        <input class="btn btn-warning" type="button" value="Personal Profile"/>
-                    </a>
+                        <li>
+                            <a class="col" <% if (active === 'userProfile') {%> 
+                                class="hori-selected" 
+                            <% } else { %> 
+                                href="/admin/userProfile/id=<%= targetUser.id %>"
+                            <% } %>>
+                            <b>Personal Profile</b></a>
+                        </li>
 
-                    <a class="col" href="/admin/createUserListing/id=<%= targetUser.id %>">
-                        <input class="btn btn-warning" type="button" value="Create Listing for user"/>
-                    </a>
+                        <li>
+                            <a class="col" 
+                            <% if (active === 'createUserListing') {%> 
+                                class="hori-selected" <% 
+                            } else { %> 
+                                href="/admin/createUserListing/id=<%= targetUser.id %>"
+                            <% } %>>
+                            <b>Create Listing for user</b></a>
+                        </li>
 
-                    <a class="col" href="/admin/userPurchases/id=<%= targetUser.id %>">
-                        <input class="btn btn-warning" type="button" value="Purchases by user"/>
-                    </a>
+                        <li>
+                            <a class="col" 
+                            <% if (active === 'userPurchases') {%> 
+                                class="hori-selected" 
+                            <% } else { %> 
+                                href="/admin/userPurchases/id=<%= targetUser.id %>"
+                            <% } %>>
+                            <b>Purchases by user</b></a>
+                        </li>
+                    </ul>
                 </div>
             </div>
         <% } %>

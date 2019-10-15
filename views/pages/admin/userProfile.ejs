@@ -15,7 +15,11 @@
 
     <body>
         <%- include ../../partials/topBar -%>
+        <% var active = "userProfile"; %>
         <%- include ../../partials/user/publicProfileHead %>
+
+        <h4 class="mt-4"><%=targetUser.username%>'s Profile</h4>
+        <hr>
 
         <%
             // Set up arguments for profile partial.
