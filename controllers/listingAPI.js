@@ -17,13 +17,12 @@ router.get('/id=:id', (req, res) => // e.g. listing/id=4bb8590e-ce26-11e9-a859-2
 
         listingModel.GetListing(req.params.id, 
             {
-            found: (results) => 
+            found: (results) =>
             {
-                if (results.length < 1)
+                if (results.length < 1) 
                 {
                     htmlResponse.fail(req, res, "Could not find the listing that you were looking for :(", "Listing not found");
-                } else 
-                {
+                } else {
                     let result = results[0];
                     result.imgName = attachmentUtil.getImgPath(result.imgName);
                     baseView.renderWithAddons(req, res, 'pages/listingResult', { result });
@@ -48,11 +47,11 @@ router.get('/search=:query', (req, res) =>
         });
 })
 
-router.get('/summary=:purchaseID', auth.authorizeUser, (req, res) =>
- {
+router.get('/summary=:purchaseID', auth.authorizeUser, (req, res) => 
+{
     console.log('Received request to see purchase summary.')
     auth.getSessionFromCookie(req, 
-    {
+        {
         found: (session) => 
         {
             var userPK = session.SS_US;
@@ -62,7 +61,7 @@ router.get('/summary=:purchaseID', auth.authorizeUser, (req, res) =>
                     (result) => 
                     {
                         console.log(result);
-                     // res.render(view.viewPurchaseSummary(result));
+                        // res.render(view.viewPurchaseSummary(result));
                         console.log("hello my name is cameron");
                     },
                 notFound:
@@ -86,7 +85,7 @@ router.get('/purchase=:listingID&quantity=:amount', (req, res) =>
                 {
                 success: (purchase) => 
                 {
-                baseView.renderWithAddons(req, res, 'pages/purchase', { purchase });
+                    baseView.renderWithAddons(req, res, 'pages/purchase', { purchase });
                     //pass this onto the view.
 
                 },
@@ -102,30 +101,15 @@ router.post('/purchaseItem', (req, res) =>
 {
     console.log(req);
     listingModel.purchaseItem(
-        req.body,
-        {
-            success: (purchaseID) => 
-            {
-                res.send(jsonResponse.success({purchaseID}));
+        req.body, {
+            success: (purchaseID) => {
+                res.send(jsonResponse.success({ purchaseID }));
             },
-            fail: (reason) => 
-            { res.send(jsonResponse.fail(reason)); }
+            fail: (reason) => { res.send(jsonResponse.fail(reason)); }
         })
 });
 
 router.get('/confirmPurchase', (req, res) => 
-{
-    let currentUser = req.cookies.currentUser;
-    // console.log('currentUser is ' + currentUser);
-    baseView.renderWithAddons(req, res, 'pages/confirmPurchase', { currentUser })
-});
-
-router.get('/paymentSummary', auth.authorizeUser, (req, res) => 
-{
-    baseView.renderWithAddons(req, res, 'pages/paymentSummary');
-});
-
-router.post('/modify', auth.authorizeUserJson, (req, res) => 
 {
     console.log("modifying listing!")
     console.log(req.body);
@@ -145,10 +129,9 @@ router.post('/modify', auth.authorizeUserJson, (req, res) =>
             {
                 success: () => res.send(jsonResponse.success()),
                 fail: (reason) => res.send(jsonResponse.fail(reason))
-            
             })
         }
     })
 })
 
-module.exports = { router };
+module.exports = { router }
