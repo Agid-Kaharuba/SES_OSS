@@ -1,8 +1,19 @@
+<style>
+    .section-title {
+        background-color: #55585e;
+        color: #c0c9d6;
+        padding: 10px;
+        border-top-left-radius: 6px;
+        border-top-right-radius: 6px;
+        font-weight: bold;
+    }
+</style>
+
 <div class="container m-1">
     <div id="userInfo" data-username="<%=userInfo.profile.username%>"></div>
 
     <div class="container m-4">
-        <div class="title">Profile Information</div>
+        <div class="section-title">Profile Information</div>
         <div class="card card-body">
             <div class="row my-1">
                 <div class="col"><b>Username</b></div>
@@ -60,7 +71,7 @@
     </div>
     
     <div class="container m-4">
-        <div class="title">Current User Address</div>
+        <div class="section-title">Current User Address</div>
         <table class="table table-striped">
             <thead class="thead-dark">
                 <tr>
@@ -96,7 +107,7 @@
     </div>
 
     <div class="container m-4">
-        <div class="title">Current User Payment Methods</div>
+        <div class="section-title">Current User Payment Methods</div>
         <table class="table table-striped">
             <thead class="thead-dark">
                 <tr>
