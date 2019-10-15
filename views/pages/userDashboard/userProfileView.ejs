@@ -177,7 +177,7 @@
 							<th style="font-weight: normal;"><%= userInfo.payment[i].paymentNickname %></th>
 							<th style="font-weight: normal;"><%= userInfo.payment[i].paymentName %></th>
 							<th style="font-weight: normal;"><%= userInfo.payment[i].paymentCardNumber %></th>
-							<th style="font-weight: normal;"><%= userInfo.payment[i].paymentExp %></th>
+							<th style="font-weight: normal;"><%= userInfo.payment[i].paymentExp.toLocaleString().split(',')[0] %></th>
 							<th style="font-weight: normal;"><%= userInfo.payment[i].paymentCVC %></th>
 							<th>
 								<% let dialogID = "editPaymentDialog-" + userInfo.address[i].id; %>
