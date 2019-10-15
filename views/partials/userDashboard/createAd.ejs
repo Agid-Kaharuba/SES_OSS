@@ -1,13 +1,30 @@
-<form action="/user/profile/createAd" method="POST", enctype="multipart/form-data">
-    Product Name:<br>
-    <input type="text" name="productName"><br>
-    Product Description:<br>
-    <input type="text" name="productDescription"><br>
-    Price:<br>
-    <input type="number" name="productPrice"><br>
-    Stock:<br>
-    <input type="number" name="productStock"><br>
-    Photo:<br>
-    <input type="file" name="productImage"><br>
-    <input type="submit" value="Submit">
-</form>
+<div class="container m-2">
+    <form action="/user/profile/createAd" method="POST", enctype="multipart/form-data">
+
+        <div class="form-group my-4">
+            <div><b>Name</b></div>
+            <input type="text" name="productName"><br>
+        </div>
+
+        <div class="form-group my-4">
+            <div><b>Product Description</b></div>
+            <input type="text" name="productDescription"><br>
+        </div> 
+
+        <div class="form-group">
+            <div><b>Price</b></div>
+            <input type="number" name="productPrice"><br>
+        </div> 
+
+        <div class="form-group my-4"> 
+            <div><b>Stock</b></div>
+            <input type="number" name="productStock"><br>
+        </div>
+
+        <div class="form-group my-4"> 
+            <div><b>Photo</b></div>
+            <input type="file" name="productImage"><br>
+            <input type="submit" value="Submit">
+        </div>
+    </form>
+</div>

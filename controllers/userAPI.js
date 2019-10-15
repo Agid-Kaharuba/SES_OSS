@@ -218,7 +218,7 @@ router.post('/profile/editPayment', (req, res) =>
 
 router.get('/profile/createAd', (req, res) =>
 {
-    res.render('pages/userDashboard/createAd');
+    baseView.renderWithAddons(req, res, 'pages/userDashboard/createAd');
 });
 
 router.post('/profile/createAd', upload.single('productImage'), (req, res) =>
