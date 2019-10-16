@@ -33,8 +33,8 @@
 <div class="container">
             
     <div class="justify-content-center card card-body">
-        <div class="text-center text-primary jumbotron">
-            <h1><%= targetUser.username %></h1>
+        <div class="my-2">
+            <h1 class="big-title"><%= targetUser.username %></h1>
         </div>
 
         <% if (isAdmin && targetUser.id !== user.id) { %>
