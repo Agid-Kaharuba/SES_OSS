@@ -83,7 +83,17 @@ WHERE
         }
         else
         {
-            results[0].isActive = results[0].isActive.readInt8() == 1;
+			if (results == null)
+			{
+				results = {};
+			}
+			results.listingQuery = searchTerm;
+
+			console.log(results);
+			for (var result of results)
+			{
+				result.isActive = result.isActive.readInt8() == 1;
+			}
             callback(results);
         }
     });
