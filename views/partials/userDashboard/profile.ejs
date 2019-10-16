@@ -138,7 +138,7 @@
                     <th scope="row" style="font-weight: normal;"><%= expiryDate %></th>
                     <th scope="row" style="font-weight: normal;"><%= userInfo.payment[i].paymentCVC %></th>
                     <th scope="row">
-                        <% let dialogID = "editPaymentDialog-" + userInfo.address[i].id; %>
+                        <% let dialogID = "editPaymentDialog-" + userInfo.payment[i].id; %>
                         <input class="btn btn-info" type="submit" value="Edit Payment" data-toggle="modal" data-target="#<%=dialogID%>"/>
                         <%- include('../../partials/userDashboard/editPaymentDialog', {dialogID, payment: userInfo.payment[i], editPaymentPath}) %>
                     </th>
