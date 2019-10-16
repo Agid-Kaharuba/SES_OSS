@@ -13,8 +13,22 @@
                            placeholder="What're you searching for?" id="searchInput"
                            type="search">
                     <div class="input-group-append">
-                        <button class="btn btn-link text-primary" id="button-addon1" type="button" onclick="window.location.href='/listing/search=' + $('#searchInput').val()"><i
-                                    class="fa fa-search"></i></button>
+                        <button class="btn btn-link text-primary" id="button-search" type="button">
+                            <i class="fa fa-search"></i></button>
+
+                        <script>
+                            $().ready(() =>
+                            {
+                                $('#button-search').click(() =>
+                                {
+                                    let searchString = $('#searchInput').val();
+                                    if (searchString) 
+                                    {
+                                        window.location.href='/listing/search=' + searchString;
+                                    }
+                                })
+                            })
+                        </script>
                     </div>
                 </div>
             </div>
