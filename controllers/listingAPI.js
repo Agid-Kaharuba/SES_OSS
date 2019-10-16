@@ -131,15 +131,27 @@ router.post('/modify', (req, res) =>
             res.send(jsonResponse.fail("Failed to modify a listing with no id property!"));
             return;
         }
-
-        if (isAdmin || user.id == listing.id) 
+        
+        listingModel.GetListing(listing.id, 
         {
-            listingModel.modifyListing(listing, 
+            found: (listings) =>
             {
-                success: () => res.send(jsonResponse.success()),
-                fail: (reason) => res.send(jsonResponse.fail(reason))
-            })
-        }
+                var foundListing = listings[0]
+                if (isAdmin || user.id == foundListing.sellerID) 
+                {
+                    listingModel.modifyListing(listing, 
+                    {
+                        success: () => res.send(jsonResponse.success()),
+                        fail: (reason) => res.send(jsonResponse.fail(reason))
+                    })
+                }
+                else
+                {
+                    Response.send(jsonResponse.fail("Modification access not allowed for this listing."))
+                }
+            },
+            notFound: () => res.send(jsonResponse.fail("Could not find listing to modify!"))
+        })
     })
 })
 
