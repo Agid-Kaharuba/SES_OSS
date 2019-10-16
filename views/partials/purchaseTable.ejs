@@ -53,5 +53,11 @@
                 </tr>
             <% } %>
         </table>
+
+        <% if (purchases.length == 0) { %>
+            <div class="text-center mt-5">
+                <h4>No purchases found</h4>
+            </div>
+        <% } %>
     </div>
 </div>

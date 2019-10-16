@@ -25,7 +25,7 @@
                     <th scope="col">Title</th>
                     <th scope="col">Description</th>
                 </tr>
-            </thead>		
+            </thead>
             <% for (result of results) { 
 
                 if ((showActive == result.isActive) || showAll) { %>
@@ -44,5 +44,11 @@
                 <% }
             } %>
         </table>
+
+        <% if (results.length == 0) { %>
+            <div class="text-center mt-4">
+                <h3>No listings found</h3>
+            </div>
+        <% } %>
     </div>
 </div>
