@@ -27,7 +27,7 @@ CREATE TABLE User
   US_FirstName		varchar(64) DEFAULT NULL,
   US_LastName		varchar(64) DEFAULT NULL,
   US_PhoneNumber	varchar(32) DEFAULT NULL,
-  US_BirthDate		datetime NULL,
+  US_BirthDate		datetime DEFAULT NULL,
   US_IsActive		bit NOT NULL DEFAULT 1,
   US_JoinDate		datetime NOT NULL DEFAULT NOW(),
   PRIMARY KEY (US_PK),
