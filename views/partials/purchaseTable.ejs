@@ -38,7 +38,7 @@
             </thead>		
             <% for (purchase of purchases) { %>
 
-                <tr class="tableRow" onclick="window.location.href = '/purchase/id=<%= purchase.id%>'">
+                <tr class="tableRow" onclick="window.location.href = '/listing/summary=<%= purchase.id%>'">
                     <td width="10%"><%= purchase.date.toLocaleDateString()%></td>
                     <% if (showBuyer) { %>
                         <td><%=purchase.buyerUsername%></td>
