@@ -1,5 +1,6 @@
 const database = require('../utils/database');
 const userModel = require('./user');
+const uuid = require("uuid");
 
 exports.convertToListingObject = function(rawListing) {
     return {
@@ -256,9 +257,10 @@ exports.purchaseItem = function(purchase, callback = { success: (purchasePK) => 
                 return callback.fail("Tried to purchase more stock than what is available.")
             } else {
                 let query2 = `
-INSERT INTO Purchase (PC_LS, PC_PM, PC_US_Buyer, PC_AD_Delivery, PC_Price, PC_Quantity)
-	VALUES (?, ?, ?, ?, ?, ?);`;
-                let sanitisedInputs2 = [purchase.listingID, purchase.paymentMethodID, purchase.buyerID, purchase.deliveryAddressID, purchase.totalPrice, purchase.quantity];
+INSERT INTO Purchase (PC_PK, PC_LS, PC_PM, PC_US_Buyer, PC_AD_Delivery, PC_Price, PC_Quantity)
+    VALUES (?, ?, ?, ?, ?, ?, ?);`;
+                let purchasePK = uuid.v4();
+                let sanitisedInputs2 = [purchasePK, purchase.listingID, purchase.paymentMethodID, purchase.buyerID, purchase.deliveryAddressID, purchase.totalPrice, purchase.quantity];
                 db.query(query2, sanitisedInputs2, (err) => { if (err) console.trace(err) });
 
                 let query3 = `
@@ -270,30 +272,7 @@ LIMIT 1
                 let sanitisedInputs3 = [purchase.quantity, purchase.listingID];
                 db.query(query3, sanitisedInputs3, (err) => { if (err) console.trace(err) });
 
-                let query4 = `
-SELECT PC_PK as purchasePK
-FROM Purchase
-WHERE PC_US_Buyer = ?
-ORDER BY PC_Date DESC
-LIMIT 1
-				;`;
-
-                let sanitisedInputs4 = [purchase.buyerID];
-                db.query(query4, sanitisedInputs4, (err, results) => {
-                    let errorMsg = "Error retrieving purchase summary.";
-                    if (err) {
-                        console.trace(err);
-                        return callback.fail(errorMsg);
-                    }
-
-                    if (results.length == 0 || results[0].purchasePK == null) {
-                        return callback.fail(errorMsg);
-                    } else {
-                        let purchasePK = results[0].purchasePK
-                        //exports.notifySellerOfPurchase(purchasePK);
-                        return callback.success(purchasePK);
-                    }
-                });
+                return callback.success(purchasePK);
             }
         }
     });

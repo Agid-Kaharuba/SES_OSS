@@ -4,13 +4,29 @@
         td {
             padding: 15px;
         }
+        #summary{
+            font-weight: bold;
+        }
+        #total{
+            font-weight: bold;
+        }
+        #pI{
+            font-weight: bold; 
+        }
+        #dI{
+            font-weight: bold;     
+        }
+        #listingID{
+            font-weight: bold;     
+        }
+
     </style>
     <div id="userID" data-user-id="<%= user.id %>" ></div>
     
     <div class="container mt-5 my-2" role="purchase-body">
         <div class="row mb-3">
             <div class="col m-4">
-                <h4>Payment Information</h4>
+                <h4 id="pI"> Payment Information</h4>
 
                 <div class="input-group mb-2">
                     <div class="input-group-prepend">
@@ -34,7 +50,7 @@
                     <table class="table-white" id=>
                         <tr class="bg-white"> 
                             <th colspan="3">
-                                <h4>Summary:</h4>
+                                <h4 id="summary">Summary:</h4>
                             </th>
                         </tr>
                         <tr>
@@ -53,7 +69,7 @@
                         <tr>
 
                             <th scope="row">
-                                <h4> Total: </h4>
+                                <h4 id="total"> Total: </h4>
                             </th>
                             <td>
                                 <h4  id="totalPrice" data-total-id="<%= purchase.itemPrice * purchase.requestQuantity %>"> AUD$
@@ -68,7 +84,7 @@
 
         <div class="row my-3">
             <div class="col m-4">
-                <h4>Delivery Information</h4>
+                <h4 id="dI">Delivery Information</h4>
 
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
@@ -87,7 +103,7 @@
         <div id="remainingStocks" data-remain-id="<%= purchase.itemStockLeft %>"></div>
         <div class="row  my-3">
             <div class="col my-3 mx-auto">
-                <a id="listingID" data-listing-id="<%= purchase.itemID%>" href='/listing/id=<%= purchase.itemID %>'> Return to item </a>
+                <a id="listingID" data-listing-id="<%= purchase.itemID%>" href='/listing/id=<%= purchase.itemID %>'><h4>Return to item listing</h4></a>
             </div>
             <button id="purchaseBtn" type="button" class="btn btn-lg btn-primary"> Confirm Purchase</button>
         </div>
@@ -128,4 +144,4 @@
     <% include ../partials/foot %>
 
 
-        <!--<% // purchaseInfo.purchasePK %> -->
+       

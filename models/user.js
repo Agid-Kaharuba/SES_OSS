@@ -645,6 +645,7 @@ exports.createUserAddress = function(userid, address,callback = { success: () =>
 	{
 		if (err)
 		{
+			console.trace('we fucked up' +err);
 			callback.fail('Failed to insert new address');
 		}
 		else
