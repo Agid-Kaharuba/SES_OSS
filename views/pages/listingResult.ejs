@@ -6,12 +6,12 @@
     <div class="container card-body">
 
       <div class="card container justify-content-center bg-light mb-3">
-        <div class="card-header text-center text-primary">
-            <h3 id="titleId"><%= listing.listingTitle%></h3> 
+        <div class="m-2 mt-4">
+            <h3 class="big-title" id="titleId"><%= listing.listingTitle%></h3> 
         </div>
         <% if (listing.isActive == false) { %>
-          <div class="my-4 text-danger text-center jumbotron">
-              <h1 class="warning">This listing is closed!</h1> 
+          <div class="my-4 lineblock-warning">
+              <h1>This listing is closed!</h1> 
           </div>
         <% } %>
         <div class="col">

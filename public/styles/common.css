@@ -1,0 +1,25 @@
+.lineblock-warning {
+    background-color: rgb(214, 0, 0);
+    padding: 10px;
+    text-align: center;
+    width: 100%;
+    color: whitesmoke;
+}
+
+.big-title {
+    font-size: 60pt;
+    color: rgb(65, 66, 87);
+    padding: 10px;
+    padding-left: 40px;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    border-bottom: 1px groove black;
+}
+
+.medium-title {
+    font-size: 40pt;
+    color: rgb(65, 66, 87);
+    padding: 10px;
+    padding-left: 40px;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    border-bottom: 1px groove black;
+}
