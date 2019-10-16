@@ -499,7 +499,6 @@ exports.getListingsForUserByID = function(userID, callback = { success: (results
     let query = `
 		SELECT * FROM Listing
 		INNER JOIN User ON Listing.LS_US_Seller = User.US_PK
-		LEFT JOIN Attachment ON LS_PK = AT_ParentPK AND AT_ParentID = 'LS' AND AT_Type = 'IMG'
 		WHERE Listing.LS_US_Seller = ?
 	`
     db.query(query, [userID], (err, results) => {
