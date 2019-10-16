@@ -35,16 +35,22 @@ WHERE
 LIMIT 1
 ;`;
 
-    db.query(query, [listingPK],
-        (err, results) => {
-            if (err) throw err;
-            if (results.length == 1) {
-                results[0].isActive = results[0].isActive.readInt8() == 1;
-                callback.found(results);
-            } else {
-                callback.notFound();
-            }
-        });
+    db.query(query, [listingPK], (err, results) => 
+    {
+        if (err) 
+        {
+            console.trace("Failed to get listing! " + err);
+        }
+        else if (results.length == 1) 
+        {
+            results[0].isActive = results[0].isActive.readInt8() == 1;
+            callback.found(results);
+        } 
+        else 
+        {
+            callback.notFound();
+        }
+    });
 
 }
 
@@ -68,16 +74,19 @@ WHERE
 	)
 ;`;
 
-    db.query(query, [searchTerm, searchTerm],
-		(err, results) => 
-		{
-			if (err) throw err;
-			for (result of results) 
-			{
-				result.isActive = result.isActive.readInt8() == 1;   
-            }
+    db.query(query, [searchTerm, searchTerm], (err, results) => 
+    {
+        if (err)
+        {
+            console.trace("Failed to search listings, something went wrong with query! " + err);
+            callback([]);
+        }
+        else
+        {
+            results[0].isActive = results[0].isActive.readInt8() == 1;
             callback(results);
-        });
+        }
+    });
 }
 
 exports.GetPurchaseSummary = function(purchasePK, userPK, callback = { found: (result) => {}, notFound: () => {} }) {
@@ -116,15 +125,19 @@ WHERE
 LIMIT 1
 ;`;
 
-    db.query(query, [purchasePK, userPK], (err, results) => {
-        if (err) throw err;
-
-        if (results.length > 0) {
+    db.query(query, [purchasePK, userPK], (err, results) => 
+    {
+        if (err) 
+        {
+            console.trace("Failed to get purchase summary! " + err)
+        } 
+        else if (results.length > 0) 
+        {
             callback.found(results[0]);
-            return
-        } else {
+        } 
+        else 
+        {
             callback.notFound();
-            return;
         }
     });
 }
@@ -140,12 +153,16 @@ exports.createListingForUserID = function(userid, listing, callback = { success:
         let insertListingQuery = `INSERT INTO Listing (LS_US_Seller, LS_Title, LS_Description, LS_Price, LS_RemainingStock) VALUES (?, ?, ?, ?, ?);`;
         let inputs = [userid, listing.title, listing.description, listing.price, listing.remainingStock];
         db.query(insertListingQuery, inputs, (err) => {
-            if (err) throw err;
-
-            callback.success();
+            if (err)
+            {
+                console.trace("Failed to create new listing for user! " + err);
+                callback.fail();
+            }
+            else
+            {
+                callback.success();
+            }
         });
-
-        callback.fail();
     }
     /**
      * Create a new listing from a full model.
@@ -173,21 +190,27 @@ exports.modifyListingByID = function(listingid, listing, callback = { success: (
 		LS_IsActive = COALESCE(?, LS_isActive),
 		LS_RemainingStock = COALESCE(?, LS_RemainingStock)
 		WHERE LS_PK = ?;
-	`
-        // Try to get user id from user model inside listing model.
-    if (!listing.hasOwnProperty('user'))
-        var userid = null;
-    else
-        var userid = user.userid;
+    `
+    var userid;
+    var isActive;
 
+    // Try to get user id from the listing.
+    if (Object.prototype.hasOwnProperty.call(listing, 'user'))
+        userid = listing.user.userid;
+    else if (Object.prototype.hasOwnProperty.call(listing, 'userID'))
+        userid = listing.userID
+        
+    // Convert boolean do database bit value of 1 or 0.
     if (listing.isActive == 'true')
-        var isActive = 1;
+        isActive = 1;
     else if (listing.isActive == 'false')
-        var isActive = 0;
+        isActive = 0;
 
     let inputs = [userid, listing.title, listing.description, listing.price, isActive, listing.remainingStock, listingid]
-    db.query(query, inputs, (err, results) => {
-        if (err) {
+    db.query(query, inputs, (err, results) => 
+    {
+        if (err)
+        {
             console.trace('Failed to modify listing in the database! ' + err);
             if (callback.hasOwnProperty('fail')) callback.fail('Failed to modify listing in the database');
         } else {
@@ -318,12 +341,11 @@ WHERE PM_US = ?
 ;`;         
   let sanitisedInputs = [userPK];
   db.query(paymentMethodsQuery, sanitisedInputs, (err, payments) => {
-    console.log("GOT THE PAYMENT INFO");
-    console.log(payments);
 
     if (err) {
         console.trace(err);
         callback.fail("Failed to retrieve payment options");
+        return;
     }
     let addressQuery = `
     SELECT
@@ -339,11 +361,9 @@ WHERE PM_US = ?
     ;`;
     let sanitisedInputs2 = [userPK];
     db.query(addressQuery, sanitisedInputs2, (err, addresses) => {
-        console.log("GOT THE address INFO");
-        console.log(addresses);
 
         if (err) {
-            console.trace(err);                
+            console.trace(err);
             callback.fail("Failed to retrieve address options");
         }
         let listingQuery = `
@@ -360,18 +380,18 @@ WHERE PM_US = ?
         ;`;
       let sanitisedInputs3 = [listingPK];
       db.query(listingQuery, sanitisedInputs3, (err, listing) => {
-          console.log("GOT THE listing INFO");
-          console.log(listing);
 
           if (err) {
-              console.trace(err);                    
+              console.trace(err);
               callback.fail("Failed to retrieve listing");
           }
-
-          listing[0].addresses = addresses;
-          listing[0].payments = payments;
-          listing[0].requestQuantity = amount;
-          callback.success(listing[0]);
+          else
+          {
+            listing[0].addresses = addresses;
+            listing[0].payments = payments;
+            listing[0].requestQuantity = amount;
+            callback.success(listing[0]);
+          }
       });
     });
   });
@@ -480,7 +500,7 @@ exports.getListingsForUserByID = function(userID, callback = { success: (results
         } else {
             let newResults = [];
 
-            for (rawResult of results) {
+            for (var rawResult of results) {
                 let obj = this.convertToListingObject(rawResult);
                 obj.user = userModel.convertToUserObject(rawResult);
                 newResults.push(obj);
