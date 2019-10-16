@@ -153,7 +153,7 @@ function insertListing(LS_PK, LS_US_Seller, LS_Title, LS_Description, LS_Price, 
 function insertPaymentMethod(PM_PK, PM_US, PM_Nickname, PM_Name, PM_IsPrimary)
 {
 	var cardNumber = getNumberOfLength(16);
-	var expiry = getNumberOfLength(2, 12) + "/" + getNumberOfLength(2, 25);
+	var expiry = "20" + getNumberOfLength(2, 99) + "-" + getNumberOfLength(2, 12) + "-01 00:00:00";
 	var cvc = getNumberOfLength(3);
 	db.query(insertPaymentMethodScript, [PM_PK, PM_US, PM_Nickname, PM_Name, cardNumber, expiry, cvc, PM_IsPrimary], handleError);
 }
@@ -192,6 +192,6 @@ function getNumberOfLength(length, maxNumber)
 	{
 		maxNumber = 10**length;
 	}
-	return Math.floor(Math.random() * maxNumber).toString().padStart(length, '0');
+	return Math.ceil(Math.random() * maxNumber).toString().padStart(length, '0');
 }
 console.log("Test data generation complete.")
