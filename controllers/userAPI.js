@@ -177,7 +177,7 @@ router.post('/profile/editPayment', (req, res) =>
 
 router.get('/profile/createAd', (req, res) =>
 {
-    baseView.renderWithAddons(req, res, 'pages/admin/createUserListing');
+    baseView.renderWithAddons(req, res, 'pages/userDashboard/createAd');
 });
 
 router.post('/profile/createAd', upload.single('fileName'), (req, res) =>
