@@ -95,7 +95,7 @@ CREATE TABLE PaymentMethod
   PM_Nickname 		varchar(64) NULL,
   PM_Name		 	varchar(64) NULL,
   PM_CardNumber		varchar(16) NULL,
-  PM_Expiry			datetime NULL,
+  PM_Expiry			 NULL,
   PM_CVC		 	varchar(3) NULL,
   PM_IsActive		BIT NOT NULL DEFAULT 1,
   PM_IsPrimary		BIT NOT NULL DEFAULT 0,

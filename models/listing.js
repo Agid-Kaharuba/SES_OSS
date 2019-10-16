@@ -158,10 +158,11 @@ LIMIT 1
  * @param {} listing The listing model.
  * @param {} callback callbacks with success() if successful, fail() if failed, and done() when done. Note that done() is called after fail() or success().
  */
-exports.createListingForUserID = function(userid, listing, callback = { success: () => {}, fail: () => {}, done: () => {} }) {
+exports.createListingForUserID = function(listingPK, userid, listing, callback = { success: () => {}, fail: () => {}, done: () => {} }) {
         const db = database.connectDatabase();
-        let insertListingQuery = `INSERT INTO Listing (LS_US_Seller, LS_Title, LS_Description, LS_Price, LS_RemainingStock) VALUES (?, ?, ?, ?, ?);`;
-        let inputs = [userid, listing.title, listing.description, listing.price, listing.remainingStock];
+        let insertListingQuery = `INSERT INTO Listing (LS_PK, LS_US_Seller, LS_Title, LS_Description, LS_Price, LS_RemainingStock) VALUES (?, ?, ?, ?, ?, ?);`;
+        let inputs = [listingPK, userid, listing.title, listing.description, listing.price, listing.remainingStock];
+        console.log(listing.remainingStock);
         db.query(insertListingQuery, inputs, (err) => {
             if (err)
             {
@@ -223,8 +224,13 @@ exports.modifyListingByID = function(listingid, listing, callback = { success: (
         {
             console.trace('Failed to modify listing in the database! ' + err);
             if (callback.hasOwnProperty('fail')) callback.fail('Failed to modify listing in the database');
-        } else {
-            if (callback.hasOwnProperty('success')) callback.success();
+        } else 
+        {
+            if (callback.hasOwnProperty('success'))
+            {
+                
+                callback.success();
+            }
         }
         if (callback.hasOwnProperty('done')) callback.done();
     })

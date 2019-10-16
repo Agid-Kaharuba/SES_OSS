@@ -497,7 +497,55 @@ const getUserPayment = function(userid, callback = { found: () => {}, notFound: 
 	});
 }
 
+exports.deleteAddress = function (addressid, callback = { success: () => {}, fail: () => {} })
+{
+	var db = database.connectDatabase();
+	var query = `
+	UPDATE Address SET
+		AD_IsActive = 0
+	WHERE AD_PK = ?
+	`;
 
+	db.query(query, [addressid], (err, payment) =>
+	{
+		if (err)
+		{
+			console.log('Failed to delete address ' + err);
+			callback.fail();
+		}
+		else
+		{
+			callback.success();
+		}
+
+	});
+
+}
+
+exports.deletePayment = function (paymentid, callback = { success: () => {}, fail: () => {} })
+{
+	var db = database.connectDatabase();
+	var query = `
+	UPDATE Payment SET
+		PM_IsActive = 0
+	WHERE PM_PK = ?
+	`;
+
+	db.query(query, [paymentid], (err, payment) =>
+	{
+		if (err)
+		{
+			console.log('Failed to delete address ' + err);
+			callback.fail();
+		}
+		else
+		{
+			callback.success();
+		}
+
+	});
+
+}
 
 
 
@@ -733,6 +781,9 @@ const modifyUserPaymentByCheck = function(check, payment, callback = { success: 
 		if (callback.hasOwnProperty('done')) callback.done();
 		return;
 	}
+
+	console.log(payment.exp);
+	console.log(dateUtil.convertToMySQLDatetime(payment.exp));
 
 	db.query(query, [payment.nickName, payment.name, payment.number, dateUtil.convertToMySQLDatetime(payment.exp), payment.cvc], (err, results) => 
 	{

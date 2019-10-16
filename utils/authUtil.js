@@ -27,7 +27,9 @@ exports.getSessionFromUser = function(user, callback = (err, results, fields) =>
 
 exports.getSessionFromCookie = function(obj, callback = {found: (session) => {}, notFound: () => {}})
 {
-    let sessionID = obj.cookies[SessionCookieProp];
+    console.log(obj.cookies.session);
+    console.log(obj.cookies.session);
+    let sessionID = obj.cookies.session;
     if (sessionID == null)
     {
         callback.notFound();

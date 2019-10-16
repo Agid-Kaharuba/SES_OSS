@@ -82,6 +82,7 @@
                     <th scope="col">Country</th>
                     <th scope="col">Post Code</th>
                     <th scope="col"></th>
+                    <th scope="col"></th>
                 </tr>
             </thead>
             <%for(var i = 0; i < userInfo.address.length; i++) {%>
@@ -96,6 +97,11 @@
                         <% let dialogID = "editAddressDialog-" + userInfo.address[i].id; %>
                         <input class="btn btn-info" type="submit" value="Edit Address" data-toggle="modal" data-target="#<%=dialogID%>"/>
                         <%- include('../../partials/userDashboard/editAddressDialog', {dialogID, address: userInfo.address[i], editAddressPath}) %>
+                    </th>
+                    <th scope="row">
+                        <form action='user/profile/deleteAddress' method="POST"/>
+                            <input class="btn btn-info" type="submit" value="Delete Address" />
+                        </form>
                     </th>
                 </tr>
             <% } %>
@@ -116,6 +122,7 @@
                     <th scope="col">Card Number</th>
                     <th scope="col">Expiry Date</th>
                     <th scope="col">CVC</th>
+                    <th scope="col"></th>
                     <th scope="col"></th>
                 </tr>
             </thead>
@@ -138,9 +145,13 @@
                     <th scope="row" style="font-weight: normal;"><%= expiryDate %></th>
                     <th scope="row" style="font-weight: normal;"><%= userInfo.payment[i].paymentCVC %></th>
                     <th scope="row">
-                        <% let dialogID = "editPaymentDialog-" + userInfo.address[i].id; %>
+                        <% let dialogID = "editPaymentDialog-" + userInfo.payment[i].id; %>
                         <input class="btn btn-info" type="submit" value="Edit Payment" data-toggle="modal" data-target="#<%=dialogID%>"/>
                         <%- include('../../partials/userDashboard/editPaymentDialog', {dialogID, payment: userInfo.payment[i], editPaymentPath}) %>
+                    </th>
+                    <th scope="row">
+                        <% let deletePaymentID =  userInfo.payment[i].id; %>
+                        <input class="btn btn-info" type="submit" value="Delete Payment" data-toggle="modal" data-target="#<%=deletePaymentID%>"/>
                     </th>
                 </tr>
             <% } %>

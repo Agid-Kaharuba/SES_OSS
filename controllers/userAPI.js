@@ -7,8 +7,10 @@ const htmlResponse = require('../utils/HTMLResponse');
 const auth = require('../utils/authUtil');
 const router = express.Router();
 const multer = require('multer');
-const upload = multer({dest : 'attachment/IMG/'});
+const fs = require('fs');
+const path = require('path');
 const dateUtil = require('../utils/dateUtil');
+const uuid = require('uuid');
 
 // Every method is prepended with "/user" see app.js
 
@@ -131,10 +133,30 @@ router.post('/profile/editAddress', (req, res) =>
             {
                 res.redirect('/user/profile');
             }, 
-            fail: () => htmlResponse.fail(req, res, "Failed to edit existing address!"), 
+            fail: () => htmlResponse.fail(req, res, "Failed to edit existing address!")
         });
     }); 
 
+});
+
+router.post('/profile/deleteAddress', auth.authorizeUser, (req, res) =>
+{                   
+    var editData = req.body;
+
+    userModel.getUserInfo(req, (user, isAdmin) =>
+    {
+        userModel.deleteAddress(editData,
+        {
+            success: () =>
+            {
+                res.redirect('/user/profile');
+            },
+            fail: () =>
+            {
+                htmlResponse.fail(req, res, "Failed to edit existing address!");
+            }
+        });
+    })
 });
 
 router.post('/profile/addPayment', (req, res) =>
@@ -180,13 +202,32 @@ router.get('/profile/createAd', (req, res) =>
     baseView.renderWithAddons(req, res, 'pages/userDashboard/createAd');
 });
 
-router.post('/profile/createAd', upload.single('fileName'), (req, res) =>
-{
-    var listing = req.body;
+var storage = multer.diskStorage(
+    {
+        destination: 'attachment/IMG/',
+        filename: function ( req, file, cb ) {
+            //req.body is empty...
+            //How could I get the new_file_name property sent from client here?
+            
+            cb( null, file.originalname);
+        }
+    }
+);
+var upload = multer( { storage: storage } );
 
+router.post('/profile/createAd', (req, res) =>
+{
+    console.log(req.body);
+    var listing = req.body;
+    var listingPK = uuid.v4();
+    console.log(req.body.remainingStock);
+    upload.single('fileName');
+
+    renameMostRecentImgTo(listingPK);
+    
     userModel.getUserInfo(req, (user, isAdmin) =>
     {
-        listingModel.createListingForUserID(user.id, listing,
+        listingModel.createListingForUserID(listingPK, user.id, listing,
         {
             success: () =>
             {
@@ -195,8 +236,37 @@ router.post('/profile/createAd', upload.single('fileName'), (req, res) =>
             fail: () => htmlResponse.fail(req, res, "Failed to create new listing"),
         });
     });
-
 });
+
+function renameMostRecentImgTo(newName)
+{
+    var dirpath = __dirname + "/../attachment/IMG/";
+    // Check if dirpath exist or not right here
+  
+    let latest;
+  
+    const files = fs.readdirSync(dirpath);
+    files.forEach(filename => {
+      // Get the stat
+      const stat = fs.lstatSync(path.join(dirpath, filename));
+      // Pass if it is a directory
+      if (stat.isDirectory())
+        return;
+  
+      // latest default to first file
+      if (!latest) {
+        latest = {filename, mtime: stat.mtime};
+        return;
+      }
+      // update latest if mtime is greater than the current latest
+      if (stat.mtime > latest.mtime) {
+        latest.filename = filename;
+        latest.mtime = stat.mtime;
+      }
+    });
+  
+    fs.rename(dirpath + latest.filename, dirpath + newName + ".jpg", (err) => { if (err) console.trace(err); });
+  }
 
 router.get('/userListings', (req, res) =>
 {
