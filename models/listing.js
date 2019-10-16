@@ -74,20 +74,19 @@ WHERE
 	)
 ;`;
 
-    db.query(query, [searchTerm, searchTerm],
-        (err, results) => 
+    db.query(query, [searchTerm, searchTerm], (err, results) => 
+    {
+        if (err)
         {
-            if (err)
-            {
-                console.trace("Failed to search listings, something went wrong with query! " + err);
-                callback([]);
-            }
-            else
-            {
-                results[0].isActive = results[0].isActive.readInt8() == 1;
-                callback(results);
-            }
-        });
+            console.trace("Failed to search listings, something went wrong with query! " + err);
+            callback([]);
+        }
+        else
+        {
+            results[0].isActive = results[0].isActive.readInt8() == 1;
+            callback(results);
+        }
+    });
 }
 
 exports.GetPurchaseSummary = function(purchasePK, userPK, callback = { found: (result) => {}, notFound: () => {} }) {
