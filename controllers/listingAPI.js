@@ -60,7 +60,7 @@ router.get('/search=:query', (req, res) =>
 			console.log(results);
             baseView.renderWithAddons(req, res, 'pages/listing', { listings: results });
         });
-})
+});
 
 router.get('/summary=:purchaseID', auth.authorizeUser, (req, res) => 
 {
