@@ -15,13 +15,19 @@
                 <a href="/user/profile/createAd">
 
                     <span><i class="fa fa-envelope"></i></span>
-                    <span>Create An Ad</span>
+                    <span>Create A New Listing</span>
                 </a>
             </li>
             <li <% if (active == "userListings") { %> class="active" <% } %>>
                 <a href="/user/userListings">
                     <span><i class="fa fa-bar-chart"></i></span>
-                    <span>Manage Your Ads</span>
+                    <span>Your Listings</span>
+                </a>
+            </li>
+            <li <% if (active == "pastListings") { %> class="active" <% } %>>
+                <a href="/user/pastListings">
+                    <span><i class="fa fa-bar-chart"></i></span>
+                    <span>Your Past Listings</span>
                 </a>
             </li>
             <li <% if (active == "userPurchases") { %> class="active" <% } %>>

@@ -6,19 +6,31 @@
                 <h5 class="modal-title">Edit Payment</h5>
             </div>
 
-            <form action="/user/profile/editPayment" method="POST">
+            <form action="<%=editPaymentPath%>" method="POST">
 
                 <div class="modal-body">
                     Nickname:<br>
-                    <input type="text" name="editPayment_nickname"><br>
+                    <input type="text" name="nickName" value="<%=payment.paymentNickname%>"><br>
                     Cardholder Name:<br>
-                    <input type="text" name="editPayment_cardholderName"><br>
+                    <input type="text" name="name" value="<%=payment.paymentName%>"><br>
                     Card Number:<br>
-                    <input type="text" name="editPayment_number"><br>
+                    <input type="text" name="number" value="<%=payment.paymentCardNumber%>"><br>
                     Expiry:<br>
-                    <input type="text" name="editPayment_Expiry"><br>
+                    <% 
+                        let expiryDate;
+                        if (expiryDate) 
+                        {
+                            expiryDate = payment.paymentExp.toLocaleString().split(',')[0].split('/').reverse().join('-'); 
+                        }
+                        else
+                        {
+                            expiryDate = "No expiry date found";
+                        }
+                     %>
+                    <input type="date" name="exp" value="<%=expiryDate;
+                    %>"><br>
                     CVV:<br>
-                    <input type="text" name="editPayment_CVV"><br>
+                    <input type="text" name="cvc" value="<%=payment.paymentCVC%>"><br>
                 </div>
 
                 <div class="modal-footer">

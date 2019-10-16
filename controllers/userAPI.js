@@ -8,6 +8,7 @@ const auth = require('../utils/authUtil');
 const router = express.Router();
 const multer = require('multer');
 const upload = multer({dest : 'attachment/IMG/'});
+const dateUtil = require('../utils/dateUtil');
 
 // Every method is prepended with "/user" see app.js
 
@@ -31,7 +32,6 @@ router.post('/register', (req, res) =>
 
 router.post('/login', (req, res) =>
 {
-	console.log(req.body);
 	userModel.loginUser(req.body.username, req.body.password,
 		{
 			success:
@@ -48,9 +48,8 @@ router.post('/login', (req, res) =>
 		});
 });
 
-router.get('/profile', (req, res) => 
+router.get('/profile', auth.authorizeUser, (req, res) => 
 {
-    
     userModel.getUserInfo(req, (user, isAdmin) =>
     {
         userModel.getUserProfileInfo(user.id, 
@@ -63,17 +62,14 @@ router.get('/profile', (req, res) =>
                     address: userAddress,
                     payment: userPayment
                 }
-                console.log(userInfo);
-                baseView.renderWithAddons(req, res, 'pages/userDashboard/userProfileView', {userInfo});
+                baseView.renderFromInfo(req, res, 'pages/userDashboard/userProfileView', {userInfo, user, isAdmin});
             },
-            notFound: () =>
+            notFound: (reason) =>
             {
-                htmlResponse.fail(req, res, "Failed to get user profile!")
+                htmlResponse.fail(req, res, reason, "Failed to get user profile!")
             }
         });
     });
-
-
 });
 
 router.get('/logout', (req, res) =>
@@ -88,13 +84,10 @@ router.get('/logout', (req, res) =>
 		});
 });
 
-router.get('/profile/editProfile', (req, res) => {
-    res.render('pages/userDashboard/editProfileView');
-});
-
 router.post('/profile/editProfile', auth.authorizeUserJson, (req, res) =>
 {                   
     var editData = req.body;
+    dateUtil.fillPropertyFromHTML(editData, 'DOB');
     console.log("Got edit ", editData);
 
     userModel.getUserInfo(req, (user, isAdmin) =>
@@ -107,25 +100,9 @@ router.post('/profile/editProfile', auth.authorizeUserJson, (req, res) =>
     });
 });
 
-router.get('/profile/editAddress', (req, res) => {
-    res.render('pages/userDashboard/editAddressView');
-});
-
-router.get('/profile/addAddress', (req, res) => {
-    res.render('pages/userDashboard/addAddressView');
-});
-
 router.post('/profile/addAddress', (req, res) =>
 {                   
-    var editData = 
-            {
-                addressLine1 : req.body.editAddress_line1,
-                addressLine2 : req.body.editAddress_line2,
-                city : req.body.editAddress_city,
-                state : req.body.editAddress_state,
-                country : req.body.editAddress_country,
-                postcode : req.body.editAddress_postcode
-            }; 
+    var editData = req.body;
 
     console.log('were atlaest getting here');
     userModel.getUserInfo(req, (user, isAdmin) =>
@@ -136,8 +113,7 @@ router.post('/profile/addAddress', (req, res) =>
             {
                 res.redirect('/user/profile');
             }, 
-            fail: () => {}, 
-            done: () => {}
+            fail: () => htmlResponse.fail(req, res, "Failed to add new address!"), 
         });
     }); 
 
@@ -145,48 +121,26 @@ router.post('/profile/addAddress', (req, res) =>
 
 router.post('/profile/editAddress', (req, res) =>
 {                   
-    var editData = 
-            {
-                addressLine1 : req.body.editAddress_line1,
-                addressLine2 : req.body.editAddress_line2,
-                city : req.body.editAddress_city,
-                state : req.body.editAddress_state,
-                country : req.body.editAddress_country,
-                postcode : req.body.editAddress_postcode
-            }; 
+    var editData = req.body;
 
     userModel.getUserInfo(req, (user, isAdmin) =>
     {
-        userModel.modifyUserAddressByID(user.id, editData,
+        userModel.modifyUserAddress(editData,
         {
             success: () => 
             {
                 res.redirect('/user/profile');
             }, 
-            fail: () => {}, 
-            done: () => {}
+            fail: () => htmlResponse.fail(req, res, "Failed to edit existing address!"), 
         });
     }); 
 
 });
 
-router.get('/profile/editPayment', (req, res) => {
-    res.render('pages/userDashboard/editPaymentView');
-});
-router.get('/profile/addPayment', (req, res) => {
-    res.render('pages/userDashboard/addPaymentView');
-});
-
 router.post('/profile/addPayment', (req, res) =>
 {                   
-    var editData = 
-            {
-                nickName : req.body.editPayment_nickname,
-                name : req.body.editPayment_cardholderName,
-                number : req.body.editPayment_number,
-                exp : req.body.editPayment_Expiry,
-                cvc : req.body.editPayment_CVC,
-            }; 
+    var editData = req.body;
+    dateUtil.fillPropertyFromHTML(editData, 'exp');
 
     userModel.getUserInfo(req, (user, isAdmin) =>
     {
@@ -196,22 +150,16 @@ router.post('/profile/addPayment', (req, res) =>
             {
                 res.redirect('/user/profile');
             }, 
-            fail: () => {}
+            fail: () => htmlResponse.fail("Failed to add new payment")
         });
     });
 
 });
 
 router.post('/profile/editPayment', (req, res) =>
-{                   
-    var editData = 
-            {
-                nickName : req.body.editPayment_nickname,
-                name : req.body.editPayment_cardholderName,
-                number : req.body.editPayment_number,
-                exp : req.body.editPayment_Expiry,
-                cvv : req.body.editPayment_CVV,
-            }; 
+{
+    let editData = req.body;
+    dateUtil.fillPropertyFromHTML(editData, 'exp');
 
     userModel.getUserInfo(req, (user, isAdmin) =>
     {
@@ -221,8 +169,7 @@ router.post('/profile/editPayment', (req, res) =>
             {
                 res.redirect('/profile');
             }, 
-            fail: () => {}, 
-            done: () => {}
+            fail: () => htmlResponse.fail("Failed to edit existing payment"),
         });
     });
 
@@ -230,31 +177,23 @@ router.post('/profile/editPayment', (req, res) =>
 
 router.get('/profile/createAd', (req, res) =>
 {
-    res.render('pages/userDashboard/createAd');
+    baseView.renderWithAddons(req, res, 'pages/admin/createUserListing');
 });
 
-router.post('/profile/createAd', upload.single('productImage'), (req, res) =>
+router.post('/profile/createAd', upload.single('fileName'), (req, res) =>
 {
-    var listing = 
-    {
-        title : req.body.productName,
-        description : req.body.productDescription,
-        price : req.body.productPrice,
-        remainingStock : req.body.productStock,
-        fileName : req.file.productImage
-    }
+    var listing = req.body;
 
     userModel.getUserInfo(req, (user, isAdmin) =>
     {
         listingModel.createListingForUserID(user.id, listing,
+        {
+            success: () =>
             {
-                success: () =>
-                {
-                    res.redirect('/user/profile');
-                },
-                fail: () => {},
-                done: () => {}
-            });
+                res.redirect('/user/profile');
+            },
+            fail: () => htmlResponse.fail(req, res, "Failed to create new listing"),
+        });
     });
 
 });
@@ -262,6 +201,18 @@ router.post('/profile/createAd', upload.single('productImage'), (req, res) =>
 router.get('/userListings', (req, res) =>
 {
     baseView.renderWithCallback(req, res, 'pages/userDashboard/userListings', (user, isAdmin, next) =>
+    {
+        listingModel.getListingsForUser(user, 
+        {
+            success: (results) => next({results}),
+            fail: (reason) => htmlResponse.fail(req, res, reason, 'Failed to get user listings')
+        })
+    })
+})
+
+router.get('/pastListings', (req, res) =>
+{
+    baseView.renderWithCallback(req, res, 'pages/userDashboard/pastListings', (user, isAdmin, next) =>
     {
         listingModel.getListingsForUser(user, 
         {
@@ -300,6 +251,22 @@ router.get('/userPurchases', auth.authorizeUser, (req, res) =>
             success: (purchases) => baseView.renderFromInfo(req, res, 'pages/userDashboard/userPurchases', {user, isAdmin, purchases}),
             fail: (reason) => htmlResponse.fail(req, res, reason, "Failed to get purchases for user!")
         })
+    })
+})
+
+router.post('/resetPassword/username=:username', auth.authorizeUserJson, (req, res) =>
+{
+    console.log("Got reset pass ", req.body);
+    userModel.getUserInfo(req, (user, isAdmin) =>
+    {
+        if (isAdmin || user.username == req.params.username)
+        {
+            userModel.modifyPasswordByUsername(req.params.username, req.body.password, 
+            {
+                success: () => res.send(jsonResponse.success()),
+                fail: () => res.send(jsonResponse.fail("Failed to reset password"))
+            })
+        }
     })
 })
 

@@ -6,19 +6,19 @@
                 <h5 class="modal-title">Add Payment</h5>
             </div>
 
-            <form action="/user/profile/addPayment" method="POST">
+            <form action="<%=addPaymentPath%>" method="POST">
 
                 <div class="modal-body">
                     Nickname:<br>
-                    <input type="text" name="editPayment_nickname"><br>
+                    <input type="text" name="nickName"><br>
                     Cardholder Name:<br>
-                    <input type="text" name="editPayment_cardholderName"><br>
+                    <input type="text" name="name"><br>
                     Card Number:<br>
-                    <input type="text" name="editPayment_number"><br>
+                    <input type="text" name="number"><br>
                     Expiry:<br>
-                    <input type="text" name="editPayment_Expiry"><br>
+                    <input type="date" name="exp"><br>
                     CVC:<br>
-                    <input type="text" name="editPayment_CVC"><br>
+                    <input type="text" name="cvc"><br>
                 </div>
 
                 <div class="modal-footer">

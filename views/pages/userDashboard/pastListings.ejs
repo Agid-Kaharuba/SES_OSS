@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+
+        <!-- Bootstrap CSS -->
+        <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+            integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" rel="stylesheet">
+        <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+        <link href="/styles/js2.css" rel="stylesheet" type="text/css">
+        <title>User Listings</title>
+
+        <!-- Dashboard stuff -->
+        <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:700, 600,500,400,300' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+		<link rel="stylesheet" href="../styles/dashboard.css">
+		<script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+		<script src="https://code.highcharts.com/highcharts.js"></script>
+		<script src="https://code.highcharts.com/modules/data.js"></script>
+        <script src="../public/userDashboard/dashboard.js"></script>
+        <script src="../controllers/userAPI.js"></script>
+    </head>
+
+    <style>
+        .ad {
+            position: absolute;
+            width: 300px;
+            height: 250px;
+            border: 1px solid #ddd;
+            left: 50%;
+            transform: translateX(-50%);
+            top: 250px;
+            z-index: 10;
+        }
+        .ad .close {
+            position: absolute;
+            font-family: 'ionicons';
+            width: 20px;
+            height: 20px;
+            color: #fff;
+            background-color: #999;
+            font-size: 20px;
+            left: -20px;
+            top: -1px;
+            display: table-cell;
+            vertical-align: middle;
+            cursor: pointer;
+            text-align: center;
+        }
+    </style>
+    <script type="text/javascript">
+        $(function() {
+            $('.close').click(function() {
+                $('.ad').css('display', 'none');
+            })
+        })
+    </script>
+
+    <body>
+        <%- include ../../partials/topBar.ejs %>
+        <div class="header">
+            <div class="logo">
+                <i class="fa fa-tachometer"></i>
+                <span>Brand</span>
+            </div>
+            <a href="#" class="nav-trigger"><span></span></a>
+        </div>
+        <%- include("../../partials/user/dashboardSideNav", {active: "pastListings"}) %>
+        
+
+        <div class="main-content">
+            <div class="title">
+                User Listings
+            </div>
+            <div class="main">
+                <div class="widget">
+                    <%- include('../../partials/user/listingsTable', {showActive: false}) %>
+                </div>
+            </div>
+        </div>
+
+        <%- include ../../partials/bottomBar -%>
+    </body>
+</html>

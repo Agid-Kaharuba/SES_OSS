@@ -1,0 +1,30 @@
+<div class="container m-2">
+    <form action="<%=path%>" method="POST">
+
+        <div class="form-group my-4">
+            <div><b>Name</b></div>
+            <input type="text" name="title"><br>
+        </div>
+
+        <div class="form-group my-4">
+            <div><b>Product Description</b></div>
+            <input type="text" name="description"><br>
+        </div> 
+
+        <div class="form-group">
+            <div><b>Price</b></div>
+            <input type="number" name="price"><br>
+        </div> 
+
+        <div class="form-group my-4"> 
+            <div><b>Stock</b></div>
+            <input type="number" name="remainingStock"><br>
+        </div>
+
+        <div class="form-group my-4"> 
+            <div><b>Photo</b></div>
+            <input type="file" name="fileName"><br>
+        </div>
+        <input type="submit" value="Submit">
+    </form>
+</div>

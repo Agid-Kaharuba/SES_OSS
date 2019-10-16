@@ -1,0 +1,153 @@
+<style>
+    .section-title {
+        background-color: #55585e;
+        color: #c0c9d6;
+        padding: 10px;
+        border-top-left-radius: 6px;
+        border-top-right-radius: 6px;
+        font-weight: bold;
+    }
+</style>
+
+<div class="container m-1">
+    <div id="userInfo" data-username="<%=userInfo.profile.username%>"></div>
+
+    <div class="container m-4">
+        <div class="section-title">Profile Information</div>
+        <div class="card card-body">
+            <div class="row my-1">
+                <div class="col"><b>Username</b></div>
+                <div class="col"> 
+                    <div id="displayUsername"><%= userInfo.profile.username %></div>
+                </div>
+            </div>
+            <div class="row my-1">
+                <div class="col"><b>First Name</b></div>
+                <div class="col"> 
+                    <div id="displayFirstName"><%= userInfo.profile.firstName %></div>
+                </div>
+            </div>
+            <div class="row my-1">
+                <div class="col"><b>Last Name</b></div>
+                <div class="col"> 
+                    <div id="displayLastName"><%= userInfo.profile.lastName %></div>
+                </div>
+            </div>
+            <div class="row my-1">
+                <div class="col"><b>Date of Birth</b></div>
+                <div class="col"> 
+                    <% 
+                        var birthDate = "";
+                        
+                        if (userInfo.profile.birthDate) 
+                        {
+                            let date = userInfo.profile.birthDate;
+                            birthDate = date.toLocaleString().split(',')[0];
+                        }
+                    %>
+                    <div id="displayDOB"><%= birthDate %></div>
+                </div>
+            </div>
+
+            <div class="row my-1">
+                <div class="col"><b>Email</b></div>
+                <div class="col"> 
+                    <div id="displayEmail"><%= userInfo.profile.email %></div>
+                </div>
+            </div>
+            <div class="row my-1">
+                <div class="col"><b>Phone Number</b></div>
+                <div class="col"> 
+                    <div id="displayPhone"><%= userInfo.profile.phoneNumber %></div>
+                </div>
+            </div>
+        </div>
+
+        <input class="btn btn-primary my-1" id="editProfileBtn" type="submit" value="Edit Profile Information" />
+
+        <!-- Add Reset password Dialog -->
+        <input class="btn btn-primary my-1" type="submit" value="Reset Password" data-toggle="modal" data-target="#resetPasswordDialog">
+        <%- include ../../partials/userDashboard/resetPasswordDialog %>
+    </div>
+    
+    <div class="container m-4">
+        <div class="section-title">Current User Address</div>
+        <table class="table table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Line 1</th>
+                    <th scope="col">Line 2</th>
+                    <th scope="col">City</th>
+                    <th scope="col">State</th>
+                    <th scope="col">Country</th>
+                    <th scope="col">Post Code</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <%for(var i = 0; i < userInfo.address.length; i++) {%>
+                <tr class="userInfo">
+                    <th scope="row" style="font-weight: normal;"><%= userInfo.address[i].addressLine1 %></th>
+                    <th scope="row" style="font-weight: normal;"><%= userInfo.address[i].addressLine2 %></th>
+                    <th scope="row" style="font-weight: normal;"><%= userInfo.address[i].addressCity %></th>
+                    <th scope="row" style="font-weight: normal;"><%= userInfo.address[i].addressState %></th>
+                    <th scope="row" style="font-weight: normal;"><%= userInfo.address[i].addressCountry %></th>
+                    <th scope="row" style="font-weight: normal;"><%= userInfo.address[i].addressPostcode %></th>
+                    <th scope="row">
+                        <% let dialogID = "editAddressDialog-" + userInfo.address[i].id; %>
+                        <input class="btn btn-info" type="submit" value="Edit Address" data-toggle="modal" data-target="#<%=dialogID%>"/>
+                        <%- include('../../partials/userDashboard/editAddressDialog', {dialogID, address: userInfo.address[i], editAddressPath}) %>
+                    </th>
+                </tr>
+            <% } %>
+        </table>
+    
+        <!-- Add address Dialog -->
+        <input class="btn btn-primary my-1" type="submit" value="Add Address" data-toggle="modal" data-target="#addAddressDialog">
+        <%- include('../../partials/userDashboard/addAddressDialog', {addAddressPath}) %>
+    </div>
+
+    <div class="container m-4">
+        <div class="section-title">Current User Payment Methods</div>
+        <table class="table table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Nickname</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Card Number</th>
+                    <th scope="col">Expiry Date</th>
+                    <th scope="col">CVC</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <% for(var i = 0; i < userInfo.payment.length; i++) {%>
+                <tr class="userInfo">
+                    <th scope="row" style="font-weight: normal;"><%= userInfo.payment[i].paymentNickname %></th>
+                    <th scope="row" style="font-weight: normal;"><%= userInfo.payment[i].paymentName %></th>
+                    <th scope="row" style="font-weight: normal;"><%= userInfo.payment[i].paymentCardNumber %></th>
+                    <% 
+                        let expiryDate;
+                        if (userInfo.payment[i].paymentExp) 
+                        {
+                            expiryDate = userInfo.payment[i].paymentExp.toLocaleString().split(',')[0];
+                        }
+                        else 
+                        {
+                            expiryDate = "No expiry date found";
+                        }
+                    %>
+                    <th scope="row" style="font-weight: normal;"><%= expiryDate %></th>
+                    <th scope="row" style="font-weight: normal;"><%= userInfo.payment[i].paymentCVC %></th>
+                    <th scope="row">
+                        <% let dialogID = "editPaymentDialog-" + userInfo.address[i].id; %>
+                        <input class="btn btn-info" type="submit" value="Edit Payment" data-toggle="modal" data-target="#<%=dialogID%>"/>
+                        <%- include('../../partials/userDashboard/editPaymentDialog', {dialogID, payment: userInfo.payment[i], editPaymentPath}) %>
+                    </th>
+                </tr>
+            <% } %>
+        </table>
+
+        <!-- Add payment Dialog -->
+        <input class="btn btn-primary my-1" type="submit" value="Add Payment" data-toggle="modal" data-target="#addPaymentDialog"/>
+        <%- include('../../partials/userDashboard/addPaymentDialog', {addPaymentPath}) %>
+    </div>
+</div>

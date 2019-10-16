@@ -1,6 +1,7 @@
 const database = require('../utils/database');
 const auth = require('../utils/authUtil');
 const bcrypt = require('bcrypt');
+const dateUtil = require('../utils/dateUtil');
 
 exports.convertToFullUserObject = function (rawUser)
 {
@@ -367,7 +368,7 @@ exports.getUserInfo = function(req, callback = (user, isAdmin) => {})
 	})
 }
 
-exports.getUserProfileInfo = function(userid, callback = { found: () => {}, notFound: () => {} })
+exports.getUserProfileInfo = function(userid, callback = { found: () => {}, notFound: (reason) => {} })
 {
 	getUserProfile(userid, 
 	{
@@ -385,18 +386,19 @@ exports.getUserProfileInfo = function(userid, callback = { found: () => {}, notF
 						},
 						notFound:() =>
 						{
-
+							callback.notFound("Could not get user payments!");
 						}
 					});
 				},
 				notFound: () =>
 				{
-					
+					callback.notFound("Could not get user addesses!");
 				}
 				});
 		},
 		notFound: () =>
 		{
+			callback.notFound("Could not get user profile!");
 		}
 	});
 	
@@ -448,7 +450,6 @@ const getUserAddress = function(userid, callback = { found: () => {}, notFound: 
 	LEFT JOIN Address ON US_PK = AD_US
 	WHERE US_PK = ?
 	`;
-	var userAddress =[];
 	db.query(query2, [userid], (err, address) =>
 	{
 		if (err)
@@ -458,11 +459,12 @@ const getUserAddress = function(userid, callback = { found: () => {}, notFound: 
 		else
 		{
 			var i;
+			var userAddress = [];
 			for (i = 0; i < address.length; i++)
 			{
 				userAddress.push(convertToUserAddressObject(address[i]));
-				callback.found(userAddress);
 			}
+			callback.found(userAddress);
 		}
 	});
 	
@@ -482,7 +484,6 @@ const getUserPayment = function(userid, callback = { found: () => {}, notFound: 
 	LEFT JOIN PaymentMethod ON US_PK = PM_US
 	WHERE US_PK = ?
 	`;
-	var userPayment = [];
 	db.query(query3, [userid], (err, payment) =>
 	{
 		if (err)
@@ -492,11 +493,12 @@ const getUserPayment = function(userid, callback = { found: () => {}, notFound: 
 		else
 		{
 			var i;
+			var userPayment = [];
 			for (i = 0; i < payment.length; i++)
 			{
 				userPayment.push(convertToUserPaymentObject(payment[i]));
-				callback.found(userPayment);
 			}
+			callback.found(userPayment);
 		}
 
 	});
@@ -611,7 +613,8 @@ const modifyUserByCheck = function(check, user, callback = { success: () => {}, 
 		US_FirstName = COALESCE(?, US_FirstName),
 		US_LastName = COALESCE(?, US_LastName),
 		US_BirthDate = COALESCE(?, US_BirthDate),
-		US_PhoneNumber = COALESCE(?, US_PhoneNumber)
+		US_PhoneNumber = COALESCE(?, US_PhoneNumber),
+		US_Email = COALESCE(?, US_Email)
 	`
 	if (check != null)
 	{
@@ -624,7 +627,7 @@ const modifyUserByCheck = function(check, user, callback = { success: () => {}, 
 		return;
 	}
 
-	db.query(query, [user.firstName, user.lastName, user.DOB, user.phoneNumber], (err, results) => 
+	db.query(query, [user.firstName, user.lastName, user.DOB, user.phoneNumber, user.email], (err, results) => 
 	{
 		if (err)
 		{
@@ -702,16 +705,15 @@ exports.createUserPayment = function(userid, payment, callback = { success: () =
 	let query = `INSERT INTO PaymentMethod (PM_US, PM_Nickname, PM_Name, PM_CardNumber, PM_Expiry, PM_CVC)
 	VALUES (? ,? ,? ,? , ?, ?)`;
 
-	db.query(query,[userid, payment.nickName, payment.name, payment.number, payment.exp, payment.cvc], (err,results) =>
+	db.query(query,[userid, payment.nickName, payment.name, payment.number, dateUtil.convertToMySQLDatetime(payment.exp), payment.cvc], (err,results) =>
 	{
 		if (err)
 		{
-			console.log("failed");
+			console.trace("failed to create user payment method " + err);
 			callback.fail('Failed to insert new payment');
 		}
 		else
 		{
-			console.log("NOT failed");
 			callback.success();
 		}
 	});
@@ -739,11 +741,11 @@ const modifyUserPaymentByCheck = function(check, payment, callback = { success: 
 		return;
 	}
 
-	db.query(query, [payment.nickName, payment.name, payment.number, payment.exp, payment.cvv], (err, results) => 
+	db.query(query, [payment.nickName, payment.name, payment.number, dateUtil.convertToMySQLDatetime(payment.exp), payment.cvc], (err, results) => 
 	{
 		if (err)
 		{
-			console.trace("Failed to update Address: " + err);
+			console.trace("Failed to update Payment: " + err);
 			if (callback.hasOwnProperty('fail')) callback.fail();
 		}
 		else
@@ -792,10 +794,10 @@ exports.fillUserModel = function(obj, keyfrom, keyTo)
 	})
 }
 
-exports.modifyUserAddressByID = function (userid, address, callback = { success: () => {}, fail: () => {}, done: () => {} })
+exports.modifyUserAddress = function (address, callback = { success: () => {}, fail: () => {}, done: () => {} })
 {
 	const db = database.connectDatabase();
-	return modifyUserAddressByCheck(`AD_US = ` + db.escape(userid), address, callback);
+	return modifyUserAddressByCheck(`AD_PK = ` + db.escape(address.id), address, callback);
 }
 
 exports.modifyUserPaymentByID = function (userid, address, callback = { success: () => {}, fail: () => {}, done: () => {} })
