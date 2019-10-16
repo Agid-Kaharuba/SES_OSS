@@ -48,8 +48,6 @@ router.get('/id=:id', (req, res) => // e.g. listing/id=4bb8590e-ce26-11e9-a859-2
 
 router.get('/search=:query', (req, res) => 
 {
-    console.log('Received search query: ' + req.params.query); // Example params usage.
-
     listingModel.SearchListings(req.params.query,
         (results) => 
         {
@@ -62,9 +60,8 @@ router.get('/search=:query', (req, res) =>
         });
 });
 
-router.get('/summary=:purchaseID', auth.authorizeUser, (req, res) => 
+router.get('/summary=:purchaseID', (req, res) => 
 {
-    console.log('Received request to see purchase summary.')
     auth.getSessionFromCookie(req, 
         {
         found: (session) => 
@@ -87,7 +84,6 @@ router.get('/summary=:purchaseID', auth.authorizeUser, (req, res) =>
 
 router.get('/purchase=:listingID&quantity=:amount', (req, res) => 
 {
-    console.log(req.params.listingID + "|" + req.params.amount);
     auth.getSessionFromCookie(req, 
         {
         found: (session) => 
@@ -108,9 +104,8 @@ router.get('/purchase=:listingID&quantity=:amount', (req, res) =>
 });
 
 
-router.post('/purchaseItem', (req, res) => 
+router.post('/purchaseItem', auth.authorizeUserJson, (req, res) => 
 {
-    console.log(req);
     listingModel.purchaseItem(
         req.body, {
             success: (purchaseID) => {
@@ -120,7 +115,7 @@ router.post('/purchaseItem', (req, res) =>
         })
 });
 
-router.post('/modify', (req, res) => 
+router.post('/modify', auth.authorizeUserJson, (req, res) => 
 {
     userModel.getUserInfo(req, (user, isAdmin) => 
     {

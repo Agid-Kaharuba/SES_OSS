@@ -100,7 +100,7 @@ router.post('/profile/editProfile', auth.authorizeUserJson, (req, res) =>
     });
 });
 
-router.post('/profile/addAddress', (req, res) =>
+router.post('/profile/addAddress', auth.authorizeUser, (req, res) =>
 {                   
     var editData = req.body;
 
@@ -119,7 +119,7 @@ router.post('/profile/addAddress', (req, res) =>
 
 });
 
-router.post('/profile/editAddress', (req, res) =>
+router.post('/profile/editAddress', auth.authorizeUser, (req, res) =>
 {                   
     var editData = req.body;
 
@@ -137,7 +137,7 @@ router.post('/profile/editAddress', (req, res) =>
 
 });
 
-router.post('/profile/addPayment', (req, res) =>
+router.post('/profile/addPayment', auth.authorizeUser, (req, res) =>
 {                   
     var editData = req.body;
     dateUtil.fillPropertyFromHTML(editData, 'exp');
@@ -156,7 +156,7 @@ router.post('/profile/addPayment', (req, res) =>
 
 });
 
-router.post('/profile/editPayment', (req, res) =>
+router.post('/profile/editPayment', auth.authorizeUser, (req, res) =>
 {
     let editData = req.body;
     dateUtil.fillPropertyFromHTML(editData, 'exp');
@@ -175,12 +175,12 @@ router.post('/profile/editPayment', (req, res) =>
 
 });
 
-router.get('/profile/createAd', (req, res) =>
+router.get('/profile/createAd', auth.authorizeUser, (req, res) =>
 {
     baseView.renderWithAddons(req, res, 'pages/userDashboard/createAd');
 });
 
-router.post('/profile/createAd', upload.single('fileName'), (req, res) =>
+router.post('/profile/createAd', auth.authorizeUser, upload.single('fileName'), (req, res) =>
 {
     var listing = req.body;
 
@@ -198,7 +198,7 @@ router.post('/profile/createAd', upload.single('fileName'), (req, res) =>
 
 });
 
-router.get('/userListings', (req, res) =>
+router.get('/userListings', auth.authorizeUser, (req, res) =>
 {
     baseView.renderWithCallback(req, res, 'pages/userDashboard/userListings', (user, isAdmin, next) =>
     {
@@ -210,7 +210,7 @@ router.get('/userListings', (req, res) =>
     })
 })
 
-router.get('/pastListings', (req, res) =>
+router.get('/pastListings', auth.authorizeUser, (req, res) =>
 {
     baseView.renderWithCallback(req, res, 'pages/userDashboard/pastListings', (user, isAdmin, next) =>
     {
@@ -222,7 +222,7 @@ router.get('/pastListings', (req, res) =>
     })
 })
 
-router.get('/public/profile/id=:id', (req, res) =>
+router.get('/public/profile/id=:id', auth.authorizeUser, (req, res) =>
 {
     baseView.renderWithCallback(req, res, 'pages/user/publicProfile', (user, isAdmin, next) =>
     {
