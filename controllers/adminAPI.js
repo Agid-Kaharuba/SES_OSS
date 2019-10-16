@@ -69,30 +69,44 @@ router.post('/delete_listing=:id', auth.authorizeAdminJson, (req, res) =>
     });
 })
 
-router.post('/give_admin_userid=:id', auth.authorizeAdminJson, (req, res) =>
+router.post('/give_admin_userid=:username', auth.authorizeAdminJson, (req, res) =>
 {
-    userModel.checkUserExistsByID(req.params.id, 
+    userModel.getUser(req.params.username, 
     {
-        found: () => adminModel.giveUserAdminPrivileges(req.params.id, 
+        found: (user) =>
         {
-            success: () => res.send(jsonResponse.success()),
-            fail: (reason) => res.send(jsonResponse.fail(reason))
-        }),
-        notFound: () => res.send(jsonResponse.fail('User does not exist!'))
-    });
+            userModel.checkUserExistsByID(user.id, 
+            {
+                found: () => adminModel.giveUserAdminPrivileges(user.id, 
+                {
+                    success: () => res.send(jsonResponse.success()),
+                    fail: (reason) => res.send(jsonResponse.fail(reason))
+                }),
+                notFound: () => res.send(jsonResponse.fail('User does not exist!'))
+            });
+        },
+        notFound: () => res.send(jsonResponse.fail("Failed find to user"))
+    })
 })
 
-router.post('/revoke_admin_userid=:id', auth.authorizeAdminJson, (req, res) =>
+router.post('/revoke_admin_userid=:username', auth.authorizeAdminJson, (req, res) =>
 {
-    userModel.checkUserExistsByID(req.params.id, 
+    userModel.getUser(req.params.username, 
     {
-        found: () => adminModel.revokeUserAdminPrivileges(req.params.id, 
+        found: (user) =>
         {
-            success: () => res.send(jsonResponse.success()),
-            fail: (reason) => res.send(jsonResponse.fail(reason))
-        }),
+            userModel.checkUserExistsByID(user.id, 
+            {
+                found: () => adminModel.revokeUserAdminPrivileges(user.id, 
+                {
+                    success: () => res.send(jsonResponse.success()),
+                    fail: (reason) => res.send(jsonResponse.fail(reason))
+                }),
+                notFound: () => res.send(jsonResponse.fail('User does not exist!'))
+            })
+        },
         notFound: () => res.send(jsonResponse.fail('User does not exist!'))
-    });
+    })
 })
 
 router.get('/userProfile/id=:id', auth.authorizeAdmin, (req, res) =>

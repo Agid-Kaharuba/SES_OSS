@@ -105,7 +105,7 @@ router.get('/purchase=:listingID&quantity=:amount', (req, res) =>
 });
 
 
-router.post('/purchaseItem', (req, res) => 
+router.post('/purchaseItem', auth.authorizeUserJson, (req, res) => 
 {
     listingModel.purchaseItem(
         req.body, {
@@ -116,7 +116,7 @@ router.post('/purchaseItem', (req, res) =>
         })
 });
 
-router.post('/modify', (req, res) => 
+router.post('/modify', auth.authorizeUserJson, (req, res) => 
 {
     userModel.getUserInfo(req, (user, isAdmin) => 
     {
