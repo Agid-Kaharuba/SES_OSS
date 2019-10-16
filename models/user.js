@@ -221,8 +221,11 @@ LIMIT 1
 	db.query(query, inputs,
 		(err, results) => 
 		{
-			if (err) console.log("User.js | checkUserExistsByID | ERROR: " + err.message);
-
+			if (err) 
+			{
+				console.trace("Failed to check if user exist! " + err.message);
+				callback.notFound();
+			} 
 			if (results.length > 0) 
 			{
 				callback.found();
@@ -255,21 +258,11 @@ INSERT INTO User (US_Username, US_Password, US_Email, US_FirstName, US_LastName,
 VALUES (?, ?, ?, ?, ?, ? ,?)
 ;`;
 		var sanitsedInputs = [user.username, encryptedPassword, user.email, user.firstName, user.lastName, user.phoneNumber, user.birthDate];
-		db.query(query, sanitsedInputs, (errDb) => 
+		db.query(query, sanitsedInputs, (err) => 
 		{
-			if (errDb) 
+			if (err) 
 			{
-				console.log("User.js | registerUser | ERROR: " + errDb.message);
-				callback.fail("Error when creating user.");
-
-			}
-		});
-		var sanitsedInputs = [user.username, encryptedPassword, user.email, user.firstName, user.lastName, user.phoneNumber, user.birthDate];
-		db.query(query, sanitsedInputs, (errDb) => 
-		{
-			if (errDb) 
-			{
-				console.log("User.js | registerUser | ERROR: " + err.message);
+				console.trace("Failed to register user! " + err.message);
 				callback.fail("Error when creating user.");
 				return;
 			}
@@ -344,7 +337,7 @@ exports.getUserFromCookie = function(req, callback = { found: (user) => {}, notF
 		notFound: () =>
 		{
 			callback.notFound();
-			if (callback.hasOwnProperty('regardless')) callback.regardless(user);
+			if (callback.hasOwnProperty('regardless')) callback.regardless(null);
 			if (callback.hasOwnProperty('done')) callback.done();
 		}
 	})
