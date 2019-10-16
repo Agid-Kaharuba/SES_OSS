@@ -55,7 +55,7 @@ router.get('/search=:query', (req, res) =>
             {
                 results[i].listingImg = attachmentUtil.getImgPath(results[i].listingID);
 			}
-			console.log(results);
+			
             baseView.renderWithAddons(req, res, 'pages/listing', { listings: results });
         });
 });
