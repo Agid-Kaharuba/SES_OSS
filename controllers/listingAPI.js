@@ -120,15 +120,13 @@ router.post('/purchaseItem', (req, res) =>
         })
 });
 
-router.get('/confirmPurchase', (req, res) => 
+router.post('/modify', (req, res) => 
 {
-    console.log("modifying listing!")
-    console.log(req.body);
     userModel.getUserInfo(req, (user, isAdmin) => 
     {
         let listing = req.body;
 
-        if (!listing.hasOwnProperty('id')) 
+        if (!Object.prototype.hasOwnProperty.call(listing, 'id')) 
         {
             res.send(jsonResponse.fail("Failed to modify a listing with no id property!"));
             return;
