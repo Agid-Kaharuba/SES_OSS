@@ -69,10 +69,13 @@ WHERE
 ;`;
 
     db.query(query, [searchTerm, searchTerm],
-        (err, results) => {
-            if (err) throw err;
-            results[0].isActive = results[0].isActive.readInt8() == 1;
-
+		(err, results) => 
+		{
+			if (err) throw err;
+			for (result of results) 
+			{
+				result.isActive = result.isActive.readInt8() == 1;   
+            }
             callback(results);
         });
 }
