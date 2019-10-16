@@ -60,7 +60,7 @@ router.get('/search=:query', (req, res) =>
         });
 });
 
-router.get('/summary=:purchaseID', (req, res) => 
+router.get('/summary=:purchaseID', auth.authorizeUser, (req, res) => 
 {
     auth.getSessionFromCookie(req, 
         {
