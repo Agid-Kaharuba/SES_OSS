@@ -1,6 +1,10 @@
 exports.convertFromHTML = function(dateString)
 {
-    if (typeof dateString !== 'string') 
+    if (dateString === undefined || dateString === null)
+    {
+        return dateString;
+    } 
+    else if (typeof dateString !== 'string') 
     {
         console.trace("Expected a string from dateString, but got ", dateString);
         return new Date();
