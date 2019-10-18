@@ -54,8 +54,8 @@ let convertToUserAddressObject = function (rawUser)
 		addressCity: rawUser.AD_City,
 		addressState: rawUser.AD_State,
 		addressCountry: rawUser.AD_Country,
-		addressPostcode: rawUser.AD_PostCode
-		
+		addressPostcode: rawUser.AD_PostCode,
+		isActive: rawUser.AD_IsActive ? rawUser.AD_IsActive.readInt8() == 1 : false
 	};
 };
 
@@ -66,8 +66,8 @@ let convertToUserPaymentObject = function (rawUser)
 		paymentName: rawUser.PM_Name,
 		paymentCardNumber: rawUser.PM_CardNumber,
 		paymentExp: rawUser.PM_Expiry,
-		paymentCVC: rawUser.PM_CVC
-		
+		paymentCVC: rawUser.PM_CVC,
+		isActive: rawUser.PM_IsActive ? rawUser.PM_IsActive.readInt8() == 1 : false
 	};
 };
 
@@ -438,7 +438,8 @@ const getUserAddress = function(userid, callback = { found: () => {}, notFound: 
 		AD_City,
 		AD_State,
 		AD_Country,
-		AD_PostCode
+		AD_PostCode,
+		AD_IsActive
 	FROM User
 	LEFT JOIN Address ON US_PK = AD_US
 	WHERE US_PK = ?
@@ -472,7 +473,8 @@ const getUserPayment = function(userid, callback = { found: () => {}, notFound: 
 		PM_Name,
 		PM_CardNumber,
 		PM_Expiry,
-		PM_CVC
+		PM_CVC,
+		PM_IsActive
 	FROM User
 	LEFT JOIN PaymentMethod ON US_PK = PM_US
 	WHERE US_PK = ?
@@ -675,11 +677,11 @@ const modifyUserAddressByCheck = function(check, address, callback = { success: 
 		return;
 	}
 
-	if (address.isActive === true)
+	if (address.isActive === true || address.isActive === '1')
 	{
 		address.isActive = 1;
 	}
-	else if (address.isActive === false)
+	else if (address.isActive === false || address.isActive === '0')
 	{
 		address.isActive = 0;
 	}
@@ -744,11 +746,11 @@ const modifyUserPaymentByCheck = function(check, payment, callback = { success: 
 		return;
 	}
 
-	if (payment.isActive === true)
+	if (payment.isActive === true || payment.isActive === '1')
 	{
 		payment.isActive = 1;
 	}
-	else if (payment.isActive === false)
+	else if (payment.isActive === false || payment.isActive === '0')
 	{
 		payment.isActive = 0;
 	}
