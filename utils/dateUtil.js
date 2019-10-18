@@ -10,6 +10,7 @@ exports.convertFromHTML = function(dateString)
         return new Date();
     }
     let dateList = dateString.split('-');
+    console.log(dateList);
     return new Date(dateList[0], parseInt(dateList[1]) - 1, dateList[2]);
 }
 

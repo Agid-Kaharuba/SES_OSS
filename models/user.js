@@ -62,6 +62,7 @@ let convertToUserAddressObject = function (rawUser)
 let convertToUserPaymentObject = function (rawUser)
 {
 	return {
+		id: rawUser.PM_PK,
 		paymentNickname: rawUser.PM_Nickname,
 		paymentName: rawUser.PM_Name,
 		paymentCardNumber: rawUser.PM_CardNumber,
@@ -469,6 +470,7 @@ const getUserPayment = function(userid, callback = { found: () => {}, notFound: 
 	var db = database.connectDatabase();
 	var query3 = `
 	SELECT 
+		PM_PK,
 		PM_Nickname,
 		PM_Name,
 		PM_CardNumber,
@@ -755,6 +757,8 @@ const modifyUserPaymentByCheck = function(check, payment, callback = { success: 
 		payment.isActive = 0;
 	}
 
+	console.log(payment.exp, dateUtil.convertToMySQLDatetime(payment.exp));
+
 	db.query(query, [payment.nickName, payment.name, payment.number, dateUtil.convertToMySQLDatetime(payment.exp), payment.cvc, payment.isActive], (err, results) => 
 	{
 		if (err)
@@ -817,5 +821,5 @@ exports.modifyUserAddress = function (address, callback = { success: () => {}, f
 exports.modifyUserPaymentByID = function (userid, address, callback = { success: () => {}, fail: () => {}, done: () => {} })
 {
 	const db = database.connectDatabase();
-	return modifyUserPaymentByCheck(`PM_US = ` + db.escape(userid), address, callback);
+	return modifyUserPaymentByCheck(`PM_PK = ` + db.escape(userid), address, callback);
 }
