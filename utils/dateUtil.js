@@ -1,11 +1,16 @@
 exports.convertFromHTML = function(dateString)
 {
-    if (typeof dateString !== 'string') 
+    if (dateString === undefined || dateString === null)
+    {
+        return dateString;
+    } 
+    else if (typeof dateString !== 'string') 
     {
         console.trace("Expected a string from dateString, but got ", dateString);
         return new Date();
     }
     let dateList = dateString.split('-');
+    console.log(dateList);
     return new Date(dateList[0], parseInt(dateList[1]) - 1, dateList[2]);
 }
 

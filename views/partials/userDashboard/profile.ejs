@@ -82,9 +82,12 @@
                     <th scope="col">Country</th>
                     <th scope="col">Post Code</th>
                     <th scope="col"></th>
+                    <th scope="col"></th>
                 </tr>
             </thead>
-            <%for(var i = 0; i < userInfo.address.length; i++) {%>
+            <%for(var i = 0; i < userInfo.address.length; i++) {
+
+                if (userInfo.address[i].isActive) { %>
                 <tr class="userInfo">
                     <th scope="row" style="font-weight: normal;"><%= userInfo.address[i].addressLine1 %></th>
                     <th scope="row" style="font-weight: normal;"><%= userInfo.address[i].addressLine2 %></th>
@@ -97,8 +100,16 @@
                         <input class="btn btn-info" type="submit" value="Edit Address" data-toggle="modal" data-target="#<%=dialogID%>"/>
                         <%- include('../../partials/userDashboard/editAddressDialog', {dialogID, address: userInfo.address[i], editAddressPath}) %>
                     </th>
+                    <th scope="row">
+                        <form action="<%=editAddressPath%>" method="POST">
+                            <input type="hidden" name="id" value="<%=userInfo.address[i].id%>"/>
+                            <input type="hidden" name="isActive" value="0"/>
+                            <input class="btn btn-info" type="submit" value="Delete"/>
+                        </form>
+                    </th>
                 </tr>
-            <% } %>
+            <% }
+            } %>
         </table>
     
         <!-- Add address Dialog -->
@@ -117,9 +128,12 @@
                     <th scope="col">Expiry Date</th>
                     <th scope="col">CVC</th>
                     <th scope="col"></th>
+                    <th scope="col"></th>
                 </tr>
             </thead>
-            <% for(var i = 0; i < userInfo.payment.length; i++) {%>
+            <% for(var i = 0; i < userInfo.payment.length; i++) {
+                
+                if (userInfo.payment[i].isActive) {%>
                 <tr class="userInfo">
                     <th scope="row" style="font-weight: normal;"><%= userInfo.payment[i].paymentNickname %></th>
                     <th scope="row" style="font-weight: normal;"><%= userInfo.payment[i].paymentName %></th>
@@ -142,8 +156,16 @@
                         <input class="btn btn-info" type="submit" value="Edit Payment" data-toggle="modal" data-target="#<%=dialogID%>"/>
                         <%- include('../../partials/userDashboard/editPaymentDialog', {dialogID, payment: userInfo.payment[i], editPaymentPath}) %>
                     </th>
+                    <th scope="row">
+                        <form action="<%=editPaymentPath%>" method="POST">
+                            <input type="hidden" name="id" value="<%=userInfo.payment[i].id%>"/>
+                            <input type="hidden" name="isActive" value="0"/>
+                            <input class="btn btn-info" type="submit" value="Delete"/>
+                        </form>
+                    </th>
                 </tr>
-            <% } %>
+            <% }
+            } %>
         </table>
 
         <!-- Add payment Dialog -->

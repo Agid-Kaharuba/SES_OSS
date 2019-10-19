@@ -9,6 +9,9 @@
             <form action="<%=editPaymentPath%>" method="POST">
 
                 <div class="modal-body">
+                        
+                    <input type="hidden" name="id" value="<%=payment.id%>"><br>
+
                     Nickname:<br>
                     <input type="text" name="nickName" value="<%=payment.paymentNickname%>"><br>
                     Cardholder Name:<br>
@@ -18,17 +21,16 @@
                     Expiry:<br>
                     <% 
                         let expiryDate;
-                        if (expiryDate) 
+                        if (payment.paymentExp) 
                         {
-                            expiryDate = payment.paymentExp.toLocaleString().split(',')[0].split('/').reverse().join('-'); 
+                            expiryDate = payment.paymentExp.toLocaleString().split(',')[0].split('/').reverse().join('-');
                         }
                         else
                         {
                             expiryDate = "No expiry date found";
                         }
                      %>
-                    <input type="date" name="exp" value="<%=expiryDate;
-                    %>"><br>
+                    <input type="date" name="exp" value="<%=expiryDate%>"><br>
                     CVV:<br>
                     <input type="text" name="cvc" value="<%=payment.paymentCVC%>"><br>
                 </div>

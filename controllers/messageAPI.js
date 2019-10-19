@@ -97,7 +97,7 @@ router.post('/send', auth.authorizeUser, (req, res) =>
                         fail: (reason) => res.send(jsonResponse.fail(reason)) 
                     })
                 },
-                notFound: () => res.send(jsonResponse.fail("Could not find sender username!"))
+                notFound: () => res.send(jsonResponse.fail("Could not find recipient username!"))
             })
         }
     })

@@ -103,8 +103,6 @@ router.post('/profile/editProfile', auth.authorizeUserJson, (req, res) =>
 router.post('/profile/addAddress', auth.authorizeUser, (req, res) =>
 {                   
     var editData = req.body;
-
-    console.log('were atlaest getting here');
     userModel.getUserInfo(req, (user, isAdmin) =>
     {
         userModel.createUserAddress(user.id, editData,
@@ -150,7 +148,7 @@ router.post('/profile/addPayment', auth.authorizeUser, (req, res) =>
             {
                 res.redirect('/user/profile');
             }, 
-            fail: () => htmlResponse.fail("Failed to add new payment")
+            fail: () => htmlResponse.fail(req, res, "Failed to add new payment")
         });
     });
 
@@ -163,13 +161,13 @@ router.post('/profile/editPayment', auth.authorizeUser, (req, res) =>
 
     userModel.getUserInfo(req, (user, isAdmin) =>
     {
-        userModel.modifyUserPaymentByID(user.id, editData,
+        userModel.modifyUserPaymentByID(editData.id, editData,
         {
             success: () => 
             {
-                res.redirect('/profile');
+                res.redirect('/user/profile');
             }, 
-            fail: () => htmlResponse.fail("Failed to edit existing payment"),
+            fail: () => htmlResponse.fail(req, res, "Failed to edit existing payment"),
         });
     });
 

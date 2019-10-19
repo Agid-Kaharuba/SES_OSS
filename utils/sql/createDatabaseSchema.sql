@@ -18,6 +18,22 @@ DROP TABLE IF EXISTS Admin;
 
 DROP TABLE IF EXISTS User;
 
+DROP TRIGGER IF EXISTS GenerateUserPK;
+
+DROP TRIGGER IF EXISTS GenerateAddressPK;
+
+DROP TRIGGER IF EXISTS GenerateAdminPK;
+
+DROP TRIGGER IF EXISTS GenerateListingPK;
+
+DROP TRIGGER IF EXISTS GenerateMessagePK;
+
+DROP TRIGGER IF EXISTS GeneratePaymentMethodPK;
+
+DROP TRIGGER IF EXISTS GenerateSessionPK;
+
+DROP TRIGGER IF EXISTS GeneratePurchasePK;
+
 CREATE TABLE User
 (
   US_PK				varchar(36) NOT NULL,
@@ -35,7 +51,12 @@ CREATE TABLE User
   UNIQUE KEY US_Username_UNIQUE (US_Username)
 );
 
-CREATE TRIGGER GenerateUserPK BEFORE INSERT ON User FOR EACH ROW SET new.US_PK = IF (ISNULL(new.US_PK), uuid(), new.US_PK);;
+CREATE TRIGGER GenerateUserPK BEFORE INSERT ON User FOR EACH ROW 
+BEGIN
+  IF new.US_PK IS NULL THEN
+    SET new.US_PK = uuid();
+  END IF;
+END
 
 
 
@@ -49,7 +70,13 @@ CREATE TABLE Admin
   UNIQUE KEY AD_PK_UNIQUE (AD_PK)
 );
 
-CREATE TRIGGER GenerateAdminPK BEFORE INSERT ON Admin FOR EACH ROW SET new.AD_PK = IF (ISNULL(new.AD_PK), uuid(), new.AD_PK);;
+CREATE TRIGGER GenerateAdminPK BEFORE INSERT ON Admin FOR EACH ROW
+BEGIN
+  -- Need to check empty string to make it more compatible with mariadb appearently.
+  IF new.AD_PK = '' OR new.AD_PK IS NULL THEN
+    SET new.AD_PK = uuid();
+  END IF;
+END
 
 
 
@@ -63,7 +90,13 @@ CREATE TABLE Session
   UNIQUE KEY SS_PK_UNIQUE (SS_PK)
 );
 
-CREATE TRIGGER GenerateSessionPK BEFORE INSERT ON Session FOR EACH ROW SET new.SS_PK = IF (ISNULL(new.SS_PK), uuid(), new.SS_PK);
+CREATE TRIGGER GenerateSessionPK BEFORE INSERT ON Session FOR EACH ROW
+BEGIN
+  -- Need to check empty string to make it more compatible with mariadb appearently.
+  IF new.SS_PK = '' OR new.SS_PK IS NULL THEN
+    SET new.SS_PK = uuid();
+  END IF;
+END
 
 
 
@@ -84,7 +117,13 @@ CREATE TABLE Address
   UNIQUE KEY AD_PK_UNIQUE (AD_PK)
 );
 
-CREATE TRIGGER GenerateAddressPK BEFORE INSERT ON Address FOR EACH ROW SET new.AD_PK = IF (ISNULL(new.AD_PK), uuid(), new.AD_PK);
+CREATE TRIGGER GenerateAddressPK BEFORE INSERT ON Address FOR EACH ROW
+BEGIN
+  -- Need to check empty string to make it more compatible with mariadb appearently.
+  IF new.AD_PK = '' OR new.AD_PK IS NULL THEN
+    SET new.AD_PK = uuid();
+  END IF;
+END
 
 
 
@@ -104,7 +143,13 @@ CREATE TABLE PaymentMethod
   UNIQUE KEY PM_PK_UNIQUE (PM_PK)
 );
 
-CREATE TRIGGER GeneratePaymentMethodPK BEFORE INSERT ON PaymentMethod FOR EACH ROW SET new.PM_PK = IF (ISNULL(new.PM_PK), uuid(), new.PM_PK);
+CREATE TRIGGER GeneratePaymentMethodPK BEFORE INSERT ON PaymentMethod FOR EACH ROW
+BEGIN
+  -- Need to check empty string to make it more compatible with mariadb appearently.
+  IF new.PM_PK = '' OR new.PM_PK IS NULL THEN
+    SET new.PM_PK = uuid();
+  END IF;
+END
 
 
 
@@ -123,9 +168,13 @@ CREATE TABLE Listing
   UNIQUE KEY LS_PK_UNIQUE (LS_PK)
 );
 
-CREATE TRIGGER GenerateListingPK BEFORE INSERT ON Listing FOR EACH ROW SET new.LS_PK = IF (ISNULL(new.LS_PK), uuid(), new.LS_PK);
-
-
+CREATE TRIGGER GenerateListingPK BEFORE INSERT ON Listing FOR EACH ROW
+BEGIN
+  -- Need to check empty string to make it more compatible with mariadb appearently.
+  IF new.LS_PK = '' OR new.LS_PK IS NULL THEN
+    SET new.LS_PK = uuid();
+  END IF;
+END
 
 CREATE TABLE Purchase 
 (
@@ -146,7 +195,13 @@ CREATE TABLE Purchase
   UNIQUE KEY PC_PK_UNIQUE (PC_PK)
 );
 
-CREATE TRIGGER GeneratePurchasePK BEFORE INSERT ON Purchase FOR EACH ROW SET new.PC_PK = IF (ISNULL(new.PC_PK), uuid(), new.PC_PK);
+CREATE TRIGGER GeneratePurchasePK BEFORE INSERT ON Purchase FOR EACH ROW
+BEGIN
+  -- Need to check empty string to make it more compatible with mariadb appearently.
+  IF new.PC_PK = '' OR new.PC_PK IS NULL THEN
+    SET new.PC_PK = uuid();
+  END IF;
+END
 
 
 
@@ -164,4 +219,10 @@ CREATE TABLE Message
   UNIQUE KEY PC_PK_UNIQUE (MS_PK)
 );
 
-CREATE TRIGGER GenerateMessagePK BEFORE INSERT ON Message FOR EACH ROW SET new.MS_PK = IF (ISNULL(new.MS_PK), uuid(), new.MS_PK);
+CREATE TRIGGER GenerateMessagePK BEFORE INSERT ON Message FOR EACH ROW
+BEGIN
+  -- Need to check empty string to make it more compatible with mariadb appearently.
+  IF new.MS_PK = '' OR new.MS_PK IS NULL THEN
+    SET new.MS_PK = uuid();
+  END IF;
+END

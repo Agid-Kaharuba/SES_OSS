@@ -54,20 +54,21 @@ let convertToUserAddressObject = function (rawUser)
 		addressCity: rawUser.AD_City,
 		addressState: rawUser.AD_State,
 		addressCountry: rawUser.AD_Country,
-		addressPostcode: rawUser.AD_PostCode
-		
+		addressPostcode: rawUser.AD_PostCode,
+		isActive: rawUser.AD_IsActive ? rawUser.AD_IsActive.readInt8() == 1 : false
 	};
 };
 
 let convertToUserPaymentObject = function (rawUser)
 {
 	return {
+		id: rawUser.PM_PK,
 		paymentNickname: rawUser.PM_Nickname,
 		paymentName: rawUser.PM_Name,
 		paymentCardNumber: rawUser.PM_CardNumber,
 		paymentExp: rawUser.PM_Expiry,
-		paymentCVC: rawUser.PM_CVC
-		
+		paymentCVC: rawUser.PM_CVC,
+		isActive: rawUser.PM_IsActive ? rawUser.PM_IsActive.readInt8() == 1 : false
 	};
 };
 
@@ -438,7 +439,8 @@ const getUserAddress = function(userid, callback = { found: () => {}, notFound: 
 		AD_City,
 		AD_State,
 		AD_Country,
-		AD_PostCode
+		AD_PostCode,
+		AD_IsActive
 	FROM User
 	LEFT JOIN Address ON US_PK = AD_US
 	WHERE US_PK = ?
@@ -468,11 +470,13 @@ const getUserPayment = function(userid, callback = { found: () => {}, notFound: 
 	var db = database.connectDatabase();
 	var query3 = `
 	SELECT 
+		PM_PK,
 		PM_Nickname,
 		PM_Name,
 		PM_CardNumber,
 		PM_Expiry,
-		PM_CVC
+		PM_CVC,
+		PM_IsActive
 	FROM User
 	LEFT JOIN PaymentMethod ON US_PK = PM_US
 	WHERE US_PK = ?
@@ -496,10 +500,6 @@ const getUserPayment = function(userid, callback = { found: () => {}, notFound: 
 
 	});
 }
-
-
-
-
 
 /**
  * Function for internal use!
@@ -645,7 +645,7 @@ exports.createUserAddress = function(userid, address,callback = { success: () =>
 	{
 		if (err)
 		{
-			console.trace('we fucked up' +err);
+			console.trace('Could not create user address' + err);
 			callback.fail('Failed to insert new address');
 		}
 		else
@@ -665,7 +665,8 @@ const modifyUserAddressByCheck = function(check, address, callback = { success: 
 		AD_City = COALESCE(?, AD_City),
 		AD_State = COALESCE(?, AD_State),
 		AD_Country = COALESCE(?, AD_Country),
-		AD_PostCode = COALESCE(?, AD_PostCode)
+		AD_PostCode = COALESCE(?, AD_PostCode),
+		AD_IsActive = COALESCE(?, AD_IsActive)
 	`
 	if (check != null)
 	{
@@ -678,7 +679,18 @@ const modifyUserAddressByCheck = function(check, address, callback = { success: 
 		return;
 	}
 
-	db.query(query, [address.addressLine1, address.addressLine2, address.city, address.state, address.country, address.postcode], (err, results) => 
+	if (address.isActive === true || address.isActive === '1')
+	{
+		address.isActive = 1;
+	}
+	else if (address.isActive === false || address.isActive === '0')
+	{
+		address.isActive = 0;
+	}
+
+	let inputs = [address.addressLine1, address.addressLine2, address.city, address.state, address.country, address.postcode, address.isActive];
+
+	db.query(query, inputs, (err, results) => 
 	{
 		if (err)
 		{
@@ -722,7 +734,8 @@ const modifyUserPaymentByCheck = function(check, payment, callback = { success: 
 		PM_Name = COALESCE(?, PM_Name),
 		PM_CardNumber = COALESCE(?, PM_CardNumber),
 		PM_Expiry = COALESCE(?, PM_Expiry),
-		PM_CVC = COALESCE(?, PM_CVC)
+		PM_CVC = COALESCE(?, PM_CVC),
+		PM_IsActive = COALESCE(?, PM_IsActive)
 	`
 	if (check != null)
 	{
@@ -735,7 +748,18 @@ const modifyUserPaymentByCheck = function(check, payment, callback = { success: 
 		return;
 	}
 
-	db.query(query, [payment.nickName, payment.name, payment.number, dateUtil.convertToMySQLDatetime(payment.exp), payment.cvc], (err, results) => 
+	if (payment.isActive === true || payment.isActive === '1')
+	{
+		payment.isActive = 1;
+	}
+	else if (payment.isActive === false || payment.isActive === '0')
+	{
+		payment.isActive = 0;
+	}
+
+	console.log(payment.exp, dateUtil.convertToMySQLDatetime(payment.exp));
+
+	db.query(query, [payment.nickName, payment.name, payment.number, dateUtil.convertToMySQLDatetime(payment.exp), payment.cvc, payment.isActive], (err, results) => 
 	{
 		if (err)
 		{
@@ -797,5 +821,5 @@ exports.modifyUserAddress = function (address, callback = { success: () => {}, f
 exports.modifyUserPaymentByID = function (userid, address, callback = { success: () => {}, fail: () => {}, done: () => {} })
 {
 	const db = database.connectDatabase();
-	return modifyUserPaymentByCheck(`PM_US = ` + db.escape(userid), address, callback);
+	return modifyUserPaymentByCheck(`PM_PK = ` + db.escape(userid), address, callback);
 }
